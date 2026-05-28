@@ -165,7 +165,7 @@
     {
       "category": "S&P 500 ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/sp-500-etfs",
-      "fetched_at": "2026-05-28T12:33:35.532Z",
+      "fetched_at": "2026-05-28T12:44:31.004Z",
       "columns": [
         "Name",
         "Ticker",
@@ -270,7 +270,7 @@
     {
       "category": "Nasdaq 100 ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/nasdaq-etfs",
-      "fetched_at": "2026-05-28T12:33:35.689Z",
+      "fetched_at": "2026-05-28T12:44:30.845Z",
       "columns": [
         "Name",
         "Ticker",
@@ -345,7 +345,7 @@
     {
       "category": "Gold ETFs (US)",
       "url": "https://www.indmoney.com/us-stocks/etfs/gold-etfs",
-      "fetched_at": "2026-05-28T12:33:35.357Z",
+      "fetched_at": "2026-05-28T12:44:30.539Z",
       "columns": [
         "Name",
         "Ticker",
@@ -440,7 +440,7 @@
     {
       "category": "Silver ETFs (US)",
       "url": "https://www.indmoney.com/us-stocks/etfs/silver-etfs",
-      "fetched_at": "2026-05-28T12:33:35.208Z",
+      "fetched_at": "2026-05-28T12:44:30.681Z",
       "columns": [
         "Name",
         "Ticker",
@@ -485,7 +485,7 @@
     {
       "category": "Platinum ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/platinum-etfs",
-      "fetched_at": "2026-05-28T12:33:36.715Z",
+      "fetched_at": "2026-05-28T12:44:32.165Z",
       "columns": [
         "Name",
         "Ticker",
@@ -520,7 +520,7 @@
     {
       "category": "Copper ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/copper-etfs",
-      "fetched_at": "2026-05-28T12:33:36.416Z",
+      "fetched_at": "2026-05-28T12:44:32.016Z",
       "columns": [
         "Name",
         "Ticker",
@@ -565,7 +565,7 @@
     {
       "category": "Lithium ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/lithium-etfs",
-      "fetched_at": "2026-05-28T12:33:36.863Z",
+      "fetched_at": "2026-05-28T12:44:31.860Z",
       "columns": [
         "Name",
         "Ticker",
@@ -620,7 +620,7 @@
     {
       "category": "Rare Earth ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/rare-earth-etfs",
-      "fetched_at": "2026-05-28T12:33:36.556Z",
+      "fetched_at": "2026-05-28T12:44:31.720Z",
       "columns": [
         "Name",
         "Ticker",
@@ -655,7 +655,7 @@
     {
       "category": "Uranium ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/uranium-etfs",
-      "fetched_at": "2026-05-28T12:33:37.825Z",
+      "fetched_at": "2026-05-28T12:44:33.010Z",
       "columns": [
         "Name",
         "Ticker",
@@ -720,7 +720,7 @@
     {
       "category": "Oil & Gas ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/oil-gas-etfs",
-      "fetched_at": "2026-05-28T12:33:37.516Z",
+      "fetched_at": "2026-05-28T12:44:33.185Z",
       "columns": [
         "Name",
         "Ticker",
@@ -885,7 +885,7 @@
     {
       "category": "Natural Gas ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/natural-gas-etfs",
-      "fetched_at": "2026-05-28T12:33:37.659Z",
+      "fetched_at": "2026-05-28T12:44:32.867Z",
       "columns": [
         "Name",
         "Ticker",
@@ -950,7 +950,7 @@
     {
       "category": "AI ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/ai-etfs",
-      "fetched_at": "2026-05-28T12:33:38.004Z",
+      "fetched_at": "2026-05-28T12:44:33.344Z",
       "columns": [
         "Name",
         "Ticker",
@@ -1075,7 +1075,7 @@
     {
       "category": "Technology ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/tech-etfs",
-      "fetched_at": "2026-05-28T12:33:38.817Z",
+      "fetched_at": "2026-05-28T12:44:34.171Z",
       "columns": [
         "Name",
         "Ticker",
@@ -1240,7 +1240,7 @@
     {
       "category": "Semiconductor ETFs",
       "url": "https://www.indmoney.com/us-stocks/etfs/semiconductor-etfs",
-      "fetched_at": "2026-05-28T12:33:38.650Z",
+      "fetched_at": "2026-05-28T12:44:34.013Z",
       "columns": [
         "Name",
         "Ticker",
@@ -1383,5 +1383,5 @@
       ]
     }
   ],
-  "lastScrapedAt": "2026-05-28T12:33:38.819Z"
+  "lastScrapedAt": "2026-05-28T12:44:34.173Z"
 }
