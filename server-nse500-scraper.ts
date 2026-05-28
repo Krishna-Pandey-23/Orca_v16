@@ -241,8 +241,8 @@ export async function scrapeNse500(forceScrape = false): Promise<Nse500Data> {
     }
   }
 
-  // Initialize clients
-  const tempDir = path.join(process.cwd(), "temp_nse_downloads");
+  // Initialize clients - use data directory for temp files
+  const tempDir = path.join(DATA_DIR, "temp_nse_downloads");
   const nse = new NSE(tempDir);
 
   try {
