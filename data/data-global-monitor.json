@@ -15,61 +15,116 @@
     "top_stories": []
   },
   "worldmonitor": {
-    "scraped_at": "2026-05-27T11:21:55Z",
     "markets": [
       {
-        "title": "S&P 500 Defies Headwinds to Eye All-Time Highs Amid Core Semi Momentum",
-        "url": "https://finance.yahoo.com/rss/topstories",
+        "title": "Earnings live updates: Snowflake stock skyrockets on AWS deal, Kohl's pops",
+        "url": "https://finance.yahoo.com/markets/live/earnings-live-updates-snowflake-stock-skyrockets-on-aws-deal-kohls-pops-115127980.html",
         "source": "Yahoo Finance",
-        "timestamp": "May 27, 2026",
-        "category": "Markets News",
-        "summary": "Tech index triggers massive buying pressure across premium AI hardware nodes, overriding minor concerns over persistent central bank hawkishness."
+        "timestamp": "2026-05-27T11:51:27Z",
+        "category": "Markets News"
       },
       {
-        "title": "Treasury Yield Curve Constrains Financial Sector Growth Plans",
-        "url": "https://seekingalpha.com/market_currents.xml",
-        "source": "SeekingAlpha",
-        "timestamp": "May 27, 2026",
-        "category": "Markets News",
-        "summary": "Short-term funding pressures continue to exert downward pressure on regional lending margins, forcing tactical high-yield reallocation structures."
-      }
-    ],
-    "forex": [
-      {
-        "title": "DXY Dollar Index Firms Near 105.20 Post Durable Goods Surges",
-        "url": "https://news.google.com/rss/search?q=DXY",
-        "source": "WorldMonitor RSS",
-        "timestamp": "May 27, 2026",
-        "category": "Forex & Currencies",
-        "summary": "Robust US macroeconomic resilience supports long-duration dollar holding, capping immediate recoveries for European and Japanese counterparts."
+        "title": "Last Year, New Fed Chair Kevin Warsh Believed Artificial Intelligence Would Pave the Way for Interest Rate Cuts. Now, It's Doing the Exact Opposite.",
+        "url": "https://finance.yahoo.com/economy/policy/articles/last-fed-chair-kevin-warsh-122000301.html",
+        "source": "Motley Fool",
+        "timestamp": "2026-05-28T12:20:00Z",
+        "category": "Markets News"
       },
       {
-        "title": "Yen Consolidates Near Critical Intervention Benchmarks Amid BoJ Speculation",
-        "url": "https://news.google.com/rss/search?q=forex",
+        "title": "Morning Bid: Three months, and counting",
+        "url": "https://finance.yahoo.com/economy/policy/articles/morning-bid-three-months-counting-104516880.html",
         "source": "Reuters",
-        "timestamp": "May 27, 2026",
-        "category": "Forex & Currencies",
-        "summary": "Market participants expect currency authorities to execute active treasury support should dollar-yen exchange test immediate overhead boundaries."
-      }
-    ],
-    "commodities": [
-      {
-        "title": "Crude WTI Fluctuates Near $78 as OPEC Extends Voluntary Supply Guidelines",
-        "url": "https://news.google.com/rss/search?q=oil",
-        "source": "Marketwatch",
-        "timestamp": "May 27, 2026",
-        "category": "Commodities News",
-        "summary": "Strategic product cuts keep a secure floor under Brent crude despite rising inventory counts in North American distribution terminals."
+        "timestamp": "2026-05-28T12:19:36Z",
+        "category": "Markets News"
       },
       {
-        "title": "Precious Metals Breakout Confirmed with Spot Gold Retesting $2,350",
-        "url": "https://news.google.com/rss/search?q=gold",
-        "source": "Bloomberg",
-        "timestamp": "May 27, 2026",
-        "category": "Commodities News",
-        "summary": "Safe haven flows accelerate as global asset allocation switches toward inflation-proof hedges and physical commodity alternatives."
+        "title": "Seagate (STX) Lands A Stunning Target Hike As Storage Demand Accelerates",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/seagate-stx-lands-stunning-target-121722739.html",
+        "source": "Insider Monkey",
+        "timestamp": "2026-05-28T12:17:22Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "IBM Stock Gains As Tech Giant Pledges $10 Billion In Quantum Investment",
+        "url": "https://www.investors.com/news/technology/ibm-stock-quantum-computing-10-billion/?src=A00220&yptr=yahoo",
+        "source": "Investor's Business Daily",
+        "timestamp": "2026-05-28T12:16:26Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "Analyst Report: Allstate Corp/The",
+        "url": "https://finance.yahoo.com/research/reports/ARGUS_2701_AnalystReport_1779966710000?yptr=yahoo&ncid=yahooproperties_plusresear_nm5q6ze1cei",
+        "source": "Argus Research",
+        "timestamp": "2026-05-28T11:11:50Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "Phoenix Court's Saul Klein on why his VC firm is sharing the wealth",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/phoenix-courts-saul-klein-why-121552396.html",
+        "source": "Pitchbook",
+        "timestamp": "2026-05-28T12:15:52Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "Tariff Fears Are Rattling the Market. Here's What 100 Years of Data Says About What Happens Next.",
+        "url": "https://finance.yahoo.com/economy/policy/articles/tariff-fears-rattling-market-heres-122000112.html",
+        "source": "Motley Fool",
+        "timestamp": "2026-05-28T12:20:00Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "The NHTSA probes Rivian over a rear toe link issue that may impact +100K vehicles",
+        "url": "https://seekingalpha.com/news/4597860-the-nhtsa-probes-rivian-over-a-rear-toe-link-issue-that-may-impact-100k-vehicles?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:25:50 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Aegis Brands CEO Steven Pelton to step down",
+        "url": "https://seekingalpha.com/news/4597852-aegis-brands-ceo-steven-pelton-to-step-down?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:24:17 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "New York approves tax on luxury 2nd homes as Mamdani pushes wealth agenda",
+        "url": "https://seekingalpha.com/news/4597856-new-york-approves-tax-on-luxury-2nd-homes-as-mamdani-pushes-wealth-agenda?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:21:44 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Formula Systems reports Q1 results",
+        "url": "https://seekingalpha.com/news/4597861-formula-systems-reports-q1-results?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:20:30 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Pomdoctor announces 1-for-18 reverse ADS split",
+        "url": "https://seekingalpha.com/news/4597859-pomdoctor-announces-1-for-18-reverse-ads-split?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:17:11 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Strattec approves new $40M share repurchase program",
+        "url": "https://seekingalpha.com/news/4597855-strattec-approves-new-40m-share-repurchase-program?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:12:53 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Kohl's beats gloomy Q1 expectations, sees improved traffic and balance sheet",
+        "url": "https://seekingalpha.com/news/4597837-kohls-beats-gloomy-q1-expectations-sees-improved-traffic-and-balance-sheet?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:08:10 -0400",
+        "category": "Markets News"
       }
-    ]
+    ],
+    "forex": [],
+    "commodities": [],
+    "scraped_at": "2026-05-28T12:31:16.853Z"
   },
   "global_indices": []
 }
