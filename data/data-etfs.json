@@ -1,0 +1,166 @@
+{
+  "etfs": [
+    {
+      "symbol": "SPY",
+      "name": "SPDR S&P 500 ETF Trust",
+      "segment": "US Large Cap Equities",
+      "aum": "$502.4B",
+      "expenseRatio": "0.09%",
+      "rating": "STRONG_BUY",
+      "price": 512.2,
+      "changeToday": 0.45,
+      "rsi": 54.2,
+      "alphaScore": 84,
+      "riskAnalysis": "S&P 500 displays structural support alignment above the 50-day EMA. Volatility trends remain healthy with index whales increasing allocation flows by ~2.4% over current standard dev thresholds.",
+      "holdings": [
+        {
+          "name": "Microsoft Corp (MSFT)",
+          "weight": 7.1
+        },
+        {
+          "name": "Apple Inc (AAPL)",
+          "weight": 5.6
+        },
+        {
+          "name": "NVIDIA Corp (NVDA)",
+          "weight": 5
+        },
+        {
+          "name": "Amazon.com Inc (AMZN)",
+          "weight": 3.8
+        }
+      ]
+    },
+    {
+      "symbol": "QQQ",
+      "name": "Invesco QQQ Trust",
+      "segment": "Tech-Growth Index",
+      "aum": "$254.1B",
+      "expenseRatio": "0.20%",
+      "rating": "BUY",
+      "price": 438.56,
+      "changeToday": 1.85,
+      "rsi": 64.8,
+      "alphaScore": 91,
+      "riskAnalysis": "High beta tech expansion displays substantial tailwinds with massive chipmaker-led inflows. Immediate attention ranges are bullish; RSI near exhaustion but momentum profiles signal continued runs.",
+      "holdings": [
+        {
+          "name": "Microsoft Corp (MSFT)",
+          "weight": 8.8
+        },
+        {
+          "name": "Apple Inc (AAPL)",
+          "weight": 7.9
+        },
+        {
+          "name": "NVIDIA Corp (NVDA)",
+          "weight": 6.4
+        },
+        {
+          "name": "Amazon.com Inc (AMZN)",
+          "weight": 4.9
+        }
+      ]
+    },
+    {
+      "symbol": "ARKK",
+      "name": "ARK Innovation ETF",
+      "segment": "Disruptive Innovation Tech",
+      "aum": "$6.8B",
+      "expenseRatio": "0.75%",
+      "rating": "REDUCE",
+      "price": 42.15,
+      "changeToday": -2.4,
+      "rsi": 31.5,
+      "alphaScore": 38,
+      "riskAnalysis": "Disruptive technology basket experiences intensive liquidity spills amidst rising bond yields. Breached minor support levels at $44.00, placing risk metrics into a high risk zone. Caution warranted.",
+      "holdings": [
+        {
+          "name": "Coinbase Global (COIN)",
+          "weight": 10.1
+        },
+        {
+          "name": "Tesla Inc (TSLA)",
+          "weight": 8.2
+        },
+        {
+          "name": "Roku Inc (ROKU)",
+          "weight": 7.5
+        },
+        {
+          "name": "UiPath Inc (PATH)",
+          "weight": 6.1
+        }
+      ]
+    },
+    {
+      "symbol": "GLD",
+      "name": "SPDR Gold Shares",
+      "segment": "Precious Metals Refuges",
+      "aum": "$58.2B",
+      "expenseRatio": "0.40%",
+      "rating": "BUY",
+      "price": 218.42,
+      "changeToday": 1.1,
+      "rsi": 58.5,
+      "alphaScore": 78,
+      "riskAnalysis": "Precious metal reserves display high active tracking indexes. Risk metrics indicate gold acts as a solid hedge for macro inflationary spikes and central bank bond tightening regimes.",
+      "holdings": [
+        {
+          "name": "Gold Bullion (Spot Cash)",
+          "weight": 100
+        }
+      ]
+    },
+    {
+      "symbol": "EEM",
+      "name": "iShares MSCI Emerging Markets ETF",
+      "segment": "Global & Emerging Markets",
+      "aum": "$25.5B",
+      "expenseRatio": "0.70%",
+      "rating": "STABLE",
+      "price": 40.85,
+      "changeToday": -0.15,
+      "rsi": 46.1,
+      "alphaScore": 62,
+      "riskAnalysis": "Emerging markets consolidate in a strict range bound setup. High relative chip exposure via regional semiconductor giants is balancing local currency risks.",
+      "holdings": [
+        {
+          "name": "TSMC (Taiwan Semi)",
+          "weight": 8.2
+        },
+        {
+          "name": "Tencent Holdings",
+          "weight": 5.4
+        },
+        {
+          "name": "Alibaba Group",
+          "weight": 4.1
+        }
+      ]
+    },
+    {
+      "symbol": "VXX",
+      "name": "Barclays iPath VIX short-term ETN",
+      "segment": "Volatility Hedging Index",
+      "aum": "$1.2B",
+      "expenseRatio": "0.89%",
+      "rating": "STABLE",
+      "price": 14.28,
+      "changeToday": -3.12,
+      "rsi": 28.4,
+      "alphaScore": 45,
+      "riskAnalysis": "Volatility index hovering near lifetime lows as index equity accruals remain robust. Great hedge entry bands established, though speculative carries should be heavily size-controlled.",
+      "holdings": [
+        {
+          "name": "S&P 500 VIX Short Futures",
+          "weight": 100
+        }
+      ]
+    }
+  ],
+  "globalFlowStatus": "INSTITUTIONAL ACCRUEL ACTIVE",
+  "lastUpdated": "Just Now",
+  "scrapedCategories": [],
+  "lastScrapedAt": ""
+}

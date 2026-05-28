@@ -1,0 +1,75 @@
+{
+  "bloomberg": {
+    "source": "Bloomberg",
+    "url": "https://www.bloomberg.com/asia",
+    "scraped_at": "2026-05-27T04:40:22Z",
+    "market_tickers": [],
+    "top_stories": [],
+    "latest_news": []
+  },
+  "reuters": {
+    "source": "Reuters",
+    "url": "https://www.reuters.com/world/",
+    "scraped_at": "2026-05-27T04:40:22Z",
+    "section": "World",
+    "top_stories": []
+  },
+  "worldmonitor": {
+    "scraped_at": "2026-05-27T11:21:55Z",
+    "markets": [
+      {
+        "title": "S&P 500 Defies Headwinds to Eye All-Time Highs Amid Core Semi Momentum",
+        "url": "https://finance.yahoo.com/rss/topstories",
+        "source": "Yahoo Finance",
+        "timestamp": "May 27, 2026",
+        "category": "Markets News",
+        "summary": "Tech index triggers massive buying pressure across premium AI hardware nodes, overriding minor concerns over persistent central bank hawkishness."
+      },
+      {
+        "title": "Treasury Yield Curve Constrains Financial Sector Growth Plans",
+        "url": "https://seekingalpha.com/market_currents.xml",
+        "source": "SeekingAlpha",
+        "timestamp": "May 27, 2026",
+        "category": "Markets News",
+        "summary": "Short-term funding pressures continue to exert downward pressure on regional lending margins, forcing tactical high-yield reallocation structures."
+      }
+    ],
+    "forex": [
+      {
+        "title": "DXY Dollar Index Firms Near 105.20 Post Durable Goods Surges",
+        "url": "https://news.google.com/rss/search?q=DXY",
+        "source": "WorldMonitor RSS",
+        "timestamp": "May 27, 2026",
+        "category": "Forex & Currencies",
+        "summary": "Robust US macroeconomic resilience supports long-duration dollar holding, capping immediate recoveries for European and Japanese counterparts."
+      },
+      {
+        "title": "Yen Consolidates Near Critical Intervention Benchmarks Amid BoJ Speculation",
+        "url": "https://news.google.com/rss/search?q=forex",
+        "source": "Reuters",
+        "timestamp": "May 27, 2026",
+        "category": "Forex & Currencies",
+        "summary": "Market participants expect currency authorities to execute active treasury support should dollar-yen exchange test immediate overhead boundaries."
+      }
+    ],
+    "commodities": [
+      {
+        "title": "Crude WTI Fluctuates Near $78 as OPEC Extends Voluntary Supply Guidelines",
+        "url": "https://news.google.com/rss/search?q=oil",
+        "source": "Marketwatch",
+        "timestamp": "May 27, 2026",
+        "category": "Commodities News",
+        "summary": "Strategic product cuts keep a secure floor under Brent crude despite rising inventory counts in North American distribution terminals."
+      },
+      {
+        "title": "Precious Metals Breakout Confirmed with Spot Gold Retesting $2,350",
+        "url": "https://news.google.com/rss/search?q=gold",
+        "source": "Bloomberg",
+        "timestamp": "May 27, 2026",
+        "category": "Commodities News",
+        "summary": "Safe haven flows accelerate as global asset allocation switches toward inflation-proof hedges and physical commodity alternatives."
+      }
+    ]
+  },
+  "global_indices": []
+}
