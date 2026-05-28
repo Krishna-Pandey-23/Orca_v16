@@ -17,38 +17,38 @@
   "worldmonitor": {
     "markets": [
       {
-        "title": "Earnings live updates: Snowflake stock skyrockets on AWS deal, Kohl's pops",
-        "url": "https://finance.yahoo.com/markets/live/earnings-live-updates-snowflake-stock-skyrockets-on-aws-deal-kohls-pops-115127980.html",
+        "title": "Fed's inflation gauge heated up in April, cementing that interest rates will remain steady for now",
+        "url": "https://finance.yahoo.com/economy/policy/article/feds-inflation-gauge-heated-up-in-april-cementing-that-interest-rates-will-remain-steady-for-now-123520559.html",
         "source": "Yahoo Finance",
-        "timestamp": "2026-05-27T11:51:27Z",
+        "timestamp": "2026-05-28T12:35:20Z",
         "category": "Markets News"
       },
       {
-        "title": "Last Year, New Fed Chair Kevin Warsh Believed Artificial Intelligence Would Pave the Way for Interest Rate Cuts. Now, It's Doing the Exact Opposite.",
-        "url": "https://finance.yahoo.com/economy/policy/articles/last-fed-chair-kevin-warsh-122000301.html",
-        "source": "Motley Fool",
-        "timestamp": "2026-05-28T12:20:00Z",
+        "title": "Stock market today: Dow, S&P 500, Nasdaq futures drop following US strikes in Hormuz",
+        "url": "https://finance.yahoo.com/economy/live/stock-market-today-dow-sp-500-nasdaq-futures-drop-following-us-strikes-in-hormuz-231358131.html",
+        "source": "Yahoo Finance",
+        "timestamp": "2026-05-27T23:13:58Z",
         "category": "Markets News"
       },
       {
-        "title": "Morning Bid: Three months, and counting",
-        "url": "https://finance.yahoo.com/economy/policy/articles/morning-bid-three-months-counting-104516880.html",
-        "source": "Reuters",
-        "timestamp": "2026-05-28T12:19:36Z",
+        "title": "Freight market pushes another wave of trucking firms into bankruptcy",
+        "url": "https://finance.yahoo.com/economy/policy/articles/freight-market-pushes-another-wave-123000043.html",
+        "source": "FreightWaves",
+        "timestamp": "2026-05-28T12:30:00Z",
         "category": "Markets News"
       },
       {
-        "title": "Seagate (STX) Lands A Stunning Target Hike As Storage Demand Accelerates",
-        "url": "https://finance.yahoo.com/markets/stocks/articles/seagate-stx-lands-stunning-target-121722739.html",
-        "source": "Insider Monkey",
-        "timestamp": "2026-05-28T12:17:22Z",
+        "title": "Gunnison Copper announces $30M bought deal financing",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/gunnison-copper-announces-30m-bought-123000278.html",
+        "source": "Proactive",
+        "timestamp": "2026-05-28T12:30:00Z",
         "category": "Markets News"
       },
       {
-        "title": "IBM Stock Gains As Tech Giant Pledges $10 Billion In Quantum Investment",
-        "url": "https://www.investors.com/news/technology/ibm-stock-quantum-computing-10-billion/?src=A00220&yptr=yahoo",
+        "title": "Key Fed Inflation Data On Tap As Rate Hike Looms; S&P 500 Futures Slip (Live Coverage)",
+        "url": "https://www.investors.com/news/federal-reserve-pce-inflation-gdp-rate-hike-sp-500/?src=A00220&yptr=yahoo",
         "source": "Investor's Business Daily",
-        "timestamp": "2026-05-28T12:16:26Z",
+        "timestamp": "2026-05-28T12:29:42Z",
         "category": "Markets News"
       },
       {
@@ -59,17 +59,59 @@
         "category": "Markets News"
       },
       {
-        "title": "Phoenix Court's Saul Klein on why his VC firm is sharing the wealth",
-        "url": "https://finance.yahoo.com/markets/stocks/articles/phoenix-courts-saul-klein-why-121552396.html",
-        "source": "Pitchbook",
-        "timestamp": "2026-05-28T12:15:52Z",
+        "title": "RBC Capital Cuts FactSet (FDS) Target to $240, Maintains Sector Perform Rating",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/rbc-capital-cuts-factset-fds-122841731.html",
+        "source": "Insider Monkey",
+        "timestamp": "2026-05-28T12:28:41Z",
         "category": "Markets News"
       },
       {
-        "title": "Tariff Fears Are Rattling the Market. Here's What 100 Years of Data Says About What Happens Next.",
-        "url": "https://finance.yahoo.com/economy/policy/articles/tariff-fears-rattling-market-heres-122000112.html",
-        "source": "Motley Fool",
-        "timestamp": "2026-05-28T12:20:00Z",
+        "title": "Snowflake Surges On Earnings, AI Product Growth, New Amazon Deal",
+        "url": "https://www.investors.com/news/technology/snowflake-stock-snow-snowflake-earnings-q12026/?src=A00220&yptr=yahoo",
+        "source": "Investor's Business Daily",
+        "timestamp": "2026-05-28T12:28:23Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "Stock index futures slip as traders assess PCE, and GDP reports",
+        "url": "https://seekingalpha.com/news/4597748-sp500-nasdaq-dow-jones-outlook-stock-market?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:40:15 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Durable goods rise for the second consecutive month",
+        "url": "https://seekingalpha.com/news/4597869-durable-goods-rise-for-the-second-consecutive-month?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:40:00 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Cameco resumes full uranium production at McArthur River, Key Lake after flood disruption",
+        "url": "https://seekingalpha.com/news/4597863-cameco-resumes-full-uranium-production-at-mcarthur-river-key-lake-after-flood-disruption?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:38:15 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Nebius jumps as AI-linked hedge fund discloses passive stake",
+        "url": "https://seekingalpha.com/news/4597858-nebius-jumps-as-ai-linked-hedge-fund-discloses-passive-stake?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:33:17 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "ICON drops after Q4 earnings miss",
+        "url": "https://seekingalpha.com/news/4597868-icon-stock-drops-q4-earnings-miss?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:33:10 -0400",
+        "category": "Markets News"
+      },
+      {
+        "title": "Icon Non-GAAP EPS of $2.52 misses by $0.22, revenue of $2.11B beats by $170M",
+        "url": "https://seekingalpha.com/news/4597871-icon-non-gaap-eps-of-2_52-misses-by-0_22-revenue-of-2_11b-beats-by-170m?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
+        "source": "SeekingAlpha",
+        "timestamp": "Thu, 28 May 2026 08:32:51 -0400",
         "category": "Markets News"
       },
       {
@@ -78,53 +120,11 @@
         "source": "SeekingAlpha",
         "timestamp": "Thu, 28 May 2026 08:32:26 -0400",
         "category": "Markets News"
-      },
-      {
-        "title": "Core PCE price index rises less than expected M/M in April, in line Y/Y",
-        "url": "https://seekingalpha.com/news/4597853-core-pce-price-index-rises-less-than-expected-mm-in-april-in-line-yy?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
-        "source": "SeekingAlpha",
-        "timestamp": "Thu, 28 May 2026 08:32:18 -0400",
-        "category": "Markets News"
-      },
-      {
-        "title": "Initial jobless claims rise more than expected in past week",
-        "url": "https://seekingalpha.com/news/4597864-initial-jobless-claims-rise-more-than-expected-in-past-week?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
-        "source": "SeekingAlpha",
-        "timestamp": "Thu, 28 May 2026 08:31:27 -0400",
-        "category": "Markets News"
-      },
-      {
-        "title": "HP's Q2 beat estimates, but analysts remain largely neutral",
-        "url": "https://seekingalpha.com/news/4597844-hps-q2-beat-estimates-but-analysts-remain-largely-neutral?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
-        "source": "SeekingAlpha",
-        "timestamp": "Thu, 28 May 2026 08:31:16 -0400",
-        "category": "Markets News"
-      },
-      {
-        "title": "NeoVolta prices $25 million public offering of common stock",
-        "url": "https://seekingalpha.com/news/4597865-neovolta-prices-25-million-public-offering-of-common-stock?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
-        "source": "SeekingAlpha",
-        "timestamp": "Thu, 28 May 2026 08:29:52 -0400",
-        "category": "Markets News"
-      },
-      {
-        "title": "Sol-Gel Technologies reports Q1 results",
-        "url": "https://seekingalpha.com/news/4597867-sol-gel-technologies-reports-q1-results?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
-        "source": "SeekingAlpha",
-        "timestamp": "Thu, 28 May 2026 08:28:08 -0400",
-        "category": "Markets News"
-      },
-      {
-        "title": "The NHTSA probes Rivian over a rear toe link issue that may impact +100K vehicles",
-        "url": "https://seekingalpha.com/news/4597860-the-nhtsa-probes-rivian-over-a-rear-toe-link-issue-that-may-impact-100k-vehicles?utm_source=feed_news_all&utm_medium=referral&feed_item_type=news",
-        "source": "SeekingAlpha",
-        "timestamp": "Thu, 28 May 2026 08:25:50 -0400",
-        "category": "Markets News"
       }
     ],
     "forex": [],
     "commodities": [],
-    "scraped_at": "2026-05-28T12:33:44.014Z"
+    "scraped_at": "2026-05-28T12:44:38.516Z"
   },
   "global_indices": []
 }
