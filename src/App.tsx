@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Activity, Terminal, Newspaper, Workflow, Cpu, TrendingUp, TriangleAlert as AlertTriangle, ShieldAlert, Search, Bell, Play, History, SlidersHorizontal, Zap, RotateCw, Settings, Check, Bookmark, Share2, Info, Layers, Square, SquareCheck as CheckSquare, Sparkles, ExternalLink, FileSliders as Sliders, Database, Globe, Clock, Compass, Tag, TrendingDown, Calendar, Phone } from "lucide-react";
 import Nse500Tracker from "./components/Nse500Tracker";
+import LiveEarningsFeed, { LiveEarningsData, LiveEarningsCall } from "./components/LiveEarningsFeed";
 import { 
   Ticker, 
   RecalibrationFilter, 
@@ -61,7 +62,7 @@ export default function App() {
   const [earningsSearchQuery, setEarningsSearchQuery] = useState<string>("");
 
   // Live Earnings Calls States
-  const [liveEarningsData, setLiveEarningsData] = useState<any>(null);
+  const [liveEarningsData, setLiveEarningsData] = useState<LiveEarningsData | null>(null);
   const [isScrapingLiveEarnings, setIsScrapingLiveEarnings] = useState<boolean>(false);
 
   // MoneyControl World News States
@@ -4279,66 +4280,12 @@ export default function App() {
                   )}
                 </div>
 
-                {/* LIVE EARNINGS CALLS CARD */}
-                <div className="bg-black/20 border border-white/5 rounded-xl p-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="font-mono text-sm font-bold text-blue-400 uppercase tracking-wider">
-                      Live Earnings Calls
-                    </h3>
-                    <button
-                      onClick={handleScrapeLiveEarnings}
-                      disabled={isScrapingLiveEarnings}
-                      className="px-3 py-1.5 bg-blue-400/20 hover:bg-blue-400 hover:text-black border border-blue-400/30 text-blue-400 text-[10px] font-mono rounded transition-all disabled:opacity-50"
-                    >
-                      {isScrapingLiveEarnings ? "Loading..." : "Refresh"}
-                    </button>
-                  </div>
-
-                  {!liveEarningsData || liveEarningsData.live_calls?.length === 0 ? (
-                    <div className="py-8 text-center text-neutral-500 border border-dashed border-white/5 bg-white/[0.01] rounded-lg">
-                      <Phone className="w-6 h-6 mx-auto mb-2 text-neutral-600" />
-                      <p className="text-xs font-mono">No live earnings calls available.</p>
-                      <button
-                        onClick={handleScrapeLiveEarnings}
-                        className="mt-3 px-3 py-1.5 bg-blue-400/20 hover:bg-blue-400 hover:text-black text-blue-400 text-xs font-mono rounded transition-all"
-                      >
-                        Fetch Now
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3 max-h-[350px] overflow-y-auto">
-                      {liveEarningsData.live_calls.map((call: any, idx: number) => (
-                        <div key={`live-call-${idx}`} className="p-3 bg-black/30 border border-blue-400/10 hover:border-blue-400/30 rounded-lg transition-all">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex-1">
-                              <h4 className="text-xs font-mono font-bold text-white line-clamp-2">
-                                {call.title}
-                              </h4>
-                              {call.company && (
-                                <div className="text-[9px] text-blue-300 font-mono mt-1">
-                                  Company: {call.company}
-                                </div>
-                              )}
-                              <div className="text-[9px] text-neutral-500 font-mono mt-1">
-                                {call.timestamp}
-                              </div>
-                            </div>
-                            {call.link && (
-                              <a
-                                href={call.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-2 py-1 bg-blue-400/20 hover:bg-blue-400 hover:text-black text-blue-400 text-[9px] font-mono rounded whitespace-nowrap transition-all"
-                              >
-                                Link
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {/* LIVE EARNINGS CALLS - REAL-TIME FEED */}
+                <LiveEarningsFeed
+                  initialData={liveEarningsData}
+                  onManualRefresh={handleScrapeLiveEarnings}
+                  isRefreshing={isScrapingLiveEarnings}
+                />
 
                 {/* NSE & BSE DATA CARDS */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
