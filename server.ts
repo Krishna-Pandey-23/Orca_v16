@@ -12,10 +12,12 @@ import { scrapeNse500, getDetailedQuote } from "./server-nse500-scraper";
 import { fetchAlphaVantageIndices } from "./server-alpha-vantage";
 import { scrapeMoneycontrolEarnings, loadCachedEarnings } from "./server-earnings-scraper";
 import { scrapeLiveEarningsCalls, loadCachedLiveEarnings } from "./server-live-earnings-scraper";
+import { scrapeLiveEarningsWithPlaywright, loadCachedLiveEarningsPlaywright } from "./server-live-earnings-playwright";
 import { scrapeMoneycontrolEarnings as scrapeMcEarningsPlaywright, loadCachedMoneycontrolEarnings } from "./server-moneycontrol-earnings";
 import { scrapeMoneycontrolWorld, loadCachedMoneycontrolWorld } from "./server-moneycontrol-world";
 import { scrapeAllNSEData, loadCachedNSEData, fetchNSEQuote, fetchNSEIPOs, fetchNSEOptionChain, fetchNSECorporateActions } from "./server-nse";
 import { scrapeAllBSEData, loadCachedBSEData, fetchBSEQuote, fetchBSEResultCalendar, fetchBSEGainers, fetchBSELosers, fetchBSEAnnouncements } from "./server-bse";
+import { scrapeIndStocks, loadCachedIndStocks } from "./server-indstocks-scraper";
 
 const app = express();
 const PORT = 3000;
@@ -743,24 +745,165 @@ app.post("/api/earnings/scrape", async (req, res) => {
 // ========== LIVE EARNINGS CALLS API ==========
 
 app.get("/api/live-earnings", (req, res) => {
-  const cached = loadCachedLiveEarnings();
-  if (cached) {
-    res.json(cached);
+  // Try Playwright-enhanced version first, fallback to basic
+  const cachedPlaywright = loadCachedLiveEarningsPlaywright();
+  if (cachedPlaywright) {
+    res.json(cachedPlaywright);
   } else {
-    res.json({
-      fetched_at: new Date().toISOString(),
-      live_calls: []
-    });
+    const cached = loadCachedLiveEarnings();
+    if (cached) {
+      res.json(cached);
+    } else {
+      res.json({
+        fetched_at: new Date().toISOString(),
+        live_calls: []
+      });
+    }
   }
 });
 
 app.post("/api/live-earnings/scrape", async (req, res) => {
   try {
-    const scrapedData = await scrapeLiveEarningsCalls();
-    res.json({ success: true, data: scrapedData });
+    const usePlaywright = req.query.playwright !== 'false';
+    if (usePlaywright) {
+      console.log("[Server] Using Playwright-enhanced live earnings scraper...");
+      const scrapedData = await scrapeLiveEarningsWithPlaywright();
+      res.json({ success: true, data: scrapedData, engine: 'playwright' });
+    } else {
+      const scrapedData = await scrapeLiveEarningsCalls();
+      res.json({ success: true, data: scrapedData, engine: 'basic' });
+    }
   } catch (err: any) {
     console.error("Live earnings scraping failed:", err);
     res.status(500).json({ error: err.message || "Failed to scrape live earnings data" });
+  }
+});
+
+// ========== LIVE EARNINGS SSE (SERVER-SENT EVENTS) ==========
+
+const liveEarningsClients = new Set<any>();
+let liveEarningsPollInterval: NodeJS.Timeout | null = null;
+
+app.get("/api/live-earnings/stream", (req, res) => {
+  // Setup SSE headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.flushHeaders();
+
+  // Add client to set
+  liveEarningsClients.add(res);
+
+  // Send initial data
+  const cached = loadCachedLiveEarningsPlaywright() || loadCachedLiveEarnings();
+  if (cached) {
+    res.write(`data: ${JSON.stringify({ type: 'initial', data: cached })}\n\n`);
+  } else {
+    res.write(`data: ${JSON.stringify({ type: 'initial', data: { fetched_at: new Date().toISOString(), live_calls: [] } })}\n\n`);
+  }
+
+  // Start polling if not already running
+  if (!liveEarningsPollInterval) {
+    startLiveEarningsPolling();
+  }
+
+  // Heartbeat every 15 seconds
+  const heartbeat = setInterval(() => {
+    res.write(': heartbeat\n\n');
+  }, 15000);
+
+  // Cleanup on client disconnect
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    liveEarningsClients.delete(res);
+    console.log(`[Live Earnings SSE] Client disconnected. Active clients: ${liveEarningsClients.size}`);
+
+    // Stop polling if no clients
+    if (liveEarningsClients.size === 0 && liveEarningsPollInterval) {
+      clearInterval(liveEarningsPollInterval);
+      liveEarningsPollInterval = null;
+      console.log('[Live Earnings SSE] No clients, stopping polling');
+    }
+  });
+
+  console.log(`[Live Earnings SSE] Client connected. Active clients: ${liveEarningsClients.size}`);
+});
+
+function startLiveEarningsPolling() {
+  const POLL_INTERVAL = 60000; // Poll every 60 seconds
+
+  console.log(`[Live Earnings SSE] Starting polling interval: ${POLL_INTERVAL / 1000}s`);
+
+  liveEarningsPollInterval = setInterval(async () => {
+    if (liveEarningsClients.size === 0) {
+      console.log('[Live Earnings SSE] No clients, skipping poll');
+      return;
+    }
+
+    try {
+      console.log('[Live Earnings SSE] Polling for updates...');
+      const data = await scrapeLiveEarningsWithPlaywright();
+
+      const message = JSON.stringify({
+        type: 'update',
+        data,
+        timestamp: new Date().toISOString()
+      });
+
+      // Broadcast to all connected clients
+      liveEarningsClients.forEach(client => {
+        try {
+          client.write(`data: ${message}\n\n`);
+        } catch (err) {
+          console.warn('[Live Earnings SSE] Failed to send to client, removing');
+          liveEarningsClients.delete(client);
+        }
+      });
+
+      console.log(`[Live Earnings SSE] Update sent to ${liveEarningsClients.size} clients`);
+    } catch (err: any) {
+      console.error('[Live Earnings SSE] Polling error:', err.message);
+    }
+  }, POLL_INTERVAL);
+
+  // Trigger immediate scrape on start
+  scrapeLiveEarningsWithPlaywright().catch(err => {
+    console.error('[Live Earnings SSE] Initial scrape error:', err.message);
+  });
+}
+
+// ========== INDSTOCKS LIVE NEWS SCRAPER API ==========
+
+const PATH_INDSTOCKS = path.join(DATA_DIR, "data-indstocks-live.json");
+
+app.get("/api/indstocks-live", (req, res) => {
+  const cached = loadCachedIndStocks();
+  if (cached) {
+    res.json(cached);
+  } else {
+    res.json({
+      fetched_at: new Date().toISOString(),
+      source: "IndStocks",
+      url: "https://www.indstocks.com/app/news/live-news/nifty-50",
+      items: [],
+      total_items: 0,
+      earnings_calls: [],
+      market_updates: [],
+      corporate_actions: []
+    });
+  }
+});
+
+app.post("/api/indstocks-live/scrape", async (req, res) => {
+  try {
+    console.log("[Server] Starting IndStocks Live News Playwright scrape...");
+    const scrapedData = await scrapeIndStocks();
+    saveDB(PATH_INDSTOCKS, scrapedData);
+    res.json({ success: true, data: scrapedData });
+  } catch (err: any) {
+    console.error("IndStocks scraping failed:", err);
+    res.status(500).json({ error: err.message || "Failed to scrape IndStocks live news" });
   }
 });
 

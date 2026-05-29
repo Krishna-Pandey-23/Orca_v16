@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-05-29T08:55:58.541Z",
+  "fetched_at": "2026-05-29T11:09:20.557Z",
   "result_calendar": [
     {
       "name": "Upcoming Results",
@@ -23,6 +23,18 @@
       "name": "View all Upcoming Calendar",
       "symbol": "VIEWALLUPC",
       "result_date": "29/5/2026",
+      "sector": ""
+    },
+    {
+      "name": "Asian Paints' board announces Rs 23/share dividend",
+      "symbol": "ASIANPAINT",
+      "result_date": "5/29/2026",
+      "sector": ""
+    },
+    {
+      "name": "Asian Paints Q4 Results: Net profit surges 69% YoY",
+      "symbol": "ASIANPAINT",
+      "result_date": "5/29/2026",
       "sector": ""
     },
     {
@@ -58,12 +70,6 @@
     {
       "name": "JK Tyre Q4 Results: Profit soars 80% to Rs 178 cro",
       "symbol": "JKTYREQ4",
-      "result_date": "29/5/2026",
-      "sector": ""
-    },
-    {
-      "name": "IFB Industries Q4 results: Net profit rises two fo",
-      "symbol": "IFBINDUSTR",
       "result_date": "29/5/2026",
       "sector": ""
     },
