@@ -1,51 +1,9 @@
 {
-  "fetched_at": "2026-05-29T05:07:03.803Z",
+  "fetched_at": "2026-05-29T05:42:43.096Z",
   "result_calendar": [
-    {
-      "name": "Schneider Ele. Infra",
-      "symbol": "SCHNEIDER",
-      "result_date": "29 May",
-      "sector": ""
-    },
-    {
-      "name": "JSW Holdings",
-      "symbol": "JSWHL",
-      "result_date": "29 May",
-      "sector": ""
-    },
-    {
-      "name": "Technocraft Inds",
-      "symbol": "TIIL",
-      "result_date": "29 May",
-      "sector": ""
-    },
-    {
-      "name": "Bharat Dynamics",
-      "symbol": "BDL",
-      "result_date": "29 May",
-      "sector": ""
-    },
-    {
-      "name": "Apar Inds",
-      "symbol": "APARINDS",
-      "result_date": "29 May",
-      "sector": ""
-    },
     {
       "name": "TBO Tek",
       "symbol": "TBOTEK",
-      "result_date": "29 May",
-      "sector": ""
-    },
-    {
-      "name": "Alkem Laboratories",
-      "symbol": "ALKEM",
-      "result_date": "29 May",
-      "sector": ""
-    },
-    {
-      "name": "Hemang Resources",
-      "symbol": "531178",
       "result_date": "29 May",
       "sector": ""
     },
@@ -70,6 +28,12 @@
     {
       "name": "View all Upcoming Calendar",
       "symbol": "VIEWALLUPC",
+      "result_date": "5/29/2026",
+      "sector": ""
+    },
+    {
+      "name": "Bharat Dynamics Q4 Results: Net profit tumbles 59%",
+      "symbol": "BHARATDYNA",
       "result_date": "5/29/2026",
       "sector": ""
     },
