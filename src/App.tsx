@@ -83,7 +83,7 @@ export default function App() {
 
   // Scraper states
   const [isScrapingNews, setIsScrapingNews] = useState<boolean>(false);
-  const [newsSourceFilter, setNewsSourceFilter] = useState<"all" | "zerodha" | "moneycontrol" | "tickertape">("all");
+  const [newsSourceFilter, setNewsSourceFilter] = useState<"all" | "zerodha" | "finology">("all");
 
   // Interaction / Loading UX states
   const [searchContext, setSearchContext] = useState<string>("");
@@ -2101,24 +2101,14 @@ export default function App() {
                       ZERODHA PULSE ({news?.scraped?.sources.find(s => s.source === "zerodha_pulse")?.articles.length || 0})
                     </button>
                     <button
-                      onClick={() => setNewsSourceFilter("moneycontrol")}
+                      onClick={() => setNewsSourceFilter("finology")}
                       className={`px-4 py-2 rounded-xl text-xs font-semibold font-mono tracking-wider transition-all duration-200 ${
-                        newsSourceFilter === "moneycontrol"
-                          ? "bg-blue-500 text-white shadow-md font-bold"
-                          : "bg-white/5 text-on-surface-variant hover:text-white hover:bg-white/10"
-                      }`}
-                    >
-                      MONEYCONTROL WORLD ({news?.scraped?.sources.find(s => s.source === "moneycontrol_world")?.articles.length || 0})
-                    </button>
-                    <button
-                      onClick={() => setNewsSourceFilter("tickertape")}
-                      className={`px-4 py-2 rounded-xl text-xs font-semibold font-mono tracking-wider transition-all duration-200 ${
-                        newsSourceFilter === "tickertape"
+                        newsSourceFilter === "finology"
                           ? "bg-emerald-500 text-black shadow-md font-bold"
                           : "bg-white/5 text-on-surface-variant hover:text-white hover:bg-white/10"
                       }`}
                     >
-                      TICKERTAPE US STOCKS ({news?.scraped?.sources.find(s => s.source === "tickertape_us_stocks")?.articles.length || 0})
+                      FINOLOGY TICKER ({news?.scraped?.sources.find(s => s.source === "finology_ticker")?.articles.length || 0})
                     </button>
                   </div>
                   
@@ -2288,101 +2278,46 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* MONEYCONTROL WORLD SPECIFIC VIEW */}
-                    {newsSourceFilter === "moneycontrol" && (
+                    {/* FINOLOGY TICKER SPECIFIC VIEW */}
+                    {newsSourceFilter === "finology" && (
                       <div className="space-y-6">
-                        <div className="flex justify-between items-center bg-blue-500/5 border border-blue-500/20 p-4 rounded-xl">
-                          <span className="font-mono text-xs text-blue-300 font-bold uppercase">Source: moneycontrol.com/world</span>
-                          <span className="font-mono text-xs text-on-surface-variant font-mono">International Markets Intelligence</span>
+                        <div className="flex justify-between items-center bg-emerald-500/5 border border-emerald-500/20 p-4 rounded-xl">
+                          <span className="font-mono text-xs text-emerald-300 font-bold uppercase">Source: ticker.finology.in</span>
+                          <span className="font-mono text-xs text-on-surface-variant font-mono">Curated Financial News & Earnings</span>
                         </div>
-                        {news?.scraped?.sources.find(s => s.source === "moneycontrol_world")?.articles.map((art, i) => (
+                        {news?.scraped?.sources.find(s => s.source === "finology_ticker")?.articles.map((art, i) => (
                           <div key={i} className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                            <div className="orca-card p-6 rounded-[inherit] grid grid-cols-1 md:grid-cols-12 gap-6 bg-black/45">
-                              {art.imageUrl && (
-                                <div className="md:col-span-3 h-32 md:h-full rounded-xl overflow-hidden border border-white/10 shrink-0">
-                                  <img 
-                                    src={art.imageUrl} 
-                                    className="w-full h-full object-cover grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300" 
-                                    referrerPolicy="no-referrer" 
-                                  />
+                            <div className="orca-card p-5 rounded-[inherit] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black/45">
+                              <div className="space-y-2 flex-grow">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[9px] bg-emerald-950/20 text-emerald-300 font-mono font-bold px-2 py-0.5 rounded border border-emerald-500/20">
+                                    FINOLOGY TICKER
+                                  </span>
+                                  <span className="text-[10px] text-on-surface-variant font-mono">
+                                    {art.published_at || "Recent Update"}
+                                  </span>
                                 </div>
-                              )}
-                              <div className={art.imageUrl ? "md:col-span-9 flex flex-col justify-between" : "md:col-span-12 flex flex-col justify-between"}>
-                                <div className="space-y-2">
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-[9px] bg-blue-950/20 text-blue-300 font-mono font-bold px-2 py-0.5 rounded border border-blue-500/20 uppercase">
-                                      MONEYCONTROL BRIEF
-                                    </span>
-                                    <span className="text-[10px] text-on-surface-variant font-mono">
-                                      {art.published_at || "Recent Bulletin"}
-                                    </span>
-                                  </div>
-                                  <h4 className="text-white hover:text-cyan-300 font-bold text-lg leading-tight transition-colors font-sans italic">
-                                    {art.url ? (
-                                      <a href={art.url} target="_blank" rel="noopener noreferrer">{art.title}</a>
-                                    ) : (
-                                      art.title
-                                    )}
-                                  </h4>
-                                  {art.summary && (
-                                    <p className="text-xs text-on-surface-variant/90 font-mono leading-relaxed mt-2 p-3 bg-black/30 rounded-lg border border-white/5">
-                                      {art.summary}
-                                    </p>
+                                <h4 className="text-white hover:text-cyan-300 font-bold text-sm md:text-base leading-tight transition-colors">
+                                  {art.url ? (
+                                    <a href={art.url} target="_blank" rel="noopener noreferrer">{art.title}</a>
+                                  ) : (
+                                    art.title
                                   )}
-                                </div>
-                                {art.url && (
-                                  <div className="flex justify-end mt-4">
-                                    <a 
-                                      href={art.url} 
-                                      target="_blank" 
-                                      rel="noopener noreferrer"
-                                      className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 font-mono text-[9px] font-bold rounded-lg transition-all uppercase tracking-wider"
-                                    >
-                                      LAUNCH SOURCE WEB
-                                    </a>
-                                  </div>
+                                </h4>
+                                {art.summary && (
+                                  <p className="text-xs text-on-surface-variant/90 leading-relaxed max-w-4xl p-3 bg-black/30 rounded-lg border border-white/5 font-mono">
+                                    {art.summary}
+                                  </p>
                                 )}
                               </div>
+                              {art.publisher && (
+                                <span className="text-[9px] text-on-surface-variant font-mono uppercase tracking-wider px-2 py-1 bg-white/5 rounded">
+                                  {art.publisher}
+                                </span>
+                              )}
                             </div>
                           </div>
                         ))}
-                      </div>
-                    )}
-
-                    {/* TICKERTAPE ASSET CHANGES LIST */}
-                    {newsSourceFilter === "tickertape" && (
-                      <div className="space-y-4 font-mono">
-                        <div className="flex justify-between items-center bg-emerald-500/5 border border-emerald-500/20 p-4 rounded-xl mb-4">
-                          <span className="text-xs text-emerald-300 font-bold uppercase">Source: tickertape.in/us-stocks</span>
-                          <span className="text-[10px] text-on-surface-variant">High-Yield Price Volatility Deviations</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {news?.scraped?.sources.find(s => s.source === "tickertape_us_stocks")?.articles.map((art, i) => (
-                            <div key={i} className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                              <div className="orca-card p-5 rounded-[inherit] flex items-center justify-between gap-4 bg-black/45">
-                                <div className="flex items-center gap-4">
-                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm border ${
-                                    (art.change ?? 0) >= 0 
-                                      ? "bg-emerald-950/20 text-emerald-300 border-emerald-500/20"
-                                      : "bg-rose-950/20 text-rose-300 border-rose-500/20"
-                                  }`}>
-                                    {(art.change ?? 0) >= 0 ? "▲" : "▼"}
-                                  </div>
-                                  <div>
-                                    <h4 className="text-white font-bold text-sm">{art.asset}</h4>
-                                    <span className="text-[9px] text-on-surface-variant font-bold tracking-wider uppercase">Live Deviation Target</span>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className={`font-black text-base ${(art.change ?? 0) >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
-                                    {(art.change ?? 0) >= 0 ? "+" : ""}{(art.change ?? 0).toFixed(2)}%
-                                  </div>
-                                  <span className="text-[8px] font-bold text-on-surface-variant tracking-widest uppercase">Tickertape Feed</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
                       </div>
                     )}
                   </div>

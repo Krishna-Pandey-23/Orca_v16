@@ -64,15 +64,8 @@ function normalize(value: string): string {
   return value.trim().replace(/\s+/g, " ");
 }
 
-function parseAmount(value: string): number | undefined {
-  if (!value) return undefined;
-  const cleaned = value.replace(/,/g, "").replace(/[^0-9.\-]/g, "");
-  const num = parseFloat(cleaned);
-  return isNaN(num) ? undefined : num;
-}
-
 export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
-  console.log(`[Earnings Scraper] Starting earnings data fetch...`);
+  console.log(`[Earnings Scraper] ========== STARTING EARNINGS SCRAPE ==========`);
 
   const data: EarningsData = {
     fetched_at: new Date().toISOString(),
@@ -91,22 +84,28 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
   };
 
   // Source 1: Finology Ticker - Primary source with live earnings announcements
+  console.log(`[Earnings Scraper] Source 1: Fetching from Finology Ticker...`);
   try {
-    console.log("[Earnings Scraper] Fetching from Finology Ticker...");
     const res = await fetch("https://ticker.finology.in/", {
       headers,
       signal: AbortSignal.timeout(20000)
     });
 
+    console.log(`[Earnings Scraper] Finology Ticker - Status: ${res.status}`);
+
     if (res.ok) {
       const html = await res.text();
+      console.log(`[Earnings Scraper] Finology Ticker - Received ${html.length} bytes`);
+
       const $ = cheerio.load(html);
 
       // Parse earnings announcements from the homepage
-      $("a.newslink[data-subsecname='EARNINGS']").each((_, el) => {
+      $("a.newslink[data-subsecname='EARNINGS']").each((idx, el) => {
         const title = normalize($(el).find("span.h6").text());
         const timestamp = normalize($(el).find("small").first().text());
         const badge = $(el).find(".badge").text().trim();
+
+        console.log(`[Earnings Scraper] Finology Earnings Item ${idx}: ${title.substring(0, 50)}...`);
 
         // Extract company name - pattern "Company Name - Quaterly Results"
         const match = title.match(/^(.+?)\s*-\s*Quaterly Results$/i);
@@ -115,6 +114,7 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
           const symbol = badge || companyName.toUpperCase().replace(/\s+/g, "");
 
           if (!data.result_calendar.find(c => c.name === companyName)) {
+            console.log(`[Earnings Scraper] Found company: ${companyName} (${symbol}) - ${timestamp}`);
             data.result_calendar.push({
               name: companyName,
               symbol: symbol,
@@ -126,7 +126,7 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
       });
 
       // Also parse company news items which may contain earnings info
-      $("a.newslink[data-secname='COMPANY']").each((_, el) => {
+      $("a.newslink[data-secname='COMPANY']").each((idx, el) => {
         const title = normalize($(el).find("span.h6").text());
         const timestamp = normalize($(el).find("small").first().text());
         const badge = $(el).find(".badge").text().trim();
@@ -137,6 +137,7 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
           if (companyMatch) {
             const companyName = companyMatch[1].trim();
             if (!data.result_calendar.find(c => c.name === companyName)) {
+              console.log(`[Earnings Scraper] Found company news: ${companyName}`);
               data.result_calendar.push({
                 name: companyName,
                 symbol: badge || companyName.toUpperCase().replace(/\s+/g, ""),
@@ -148,39 +149,51 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
         }
       });
 
-      console.log(`[Earnings Scraper] Finology: Found ${data.result_calendar.length} earnings entries`);
+      console.log(`[Earnings Scraper] Finology Ticker: Found ${data.result_calendar.length} earnings entries`);
+    } else {
+      console.warn(`[Earnings Scraper] Finology Ticker - HTTP ${res.status}`);
     }
   } catch (err: any) {
-    console.warn(`[Earnings Scraper] Finology fetch failed: ${err.message}`);
+    console.error(`[Earnings Scraper] Finology fetch failed: ${err.message}`);
   }
 
   // Source 2: Economic Times earnings section
   if (data.result_calendar.length < 10) {
+    console.log(`[Earnings Scraper] Source 2: Fetching from Economic Times...`);
     try {
-      console.log("[Earnings Scraper] Fetching from Economic Times...");
       const res = await fetch("https://economictimes.indiatimes.com/markets/stocks/earnings", {
         headers,
         signal: AbortSignal.timeout(20000)
       });
 
+      console.log(`[Earnings Scraper] Economic Times - Status: ${res.status}`);
+
       if (res.ok) {
         const html = await res.text();
+        console.log(`[Earnings Scraper] Economic Times - Received ${html.length} bytes`);
+
         const $ = cheerio.load(html);
+        const addedCount = data.result_calendar.length;
 
         // Parse ET earnings news/announcements
-        $("a, h3, h4").each((_, el) => {
+        $("a[href*='result'], a[href*='earnings']").each((_, el) => {
           const text = normalize($(el).text());
           const href = $(el).attr("href") || "";
 
-          // Look for earnings/result news
-          if (text.toLowerCase().includes("result") || text.toLowerCase().includes("q1") || text.toLowerCase().includes("q2") || text.toLowerCase().includes("q3") || text.toLowerCase().includes("q4")) {
+          if (text.length > 15 && text.length < 100) {
             // Extract company name
-            const companyMatch = text.match(/^([A-Z][A-Za-z0-9\s]+?)(?:\s+(?:Q[1-4]|result|net|profit|revenue|sales))-|:\s/);
-            if (companyMatch) {
-              const companyName = companyMatch[1].trim();
-              if (companyName.length >= 3 && companyName.length <= 50 && !data.result_calendar.find(c => c.name === companyName)) {
+            const words = text.split(/\s+/).slice(0, 3).join(" ");
+            const companyName = words.trim();
+
+            if (companyName.length >= 3 && companyName.length <= 50) {
+              const existing = data.result_calendar.find(c =>
+                c.name.toLowerCase().includes(companyName.toLowerCase()) ||
+                companyName.toLowerCase().includes(c.name.toLowerCase())
+              );
+
+              if (!existing) {
                 data.result_calendar.push({
-                  name: companyName,
+                  name: text.substring(0, 50),
                   symbol: companyName.toUpperCase().replace(/\s+/g, "").substring(0, 10),
                   result_date: new Date().toLocaleDateString(),
                   sector: ""
@@ -189,34 +202,43 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
             }
           }
         });
-        console.log(`[Earnings Scraper] ET: Total ${data.result_calendar.length} entries`);
+
+        console.log(`[Earnings Scraper] Economic Times: Added ${data.result_calendar.length - addedCount} entries`);
       }
     } catch (err: any) {
-      console.warn(`[Earnings Scraper] Economic Times fetch failed: ${err.message}`);
+      console.error(`[Earnings Scraper] Economic Times fetch failed: ${err.message}`);
     }
   }
 
   // Source 3: Business Standard results
   if (data.result_calendar.length < 10) {
+    console.log(`[Earnings Scraper] Source 3: Fetching from Business Standard...`);
     try {
-      console.log("[Earnings Scraper] Fetching from Business Standard...");
       const res = await fetch("https://www.business-standard.com/markets/news-results", {
         headers,
         signal: AbortSignal.timeout(20000)
       });
 
+      console.log(`[Earnings Scraper] Business Standard - Status: ${res.status}`);
+
       if (res.ok) {
         const html = await res.text();
+        console.log(`[Earnings Scraper] Business Standard - Received ${html.length} bytes`);
+
         const $ = cheerio.load(html);
+        const addedCount = data.result_calendar.length;
 
         // Parse BS result news
         $("a[href*='result'], a[href*='earning']").each((_, el) => {
           const text = normalize($(el).text());
-          if (text.length > 10) {
-            // Extract company name from title
+          if (text.length > 10 && text.length < 80) {
             const words = text.split(/\s+/).slice(0, 3).join(" ");
             if (words.length >= 3 && words.length <= 50) {
-              const existing = data.result_calendar.find(c => c.name.toLowerCase().includes(words.toLowerCase()) || words.toLowerCase().includes(c.name.toLowerCase()));
+              const existing = data.result_calendar.find(c =>
+                c.name.toLowerCase().includes(words.toLowerCase()) ||
+                words.toLowerCase().includes(c.name.toLowerCase())
+              );
+
               if (!existing) {
                 data.result_calendar.push({
                   name: text.substring(0, 50),
@@ -228,52 +250,23 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
             }
           }
         });
+
+        console.log(`[Earnings Scraper] Business Standard: Added ${data.result_calendar.length - addedCount} entries`);
       }
     } catch (err: any) {
-      console.warn(`[Earnings Scraper] Business Standard fetch failed: ${err.message}`);
+      console.error(`[Earnings Scraper] Business Standard fetch failed: ${err.message}`);
     }
   }
 
-  // Source 4: Livemint earnings
-  if (data.result_calendar.length < 5) {
-    try {
-      console.log("[Earnings Scraper] Fetching from Livemint...");
-      const res = await fetch("https://www.livemint.com/market/stock-market-news", {
-        headers,
-        signal: AbortSignal.timeout(15000)
-      });
-
-      if (res.ok) {
-        const html = await res.text();
-        const $ = cheerio.load(html);
-
-        $("a[href*='earning'], a[href*='result']").each((_, el) => {
-          const text = normalize($(el).text());
-          if (text.toLowerCase().includes("result") || text.toLowerCase().includes("quarter")) {
-            const words = text.split(/\s+/).slice(0, 4).join(" ");
-            if (words.length >= 5 && words.length <= 60 && !data.result_calendar.find(c => c.name === text.substring(0, 50))) {
-              data.result_calendar.push({
-                name: text.substring(0, 50),
-                symbol: words.toUpperCase().replace(/\s+/g, "").substring(0, 10),
-                result_date: new Date().toLocaleDateString(),
-                sector: ""
-              });
-            }
-          }
-        });
-      }
-    } catch (err: any) {
-      console.warn(`[Earnings Scraper] Livemint fetch failed: ${err.message}`);
-    }
-  }
-
-  console.log(`[Earnings Scraper] Total: ${data.result_calendar.length} calendar entries`);
+  console.log(`[Earnings Scraper] ========== SCRAPE COMPLETE ==========`);
+  console.log(`[Earnings Scraper] Total: ${data.result_calendar.length} calendar entries, ${data.earnings_updates.length} updates`);
 
   // Save to cache
   try {
     fs.writeFileSync(PATH_EARNINGS_DB, JSON.stringify(data, null, 2), "utf-8");
+    console.log(`[Earnings Scraper] Saved to cache: ${PATH_EARNINGS_DB}`);
   } catch (saveErr) {
-    console.warn("[Earnings Scraper] Failed to save cache:", saveErr);
+    console.error(`[Earnings Scraper] Failed to save cache: ${saveErr}`);
   }
 
   return data;
@@ -282,7 +275,9 @@ export async function scrapeMoneycontrolEarnings(): Promise<EarningsData> {
 export function loadCachedEarnings(): EarningsData | null {
   try {
     if (fs.existsSync(PATH_EARNINGS_DB)) {
-      return JSON.parse(fs.readFileSync(PATH_EARNINGS_DB, "utf-8"));
+      const cached = JSON.parse(fs.readFileSync(PATH_EARNINGS_DB, "utf-8"));
+      console.log(`[Earnings Loader] Loaded cached earnings: ${cached.result_calendar?.length || 0} entries`);
+      return cached;
     }
   } catch (err) {
     console.warn("[Earnings Loader] Cache load failed:", err);
