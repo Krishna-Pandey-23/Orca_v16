@@ -2,7 +2,7 @@
   "bloomberg": {
     "source": "Bloomberg (RSS Fallback)",
     "url": "https://www.bloomberg.com/asia",
-    "scraped_at": "2026-05-29T03:53:11.605Z",
+    "scraped_at": "2026-05-29T03:56:11.746Z",
     "market_tickers": [
       {
         "symbol": "SPX",
@@ -171,7 +171,7 @@
   "reuters": {
     "source": "Reuters (RSS Fallback)",
     "url": "https://www.reuters.com/world/",
-    "scraped_at": "2026-05-29T03:53:11.694Z",
+    "scraped_at": "2026-05-29T03:56:11.682Z",
     "section": "World",
     "top_stories": [
       {
@@ -348,17 +348,10 @@
         "summary": "SNOW Stock Price | Snowflake Inc. Stock Quote (U.S.: NYSE) &nbsp;&nbsp; MarketWatch"
       },
       {
-        "title": "Why Amazon’s AI Game Looks Completely Different Than Every Other Tech Giant",
-        "url": "https://finance.yahoo.com/sectors/technology/articles/why-amazon-ai-game-looks-154143821.html",
-        "source": "Barchart",
-        "timestamp": "2026-05-27T15:41:43Z",
-        "category": "Markets News"
-      },
-      {
-        "title": "Kraken Now Lets You Earn Yield on Bitcoin Holdings via Lending Vaults",
-        "url": "https://finance.yahoo.com/markets/crypto/articles/kraken-now-lets-earn-yield-154259301.html",
-        "source": "decrypt",
-        "timestamp": "2026-05-27T15:42:59Z",
+        "title": "Q32 Bio Secures $55 Million Private Placement to Advance Alopecia Areata Pipeline (QTTB)",
+        "url": "https://finance.yahoo.com/sectors/healthcare/articles/q32-bio-secures-55-million-155357710.html",
+        "source": "InvestorsHub",
+        "timestamp": "2026-05-27T15:53:57Z",
         "category": "Markets News"
       },
       {
@@ -390,10 +383,10 @@
         "category": "Markets News"
       },
       {
-        "title": "China Wants Its Companies to Embrace AI—Without Firing Workers",
-        "url": "https://www.wsj.com/tech/ai/china-wants-its-companies-to-embrace-aiwithout-firing-workers-c8fcafa6?siteid=yhoof2&yptr=yahoo",
-        "source": "The Wall Street Journal",
-        "timestamp": "2026-05-27T15:45:00Z",
+        "title": "3 Stocks Under $40 with Indirect Exposure to SpaceX IPO",
+        "url": "https://finance.yahoo.com/markets/stocks/articles/3-stocks-under-40-indirect-155500495.html",
+        "source": "MarketBeat",
+        "timestamp": "2026-05-27T15:55:00Z",
         "category": "Markets News"
       },
       {
@@ -401,6 +394,13 @@
         "url": "https://finance.yahoo.com/sectors/energy/articles/spearmint-energy-secures-450-million-160446435.html",
         "source": "POWER Magazine",
         "timestamp": "2026-05-27T16:04:46Z",
+        "category": "Markets News"
+      },
+      {
+        "title": "Tesla EV Registrations In Europe Spike. The Stock Is Closing In On A Buy Point.",
+        "url": "https://www.investors.com/news/technology/tesla-ev-sales-europe-tesla-stock/?src=A00220&yptr=yahoo",
+        "source": "Investor's Business Daily",
+        "timestamp": "2026-05-27T16:11:38Z",
         "category": "Markets News"
       },
       {
@@ -647,12 +647,12 @@
         "summary": "The Era of Central Bank Independence Is Coming to an End &nbsp;&nbsp; Jacobin"
       },
       {
-        "title": "War on Iran could trigger a financial crisis, European Central Bank warns - World Socialist Web Site",
-        "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1WUVhZc0Q4dEN6U2xLVlZvSXNSbEZ4YVl5bVJQelQwTDRPc1ZzUFh3b25Pdk1lWDJxVGp2bEFtOFBiOS1kQWV2RTdvWVlzOTBndW5LWnNYV3FlWkw4YlgydllXVjVrQS1q?oc=5",
-        "source": "World Socialist Web Site",
-        "timestamp": "Fri, 29 May 2026 03:30:31 GMT",
+        "title": "Mortgage Rates Forecast For 2026: Experts Predict Whether Interest Rates Will Drop - Forbes",
+        "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9kMlJHRWhRY2owbnpsZWhWOHVVZFR1ZmM3NzhqTUVEVnpHR2xlMHp0QnR2eXFwV2wzQ2FMbXZTN3lTLUJ5OHgxdnk0S3Z2Q3hEQ2pEYW9xcWhrRktVS3B0RXB0NkdnM0hPMzBReG5neWZ1TTdvVWs4bWgxdWFNUkk?oc=5",
+        "source": "Forbes",
+        "timestamp": "Thu, 28 May 2026 12:36:00 GMT",
         "category": "Forex & Currencies",
-        "summary": "War on Iran could trigger a financial crisis, European Central Bank warns &nbsp;&nbsp; World Socialist Web Site"
+        "summary": "Mortgage Rates Forecast For 2026: Experts Predict Whether Interest Rates Will Drop &nbsp;&nbsp; Forbes"
       }
     ],
     "commodities": [
@@ -705,14 +705,6 @@
         "summary": "Crude Oil prices drop on reports of US-Iran truce; Brent set for worst month since 2020 - CNBC TV18 &nbsp;&nbsp; LinkedIn"
       },
       {
-        "title": "Brent Crude Oil Price Jumps After Attack on Iran’s South Pars Field - EnergyNow.com",
-        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxON1BJTnRPVzRvWThVQmxiYVA5SDRZc1lJVXhCeENHMGVpaThRRTVJN0hvbGtXaWsxZmc2VEctOE1SRjhhR0lRcUVWeVdtdGJZbzVIWUpNelVha0M2aFctTEZzYUxKOHpiVkpvMlp6LVotLXF1MVlrWTNFemRsVjlmcE1Rd2hoT2FTUElLLUVCUEN1ZUhXTjRjdDNoZw?oc=5",
-        "source": "EnergyNow.com",
-        "timestamp": "Thu, 28 May 2026 10:20:03 GMT",
-        "category": "Commodities News",
-        "summary": "Brent Crude Oil Price Jumps After Attack on Iran’s South Pars Field &nbsp;&nbsp; EnergyNow.com"
-      },
-      {
         "title": "U.S. Crude-Oil Stockpiles Post Fifth Straight Weekly Drop - WSJ",
         "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPUmFQVUhZcFExQXA3amdSTVdCQjJCa3NPLVRZRDU2T1JBVnNqV1hIc1BZb3ItRnN5Z0ZvZG1fLThHQUpxSjNVQkJkUnBmME5qaGRLRlNrSGppVDBNZzV5SW92S0JUVnBWZXFDVWZ6VnJoQzYxaVJUMjczQWRUcUp2T1Y4T1dJeXRvdnlXUEFZWGdqckg0OFp2dDBnMkljeFFVV2w2ekNwVms?oc=5",
         "source": "WSJ",
@@ -721,12 +713,28 @@
         "summary": "U.S. Crude-Oil Stockpiles Post Fifth Straight Weekly Drop &nbsp;&nbsp; WSJ"
       },
       {
+        "title": "Why are oil prices down today, and will Brent and US WTI crude futures continue to drop or rise again? Cea - The Economic Times",
+        "url": "https://news.google.com/rss/articles/CBMi1gJBVV95cUxPTzhzQU5qVUpNWklnekxYSWE2cjFEek1BRE43bENtSjdQNEc1dklVSzVBZ0huQzF0eDBYa2x0bERqazg3bm5VUDZiZGxtdlhRVl90em92dFpzV05EX091SEFrVmhDSklVVzEyamZ0WGVlRk9nMHVjeC1pUkVxZnhnUEJNd2xKamZpUnJxZl9nd096ZE5mTFVMaWwxbnN4bEktRDFZaXFkVFZtbDJhZVVVc00tN2t3TkxVM1FGUEVhdlExVkRsdFlQODFjMUdkTXUxMklYNkRLakRZWUN4RDhkZVZkaHFsUGM5VXk1Si1FNHNtLXl4Q1UxYjZBYXJySTVJM0x0Y192R1R1eWI1QUJxOW51RkVId3Y3LVNINUZOYWJXY015a1p0YnNYS0hnc3dJdEtNdHkwd1l3UUQ2Tno2d0lNN3h4U0xTbDlWOXNRZDFfYVZRYXfSAdsCQVVfeXFMUFNhamdWYXBYWlpmRnotV29CRmhqdDdCVlBEdC1LSlVpdW5DUGpLQTVBbm1NUVVqWkJzMzlBZ2FKdkRPdDZZcl8tLVJQb3Y0MnBEQlhaXzZvdkVHVUFaSHpaODFBQVgxQW1tM2tyaGQ5eFJsNDlVWFZ5c3FMZEpWVjNZdDZ4UzZaczZIZHBxWExWQjlMYXNrSDB4eWJsUk5nTEVhVkdENF9VcG5ERXZuYTRWTkphTGx3X3dfbUpiWXFUNWRjZkZ0a1BaallOeDFVeGtZcVVSYm5EN3k2Z2dsX0pjQmxwOGplODZHNnMtcjdRaE9TdTFlN1l6RGx0VnB4SGZ5enFYbURPQUhrbWZCYWFKR3EwZGxwbkJjcDVwYUg4LWJBNG9QWHpSaUZUM0R0dVJnWk9lOWxrbXJmMktJOXV4YnlaNDBaUFZManVGM3BrOFdRdG1UajBadUk?oc=5",
+        "source": "The Economic Times",
+        "timestamp": "Thu, 28 May 2026 17:59:31 GMT",
+        "category": "Commodities News",
+        "summary": "Why are oil prices down today, and will Brent and US WTI crude futures continue to drop or rise again? Cea &nbsp;&nbsp; The Economic Times"
+      },
+      {
         "title": "What will happen to gold and silver prices this June? Here's what experts expect. - CBS News",
         "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQT01KU2Y1REVvSXNmVTJJZjdfc1lLek1YVmg1TlNQWWh2TWVMNGVRNjgwLXlDSlM3eFIzbGtxV2JrLWhCa3VmWEV5Ry1DUXhqeUpESnQ1LXhEdktxNjA1SVYwUkJKNkZxUjBRZ2ZmSnpKVmxKdnBZWWZrcUlaYnpZc1Z2eUhOOTVjeDgteFJhTmNKWlFIZVlXenRlZw?oc=5",
         "source": "CBS News",
         "timestamp": "Thu, 28 May 2026 14:55:17 GMT",
         "category": "Commodities News",
         "summary": "What will happen to gold and silver prices this June? Here's what experts expect. &nbsp;&nbsp; CBS News"
+      },
+      {
+        "title": "Gold tumbles to two-month low as inflation hedge status fades - CNBC",
+        "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPamMxS2k0U1ktNzBJZ3V2Z2k3WElvNUw4RFNxU05RaE8tN3FwdUJHZVlaUXFvVVNjbEE5dDlxV3dYQ0wyYW1Pa2R2SkhvYTcyVVpCcEo5Ti11VU9KVE1vZnVrTEx3c2p2QjFwZXJOdE9YMlQ0T0daLThueE9pZUt5dGI4aFdvTWVDT3U5bUxwV3cwWGpxT2RmM3Q0QXJ3bkHSAaQBQVVfeXFMTzRTQ05EVjNFUUNYc1h0dDR4U0xLZXVMd0l3RHFnNVczMW50emVjS2FsVndTZWhwaW5tdE92QkhuYUJxenFVSzlrSEN4bnRDckZXc0F5bFdXNm9FY09wbjU3QmVUUHQ5d0pCSWU0QlJid0xiYVdWR2Z4cFJON1BLTk9UaGN5dmhQUGtBUjJwOU9DLW5mT29aNGIyMjc3SU4zQ05jbHo?oc=5",
+        "source": "CNBC",
+        "timestamp": "Thu, 28 May 2026 08:51:40 GMT",
+        "category": "Commodities News",
+        "summary": "Gold tumbles to two-month low as inflation hedge status fades &nbsp;&nbsp; CNBC"
       },
       {
         "title": "Gold price finding new support as U.S. New home sales drop 6.2% in April - KITCO",
@@ -751,14 +759,6 @@
         "timestamp": "Fri, 29 May 2026 02:09:33 GMT",
         "category": "Commodities News",
         "summary": "Gold price action strong Elliott Wave impulsive reaction from key support zone [Video] &nbsp;&nbsp; FXStreet"
-      },
-      {
-        "title": "The price of gold today, May 28, 2026 — and the best places to buy - CNBC",
-        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9PM1lvVUlTYjNnaF91Q3BrSW1jZ2V1UWszOVhPaVVJRzA0bEp2LU5sLV9STkZiaS1fQlozX2hqRnJKS09HTGhXZE1BeUxtdGZBQzNrSmxYUndoaFdnSkxzSFNkQi12NXpjdUYtT2RwUm4zUdIBd0FVX3lxTFB2RzJUUlU4c294QkZ4T1AtcFotZXBjcm1OYkU1OWhfRTJiZUYxYUl0bzNjM3dtZ2U4cDc1QmkybnF6RU5FbXhLdXNuR2xER2FreTNwZlhaeFlpb0dxUDcwcmQ5eXVjQnUxWllJTUJYYjhYMjhkTF9B?oc=5",
-        "source": "CNBC",
-        "timestamp": "Thu, 28 May 2026 13:13:58 GMT",
-        "category": "Commodities News",
-        "summary": "The price of gold today, May 28, 2026 — and the best places to buy &nbsp;&nbsp; CNBC"
       },
       {
         "title": "Stephen Leeb: Gold Price to US$18,000? Here's How it Can Happen - Investing News Network",
@@ -849,7 +849,7 @@
         "summary": "Nymex Overview: Crude Gains on Renewed U.S.-Iran Hostilities -- OPIS &nbsp;&nbsp; Moomoo"
       }
     ],
-    "scraped_at": "2026-05-29T03:53:10.038Z"
+    "scraped_at": "2026-05-29T03:56:10.432Z"
   },
   "global_indices": []
 }
