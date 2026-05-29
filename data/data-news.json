@@ -1,15 +1,70 @@
 {
   "featured": {
-    "title": "Elon Musk says SpaceX agreed only six-month Colossus AI lease to Anthropic",
+    "title": "U.S. drug regulator flags data integrity, maintenance lapses at Dabur India plant",
     "source": "ZERODHA PULSE",
-    "ago": "11:55 AM, 29 May 2026",
+    "ago": "01:01 PM, 29 May 2026",
     "topic": "INDIAN MACRO",
     "image": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1000",
-    "content": "“We won’t leave them hanging and will provide a reasonable off-ramp, but if ‌compute gets super tight I said we might ​need it back at some point,” Elon Musk added"
+    "content": "The findings, ‌issued ⁠after the FDA inspected the company’s factory in ⁠Dadra and Nagar Haveli in January, said some units in the facility posed risks of microbiological contamination"
   },
   "feed": [
     {
-      "id": "scraped_zp_0_1780038144191",
+      "id": "scraped_zp_0_1780041803014",
+      "topic": "INDIAN MACRO",
+      "tagColor": "white",
+      "time": "01:01 PM, 29 May 2026",
+      "title": "U.S. drug regulator flags data integrity, maintenance lapses at Dabur India plant",
+      "summary": "The findings, ‌issued ⁠after the FDA inspected the company’s factory in ⁠Dadra and Nagar Haveli in January, said some units in the facility posed risks of microbiological contamination",
+      "source": "ZERODHA PULSE",
+      "sourceLetter": "Z",
+      "url": "https://www.thehindu.com/business/Industry/us-drug-regulator-fda-flags-data-integrity-maintenance-lapses-at-dabur-india-plant/article71036264.ece"
+    },
+    {
+      "id": "scraped_zp_1_1780041803014",
+      "topic": "INDIAN MACRO",
+      "tagColor": "white",
+      "time": "12:39 PM, 29 May 2026",
+      "title": "Nomura downgrades Cummins India shares to Neutral despite raising target price by 25%. Here’s why",
+      "summary": "Nomura downgraded Cummins India to “Neutral” despite raising its target price by 25%, citing stretched valuations and near-term margin pressure from rising commodity costs. While the brokerage remains optimistic about long-term growth driven by data centres and emission norm upgrades, it believes the current valuation leaves limited room for further upside.",
+      "source": "ZERODHA PULSE",
+      "sourceLetter": "Z",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/nomura-downgrades-cummins-india-shares-to-neutral-despite-raising-target-price-by-25-heres-why/articleshow/131384323.cms"
+    },
+    {
+      "id": "scraped_zp_2_1780041803014",
+      "topic": "INDIAN MACRO",
+      "tagColor": "white",
+      "time": "12:28 PM, 29 May 2026",
+      "title": "Global Markets: Japan's Nikkei scales record peak on Mideast, AI optimism",
+      "summary": "Japan's Nikkei share average surged to a record high, driven by optimism for a Middle East peace deal and strong AI stock performance following Dell Technologies' positive earnings. The broader Topix also reached an all-time closing high. This market rally was fueled by renewed hopes for de-escalation in the Middle East and robust demand for AI-optimized servers.",
+      "source": "ZERODHA PULSE",
+      "sourceLetter": "Z",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/global-markets-japans-nikkei-scales-record-peak-on-mideast-ai-optimism/articleshow/131384185.cms"
+    },
+    {
+      "id": "scraped_zp_3_1780041803014",
+      "topic": "INDIAN MACRO",
+      "tagColor": "white",
+      "time": "12:21 PM, 29 May 2026",
+      "title": "Earnings stay resilient, but Q1 FY27 could test markets: Harsha Upadhyaya",
+      "summary": "Indian equities showed resilience in Q4 FY26, but Q1 FY27 earnings may disappoint due to geopolitical tensions and energy disruptions. Kotak Mahindra AMC's CIO, Harsha Upadhyaya, advises caution, highlighting banking, hospitals, and power as preferred sectors. Markets anticipate sideways movement until geopolitical clarity emerges.",
+      "source": "ZERODHA PULSE",
+      "sourceLetter": "Z",
+      "url": "https://economictimes.indiatimes.com/markets/expert-view/earnings-stay-resilient-but-q1-fy27-could-test-markets-harsha-upadhyaya/articleshow/131383996.cms"
+    },
+    {
+      "id": "scraped_zp_4_1780041803014",
+      "topic": "INDIAN MACRO",
+      "tagColor": "white",
+      "time": "12:14 PM, 29 May 2026",
+      "title": "Vedanta shares jump 2% to hit fresh 52-week high. What’s behind the surge?",
+      "summary": "Vedanta shares hit a fresh record high after ICRA upgraded the company’s long-term credit rating to AA+ with a stable outlook, marking its highest domestic rating in over a decade. The upgrade reflects stronger profitability, improving leverage metrics and expectations of continued healthy cash flow generation following the group’s ongoing demerger process.",
+      "source": "ZERODHA PULSE",
+      "sourceLetter": "Z",
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/vedanta-shares-jump-2-to-hit-fresh-52-week-high-whats-behind-the-surge/articleshow/131383904.cms"
+    },
+    {
+      "id": "scraped_zp_5_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:55 AM, 29 May 2026",
@@ -20,7 +75,18 @@
       "url": "https://www.thehindu.com/sci-tech/technology/elon-musk-says-spacex-agreed-only-six-month-colossus-ai-lease-to-anthropic/article71035803.ece"
     },
     {
-      "id": "scraped_zp_1_1780038144191",
+      "id": "scraped_zp_6_1780041803014",
+      "topic": "INDIAN MACRO",
+      "tagColor": "white",
+      "time": "11:52 AM, 29 May 2026",
+      "title": "​Anthropic overtakes OpenAI: AI valuation race enters hyperdrive",
+      "summary": "Anthropic has reportedly overtaken OpenAI in valuation after raising $65 billion in fresh funding, highlighting the rapid rise of enterprise-focused AI platforms. Strong adoption of Claude AI tools, surging revenue growth and aggressive investment in computing infrastructure have intensified competition across the global artificial intelligence industry.",
+      "source": "ZERODHA PULSE",
+      "sourceLetter": "Z",
+      "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/anthropic-overtakes-openai-ai-valuation-race-enters-hyperdrive/slideshow/131383810.cms"
+    },
+    {
+      "id": "scraped_zp_7_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:44 AM, 29 May 2026",
@@ -31,7 +97,7 @@
       "url": "https://www.ndtvprofit.com/markets/bharat-dynamics-shares-tumble-over-8-percent-after-q4-profit-drop-11562734#publisher=newsstand"
     },
     {
-      "id": "scraped_zp_2_1780038144191",
+      "id": "scraped_zp_8_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:44 AM, 29 May 2026",
@@ -42,7 +108,7 @@
       "url": "https://www.ndtvprofit.com/markets/bharat-dynamics-q4-net-profit-drops-58-to-rs-113-crore-revenue-declines-73-11558985#publisher=newsstand"
     },
     {
-      "id": "scraped_zp_3_1780038144191",
+      "id": "scraped_zp_9_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:40 AM, 29 May 2026",
@@ -53,7 +119,7 @@
       "url": "https://www.ndtvprofit.com/markets/sumitomo-chemical-in-focus-icici-securities-ups-target-price-post-q4-beat-check-new-upside-11562657#publisher=newsstand"
     },
     {
-      "id": "scraped_zp_4_1780038144191",
+      "id": "scraped_zp_10_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:40 AM, 29 May 2026",
@@ -64,7 +130,7 @@
       "url": "https://www.ndtvprofit.com/markets/aditya-infotech-11562491#publisher=newsstand"
     },
     {
-      "id": "scraped_zp_5_1780038144191",
+      "id": "scraped_zp_11_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:37 AM, 29 May 2026",
@@ -75,7 +141,7 @@
       "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/automotive-ai-innovations-power-fresh-momentum-for-lg-electronics/slideshow/131383515.cms"
     },
     {
-      "id": "scraped_zp_6_1780038144191",
+      "id": "scraped_zp_12_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:34 AM, 29 May 2026",
@@ -86,7 +152,7 @@
       "url": "https://www.ndtvprofit.com/economy/rbi-annual-report-india-growth-to-hold-at-6-9-in-fy27-despite-middle-east-conflict-risks-11562691#publisher=newsstand"
     },
     {
-      "id": "scraped_zp_7_1780038144191",
+      "id": "scraped_zp_13_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:34 AM, 29 May 2026",
@@ -97,7 +163,7 @@
       "url": "https://economictimes.indiatimes.com/markets/expert-view/accumulate-quality-stocks-in-current-market-phase-deven-choksey/articleshow/131383199.cms"
     },
     {
-      "id": "scraped_zp_8_1780038144191",
+      "id": "scraped_zp_14_1780041803014",
       "topic": "INDIAN MACRO",
       "tagColor": "white",
       "time": "11:30 AM, 29 May 2026",
@@ -106,72 +172,6 @@
       "source": "ZERODHA PULSE",
       "sourceLetter": "Z",
       "url": "https://economictimes.indiatimes.com/markets/bonds/indian-bonds-nudge-up-on-oil-dip-debt-sale-weighs/articleshow/131383206.cms"
-    },
-    {
-      "id": "scraped_zp_9_1780038144191",
-      "topic": "INDIAN MACRO",
-      "tagColor": "white",
-      "time": "11:29 AM, 29 May 2026",
-      "title": "Supriya Lifescience shares surge 17% on strong Q4 earnings; PAT rises 47% YoY",
-      "summary": "Supriya Lifescience shares jumped over 16% after the company posted a strong Q4FY26 performance, with PAT rising 47% YoY and revenue surging 50%. Robust demand across therapeutic segments, improved capacity utilisation, and traction in regulated markets supported growth. The stock remains in an uptrend despite overbought technical indicators.",
-      "source": "ZERODHA PULSE",
-      "sourceLetter": "Z",
-      "url": "https://economictimes.indiatimes.com/markets/stocks/news/supriya-lifescience-shares-surge-17-on-strong-q4-earnings-pat-rises-47-yoy/articleshow/131383156.cms"
-    },
-    {
-      "id": "scraped_zp_10_1780038144191",
-      "topic": "INDIAN MACRO",
-      "tagColor": "white",
-      "time": "11:25 AM, 29 May 2026",
-      "title": "GMR Airports: ICICI Securities Cautious on Valuation Despite Decent Q4; Retains Hold — Check Target Price",
-      "summary": "Overall, while GMR Airports continues to show improving earnings trajectory and strong asset monetisation potential, ICICI Securities prefers to stay cautious given valuation concerns and near-term growth uncertainties.",
-      "source": "ZERODHA PULSE",
-      "sourceLetter": "Z",
-      "url": "https://www.ndtvprofit.com/markets/gmr-airports-icici-securities-cautious-on-valuation-despite-decent-q4-results-retains-hold-check-target-price-11562587#publisher=newsstand"
-    },
-    {
-      "id": "scraped_zp_11_1780038144191",
-      "topic": "INDIAN MACRO",
-      "tagColor": "white",
-      "time": "11:24 AM, 29 May 2026",
-      "title": "Delta Corp shares tank 16%. What’s triggering the sharp selloff?",
-      "summary": "Shares of Delta Corp tumbled 16% after the Supreme Court upheld the government’s retrospective 28% GST levy on online gaming companies. The apex court ruled that online gaming platforms qualify as actionable claims under GST law and backed retrospective application of the amendments. Gaming firms had opposed the tax demand, arguing it contradicts decades of legal precedent distinguishing gaming from gambling.",
-      "source": "ZERODHA PULSE",
-      "sourceLetter": "Z",
-      "url": "https://economictimes.indiatimes.com/markets/stocks/news/delta-corp-shares-tank-16-whats-triggering-the-sharp-selloff/articleshow/131383077.cms"
-    },
-    {
-      "id": "scraped_zp_12_1780038144191",
-      "topic": "INDIAN MACRO",
-      "tagColor": "white",
-      "time": "11:18 AM, 29 May 2026",
-      "title": "Infosys, Wipro, TCS, other IT stocks jump up to 4%: What’s behind the bullish sentiment in a muted market?",
-      "summary": "IT stocks, including Infosys and TCS, surged up to 4% on Friday, driven by Wipro's expanded partnership with ServiceNow to scale AI workflows. This collaboration aims to integrate Wipro Intelligence with ServiceNow's AI Platform, streamlining enterprise operations and accelerating AI adoption. The move boosted investor confidence in Indian IT companies, despite earlier concerns about AI advancements.",
-      "source": "ZERODHA PULSE",
-      "sourceLetter": "Z",
-      "url": "https://economictimes.indiatimes.com/markets/stocks/news/infosys-wipro-tcs-other-it-stocks-jump-up-to-4-whats-behind-the-bullish-sentiment-in-a-muted-market/articleshow/131382843.cms"
-    },
-    {
-      "id": "scraped_zp_13_1780038144191",
-      "topic": "INDIAN MACRO",
-      "tagColor": "white",
-      "time": "11:14 AM, 29 May 2026",
-      "title": "Did LIC shares really crash 50% in one day? Here's how the bonus math works",
-      "summary": "LIC shares appeared to fall nearly 50% on Friday after adjusting for its first-ever 1:1 bonus issue, though the actual decline was only around 1.5%. The insurer issued one bonus share for every existing share held by eligible shareholders, with May 29 fixed as the record date for the corporate action.",
-      "source": "ZERODHA PULSE",
-      "sourceLetter": "Z",
-      "url": "https://economictimes.indiatimes.com/markets/stocks/news/did-lic-shares-really-crash-50-in-one-day-heres-how-the-bonus-math-works/articleshow/131382901.cms"
-    },
-    {
-      "id": "scraped_zp_14_1780038144191",
-      "topic": "INDIAN MACRO",
-      "tagColor": "white",
-      "time": "11:05 AM, 29 May 2026",
-      "title": "Wockhardt shares jump 8%, extend rally after CDSCO nod for Zaynich antibiotic",
-      "summary": "Wockhardt shares surged after the company received CDSCO approval for its breakthrough antibiotic Zaynich in India. Strong Phase 3 trial results and the drug’s potential to treat severe drug-resistant infections boosted investor sentiment, helping the stock extend recent gains despite technically entering overbought territory after a sharp rally.",
-      "source": "ZERODHA PULSE",
-      "sourceLetter": "Z",
-      "url": "https://economictimes.indiatimes.com/markets/stocks/news/wockhardt-shares-jump-8-extend-rally-after-cdsco-nod-for-zaynich-antibiotic/articleshow/131382757.cms"
     }
   ],
   "suggested": [
@@ -197,21 +197,63 @@
     100
   ],
   "scraped": {
-    "scraped_at": "2026-05-29T07:02:24.184Z",
+    "scraped_at": "2026-05-29T08:03:23.009Z",
     "sources": [
       {
         "source": "zerodha_pulse",
         "url": "https://pulse.zerodha.com/",
         "status": 200,
-        "fetched_at": "2026-05-29T07:02:21.491Z",
+        "fetched_at": "2026-05-29T08:03:20.225Z",
         "page_title": "Pulse by Zerodha - Latest financial and market news from all major Indian news sources aggregated in one place - Pulse",
         "articles": [
+          {
+            "type": "PulseCompact",
+            "title": "U.S. drug regulator flags data integrity, maintenance lapses at Dabur India plant",
+            "url": "https://www.thehindu.com/business/Industry/us-drug-regulator-fda-flags-data-integrity-maintenance-lapses-at-dabur-india-plant/article71036264.ece",
+            "summary": "The findings, ‌issued ⁠after the FDA inspected the company’s factory in ⁠Dadra and Nagar Haveli in January, said some units in the facility posed risks of microbiological contamination",
+            "published_at": "01:01 PM, 29 May 2026"
+          },
+          {
+            "type": "PulseCompact",
+            "title": "Nomura downgrades Cummins India shares to Neutral despite raising target price by 25%. Here’s why",
+            "url": "https://economictimes.indiatimes.com/markets/stocks/news/nomura-downgrades-cummins-india-shares-to-neutral-despite-raising-target-price-by-25-heres-why/articleshow/131384323.cms",
+            "summary": "Nomura downgraded Cummins India to “Neutral” despite raising its target price by 25%, citing stretched valuations and near-term margin pressure from rising commodity costs. While the brokerage remains optimistic about long-term growth driven by data centres and emission norm upgrades, it believes the current valuation leaves limited room for further upside.",
+            "published_at": "12:39 PM, 29 May 2026"
+          },
+          {
+            "type": "PulseCompact",
+            "title": "Global Markets: Japan's Nikkei scales record peak on Mideast, AI optimism",
+            "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/global-markets-japans-nikkei-scales-record-peak-on-mideast-ai-optimism/articleshow/131384185.cms",
+            "summary": "Japan's Nikkei share average surged to a record high, driven by optimism for a Middle East peace deal and strong AI stock performance following Dell Technologies' positive earnings. The broader Topix also reached an all-time closing high. This market rally was fueled by renewed hopes for de-escalation in the Middle East and robust demand for AI-optimized servers.",
+            "published_at": "12:28 PM, 29 May 2026"
+          },
+          {
+            "type": "PulseCompact",
+            "title": "Earnings stay resilient, but Q1 FY27 could test markets: Harsha Upadhyaya",
+            "url": "https://economictimes.indiatimes.com/markets/expert-view/earnings-stay-resilient-but-q1-fy27-could-test-markets-harsha-upadhyaya/articleshow/131383996.cms",
+            "summary": "Indian equities showed resilience in Q4 FY26, but Q1 FY27 earnings may disappoint due to geopolitical tensions and energy disruptions. Kotak Mahindra AMC's CIO, Harsha Upadhyaya, advises caution, highlighting banking, hospitals, and power as preferred sectors. Markets anticipate sideways movement until geopolitical clarity emerges.",
+            "published_at": "12:21 PM, 29 May 2026"
+          },
+          {
+            "type": "PulseCompact",
+            "title": "Vedanta shares jump 2% to hit fresh 52-week high. What’s behind the surge?",
+            "url": "https://economictimes.indiatimes.com/markets/stocks/news/vedanta-shares-jump-2-to-hit-fresh-52-week-high-whats-behind-the-surge/articleshow/131383904.cms",
+            "summary": "Vedanta shares hit a fresh record high after ICRA upgraded the company’s long-term credit rating to AA+ with a stable outlook, marking its highest domestic rating in over a decade. The upgrade reflects stronger profitability, improving leverage metrics and expectations of continued healthy cash flow generation following the group’s ongoing demerger process.",
+            "published_at": "12:14 PM, 29 May 2026"
+          },
           {
             "type": "PulseCompact",
             "title": "Elon Musk says SpaceX agreed only six-month Colossus AI lease to Anthropic",
             "url": "https://www.thehindu.com/sci-tech/technology/elon-musk-says-spacex-agreed-only-six-month-colossus-ai-lease-to-anthropic/article71035803.ece",
             "summary": "“We won’t leave them hanging and will provide a reasonable off-ramp, but if ‌compute gets super tight I said we might ​need it back at some point,” Elon Musk added",
             "published_at": "11:55 AM, 29 May 2026"
+          },
+          {
+            "type": "PulseCompact",
+            "title": "​Anthropic overtakes OpenAI: AI valuation race enters hyperdrive",
+            "url": "https://economictimes.indiatimes.com/markets/us-stocks/news/anthropic-overtakes-openai-ai-valuation-race-enters-hyperdrive/slideshow/131383810.cms",
+            "summary": "Anthropic has reportedly overtaken OpenAI in valuation after raising $65 billion in fresh funding, highlighting the rapid rise of enterprise-focused AI platforms. Strong adoption of Claude AI tools, surging revenue growth and aggressive investment in computing infrastructure have intensified competition across the global artificial intelligence industry.",
+            "published_at": "11:52 AM, 29 May 2026"
           },
           {
             "type": "PulseCompact",
@@ -1017,14 +1059,14 @@
           },
           {
             "type": "PulseCompact",
-            "title": "HDFC Bank Share Price Live Updates: HDFC Bank's Performance Over Three Months",
-            "url": "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/hdfc-bank-stock-price-livestock-price-today-live-updates-29-may-2026/liveblog/131380450.cms",
+            "title": "IndusInd Bank Share Price Live Updates: IndusInd Bank's Performance Over Three Months",
+            "url": "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/indusind-bank-share-price-live-updates-29-may-2026/liveblog/131380449.cms",
             "published_at": "08:20 AM, 29 May 2026"
           },
           {
             "type": "PulseCompact",
-            "title": "IndusInd Bank Share Price Live Updates: IndusInd Bank's Performance Over Three Months",
-            "url": "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/indusind-bank-share-price-live-updates-29-may-2026/liveblog/131380449.cms",
+            "title": "HDFC Bank Share Price Live Updates: HDFC Bank's Performance Over Three Months",
+            "url": "https://economictimes.indiatimes.com/markets/stocks/stock-liveblog/hdfc-bank-stock-price-livestock-price-today-live-updates-29-may-2026/liveblog/131380450.cms",
             "published_at": "08:20 AM, 29 May 2026"
           },
           {
@@ -1289,16 +1331,16 @@
           },
           {
             "type": "PulseCompact",
-            "title": "Stocks in news: RIL, Coal India, IDFC First Bank, Zydus Life, ONGC",
-            "url": "https://economictimes.indiatimes.com/markets/stocks/news/stocks-in-news-ril-coal-india-idfc-first-bank-zydus-life-ongc/articleshow/131374936.cms",
-            "summary": "Markets traded subdued with the India VIX correcting nearly 15% this week, though this hasn't significantly impacted benchmark index movement. RIL announced its AGM for June 19, 2026, while Coal India's government offer-for-sale will exercise the oversubscription option. Bharat Dynamics reported a 58.5% YoY drop in Q4 FY26 net profit, contrasting with Ashok Leyland's 14% YoY rise.",
+            "title": "Pre-market action: Here's the trade setup for today's session",
+            "url": "https://economictimes.indiatimes.com/markets/stocks/news/pre-market-action-heres-the-trade-setup-for-todays-session/articleshow/131374955.cms",
+            "summary": "Indian markets traded flat on Wednesday, influenced by derivatives expiry and geopolitical tensions. Analysts suggest a cautious recovery hinges on stable crude oil prices and receding energy supply concerns. However, renewed US-Iran tensions and military strikes have revived geopolitical risk premiums, narrowing the path for further gains.",
             "published_at": "06:01 AM, 29 May 2026"
           },
           {
             "type": "PulseCompact",
-            "title": "Pre-market action: Here's the trade setup for today's session",
-            "url": "https://economictimes.indiatimes.com/markets/stocks/news/pre-market-action-heres-the-trade-setup-for-todays-session/articleshow/131374955.cms",
-            "summary": "Indian markets traded flat on Wednesday, influenced by derivatives expiry and geopolitical tensions. Analysts suggest a cautious recovery hinges on stable crude oil prices and receding energy supply concerns. However, renewed US-Iran tensions and military strikes have revived geopolitical risk premiums, narrowing the path for further gains.",
+            "title": "Stocks in news: RIL, Coal India, IDFC First Bank, Zydus Life, ONGC",
+            "url": "https://economictimes.indiatimes.com/markets/stocks/news/stocks-in-news-ril-coal-india-idfc-first-bank-zydus-life-ongc/articleshow/131374936.cms",
+            "summary": "Markets traded subdued with the India VIX correcting nearly 15% this week, though this hasn't significantly impacted benchmark index movement. RIL announced its AGM for June 19, 2026, while Coal India's government offer-for-sale will exercise the oversubscription option. Bharat Dynamics reported a 58.5% YoY drop in Q4 FY26 net profit, contrasting with Ashok Leyland's 14% YoY rise.",
             "published_at": "06:01 AM, 29 May 2026"
           },
           {
@@ -1986,6 +2028,13 @@
           },
           {
             "type": "PulseCompact",
+            "title": "India's energy investment to hit $170 billion in 2026 on solar, grid and refining push: International Energy Agency",
+            "url": "https://www.thehindu.com/business/Industry/indias-energy-investment-to-hit-170-billion-in-2026-on-solar-grid-and-refining-push-international-energy-agency/article71032005.ece",
+            "summary": "‘Investment in solar PV grew annually by 25% in this period, and oil refining by 23%. Together, these two sectors contributed to one-fourth of India's energy investment growth,’ said the International Energy Agency",
+            "published_at": "01:40 PM, 28 May 2026"
+          },
+          {
+            "type": "PulseCompact",
             "title": "FIFA World Cup 2026: Can Netherlands Finally End Their Wait For Glory? — Full Squad, Key Records, History And Fixtures",
             "url": "https://www.ndtvprofit.com/sports/fifa-world-cup-2026-can-netherlands-finally-end-their-wait-for-glory-full-squad-key-records-history-and-fixtures-11558684#publisher=newsstand",
             "summary": "The Netherlands head into the 2026 FIFA World Cup aiming to finally shed their tag as the biggest football nation to never win the tournament after Ronald Koeman announced a balanced 26-man squad featuring experienced internationals and emerging young talent.",
@@ -2018,69 +2067,6 @@
             "url": "https://economictimes.indiatimes.com/markets/cryptocurrency/crypto-news/trump-reiterates-vision-to-make-us-the-crypto-capital-of-world-here-is-what-experts-say/articleshow/131365749.cms",
             "summary": "President Donald Trump is defending the cryptocurrency and prediction market industries. He is opposing state-led efforts to restrict these sectors. Federal authorities and state governments are in a dispute over regulatory control. Trump's family has financial ties to these industries. The outcome will shape the future of prediction markets across the US.",
             "published_at": "01:22 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Akasa Air Aircraft Runs Short On Fuel, Makes Emergency Landing At Lucknow Airport",
-            "url": "https://www.ndtvprofit.com/india/akasa-air-aircraft-made-emergency-landing-yesterday-at-lucknow-international-airport-11558219#publisher=newsstand",
-            "summary": "The pilot-in-command requested priority clearance and sought a clear approach to ensure landing in a single attempt amid fuel constraints. Air Traffic Control immediately declared a full emergency and activated standard emergency response protocols,",
-            "published_at": "01:09 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "​DMart, Meesho, among 10 stocks that saw highest increase in HNI holding in Q4. Check list",
-            "url": "https://economictimes.indiatimes.com/markets/stocks/news/dmart-meesho-among-10-stocks-that-saw-highest-increase-in-hni-holding-in-q4-check-list/slideshow/131365681.cms",
-            "summary": "",
-            "published_at": "01:05 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Deven Choksey bets big on Coal India’s value unlock story",
-            "url": "https://economictimes.indiatimes.com/markets/expert-view/deven-choksey-bets-big-on-coal-indias-value-unlock-story/articleshow/131365482.cms",
-            "summary": "Coal India's stock is attracting institutional investors due to attractive valuations and potential value unlocking from subsidiary listings. Despite ESG concerns, the company's diversification into cleaner energy and achievable management targets are bolstering confidence in its long-term growth story.",
-            "published_at": "01:05 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Xiaomi 17T Battery, Chipset Revealed Ahead Of India Launch On June 4",
-            "url": "https://www.ndtvprofit.com/technology/xiaomi-17t-battery-chipset-revealed-ahead-of-india-launch-on-june-4-11558524#publisher=newsstand",
-            "summary": "The company already revealed a Leica-tuned triple rear camera unit, with the telephoto offering up to 5x optical zoom and up to 120x digital zoom.",
-            "published_at": "12:53 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Watch: Jofra Archer Closes In On Bhuvneshwar, Rabada In IPL 2026 Purple Cap Race",
-            "url": "https://www.ndtvprofit.com/sports/watch-jofra-archer-closes-in-on-bhuvneshwar-rabada-in-ipl-2026-purple-cap-race-11558491#publisher=newsstand",
-            "summary": "Bhuvneshwar Kumar and Kagiso Rabada lead the IPL 2026 Purple Cap race with 26 wickets each, while Jofra Archer moved up to 24 after Rajasthan Royals' Eliminator win over Sunrisers Hyderabad, setting up a three-way battle for the award.",
-            "published_at": "12:45 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Gaming Companies Weigh Review Plea, Larger Bench And Government Relief After Supreme Court GST Blow",
-            "url": "https://www.ndtvprofit.com/business/gaming-companies-weigh-review-plea-larger-bench-and-government-relief-after-supreme-court-gst-blow-11558488#publisher=newsstand",
-            "summary": "In a landmark ruling on Wednesday, the Supreme Court upheld the government's decision to levy 28% GST on the full face value of bets and deposits in online gaming, instead of platform fees or commissions.",
-            "published_at": "12:44 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "India's energy investment to hit $170 billion in 2026 on solar, grid and refining push: International Energy Agency",
-            "url": "https://www.thehindu.com/business/Industry/indias-energy-investment-to-hit-170-billion-in-2026-on-solar-grid-and-refining-push-international-energy-agency/article71032005.ece",
-            "summary": "‘Investment in solar PV grew annually by 25% in this period, and oil refining by 23%. Together, these two sectors contributed to one-fourth of India's energy investment growth,’ said the International Energy Agency",
-            "published_at": "12:39 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Midcap 100 hits record highs while Nifty stalls; Foram Chheda on 2 stocks to buy right now",
-            "url": "https://economictimes.indiatimes.com/markets/expert-view/midcap-100-hits-record-highs-while-nifty-stalls-foram-chheda-on-2-stocks-to-buy-right-now/articleshow/131364885.cms",
-            "summary": "Market rotation is unfolding as expected, with largecaps leading, midcaps now outperforming, and smallcaps catching up. ChartAnalytics founder Foram Chheda highlights key support levels and identifies two actionable trade ideas: Naukri, showing a resistance breakout with increasing volume, and Bajaj Auto, confirming a breakout from a well-defined resistance zone with an intact uptrend.",
-            "published_at": "12:38 PM, 28 May 2026"
-          },
-          {
-            "type": "PulseCompact",
-            "title": "Siddaramaiah Informs Ministers About His Resignation, Congress Proposes DK Shivakumar As Next K'taka CM",
-            "url": "https://www.ndtvprofit.com/india/siddaramaiah-informs-ministers-about-his-resignation-congress-proposes-dk-shivakumar-as-next-karnataka-cm-11558319#publisher=newsstand",
-            "summary": "Congress high command has proposed DK Shivakumar as the next Chief Minister",
-            "published_at": "12:24 PM, 28 May 2026"
           }
         ]
       },
@@ -2088,7 +2074,7 @@
         "source": "finology_ticker",
         "url": "https://ticker.finology.in/",
         "status": 200,
-        "fetched_at": "2026-05-29T07:02:23.173Z",
+        "fetched_at": "2026-05-29T08:03:21.993Z",
         "page_title": "Fundamental Stock Analysis: Balance Sheet, Ratio analysis & financial tools",
         "articles": [
           {
@@ -2112,6 +2098,14 @@
             "title": "Central bank must allow rupee to depreciate to help absorb external pressures: Former RBI Governor",
             "url": "https://ticker.finology.in/news/1244002",
             "published_at": "29 May, 11:19 AM",
+            "publisher": "INDUSTRY AND MARKET-RELATED ANNOUNCEMENTS",
+            "article_kind": "article"
+          },
+          {
+            "type": "Detailed",
+            "title": "India’s toll collection growth likely to slow to 5-7% in FY27 amid West Asia conflict: Crisil",
+            "url": "https://ticker.finology.in/news/1244026",
+            "published_at": "29 May, 12:01 PM",
             "publisher": "INDUSTRY AND MARKET-RELATED ANNOUNCEMENTS",
             "article_kind": "article"
           },
@@ -2165,82 +2159,82 @@
           },
           {
             "type": "Detailed",
-            "title": "RBI likely to avoid immediate monetary policy tightening despite mounting inflation risks: Icra",
-            "url": "https://ticker.finology.in/news/1243254",
-            "published_at": "26 May, 10:33 AM",
-            "publisher": "INDUSTRY AND MARKET-RELATED ANNOUNCEMENTS",
+            "title": "TMPV launches next-gen Tiago, Tiago.ev",
+            "url": "https://ticker.finology.in/news/1243941",
+            "published_at": "29 May, 9:28 AMTMPV",
+            "publisher": "TMPV",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Lumax Industries - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052912",
-            "published_at": "29 May, 12:00 AMLUMAXIND",
-            "publisher": "LUMAXIND",
+            "title": "AWL Agri Business collaborates with SRSL to grow packaged foods business",
+            "url": "https://ticker.finology.in/news/1243950",
+            "published_at": "29 May, 10:12 AMAWL",
+            "publisher": "AWL",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Deepak Fert & Petro - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052916",
-            "published_at": "29 May, 12:00 AMDEEPAKFERT",
-            "publisher": "DEEPAKFERT",
+            "title": "Sai Parenterals secures 10-year supply order worth Rs 104.50 crore",
+            "url": "https://ticker.finology.in/news/1243944",
+            "published_at": "29 May, 9:40 AMSAIPARENT",
+            "publisher": "SAIPARENT",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Graphite India - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052913",
-            "published_at": "29 May, 12:00 AMGRAPHITE",
-            "publisher": "GRAPHITE",
+            "title": "Malpani Pipes and Fittings gets nod to acquire 100% stake in Terex Industries",
+            "url": "https://ticker.finology.in/news/1243953",
+            "published_at": "29 May, 10:22 AM544351",
+            "publisher": "544351",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Ashok Leyland - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052917",
-            "published_at": "29 May, 12:00 AMASHOKLEY",
-            "publisher": "ASHOKLEY",
+            "title": "TCS partners with Mistral",
+            "url": "https://ticker.finology.in/news/1243936",
+            "published_at": "29 May, 9:01 AMTCS",
+            "publisher": "TCS",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Revati Media - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052910",
-            "published_at": "29 May, 12:00 AM524504",
-            "publisher": "524504",
+            "title": "Kernex Microsystems bags LoI worth Rs 15.90 crore",
+            "url": "https://ticker.finology.in/news/1243946",
+            "published_at": "29 May, 9:49 AMKERNEX",
+            "publisher": "KERNEX",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "P&G Hygiene - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052918",
-            "published_at": "29 May, 12:00 AMPGHH",
-            "publisher": "PGHH",
+            "title": "Maruti Global secures order worth Rs 22.99 crore",
+            "url": "https://ticker.finology.in/news/1243958",
+            "published_at": "29 May, 10:30 AM531319",
+            "publisher": "531319",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Praj Industries - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052911",
-            "published_at": "29 May, 12:00 AMPRAJIND",
-            "publisher": "PRAJIND",
+            "title": "Sadhana Nitro Chem inks long-term supply pact with Japanese MNC",
+            "url": "https://ticker.finology.in/news/1243939",
+            "published_at": "29 May, 9:15 AMSADHNANIQ",
+            "publisher": "SADHNANIQ",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "Algoquant Fintech - Quaterly Results",
-            "url": "https://ticker.finology.in/news/2026052915",
-            "published_at": "29 May, 12:00 AMALGOQUANT",
-            "publisher": "ALGOQUANT",
+            "title": "HBL Engineering bags LoA worth Rs 1,714 crore",
+            "url": "https://ticker.finology.in/news/1243948",
+            "published_at": "29 May, 9:58 AMHBLENGINE",
+            "publisher": "HBLENGINE",
             "article_kind": "article"
           },
           {
             "type": "Detailed",
-            "title": "TBO Tek - Quaterly Results",
-            "url": "https://ticker.finology.in/news/202605291",
-            "published_at": "29 May, 12:00 AMTBOTEK",
-            "publisher": "TBOTEK",
+            "title": "Likhitha Infrastructure bags order worth Rs 121.04 crore from Oil India",
+            "url": "https://ticker.finology.in/news/1243961",
+            "published_at": "29 May, 10:41 AMLIKHITHA",
+            "publisher": "LIKHITHA",
             "article_kind": "article"
           },
           {
