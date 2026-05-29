@@ -11,6 +11,8 @@ import { scrapeFiiDiiActivity } from "./server-fii-dii-scraper";
 import { scrapeNse500, getDetailedQuote } from "./server-nse500-scraper";
 import { fetchAlphaVantageIndices } from "./server-alpha-vantage";
 import { scrapeMoneycontrolEarnings, loadCachedEarnings } from "./server-earnings-scraper";
+import { scrapeMoneycontrolEarnings as scrapeMcEarningsPlaywright, loadCachedMoneycontrolEarnings } from "./server-moneycontrol-earnings";
+import { scrapeMoneycontrolWorld, loadCachedMoneycontrolWorld } from "./server-moneycontrol-world";
 
 const app = express();
 const PORT = 3000;
@@ -732,6 +734,69 @@ app.post("/api/earnings/scrape", async (req, res) => {
   } catch (err: any) {
     console.error("Earnings scraping failed:", err);
     res.status(500).json({ error: err.message || "Failed to scrape earnings data" });
+  }
+});
+
+// ========== MONEYCONTROL EARNINGS (PLAYWRIGHT) API ==========
+
+const PATH_MC_EARNINGS = path.join(DATA_DIR, "data-moneycontrol-earnings.json");
+const PATH_MC_WORLD = path.join(DATA_DIR, "data-moneycontrol-world.json");
+
+app.get("/api/moneycontrol-earnings", (req, res) => {
+  const cached = loadCachedMoneycontrolEarnings();
+  if (cached) {
+    res.json(cached);
+  } else {
+    res.json({
+      fetched_at: new Date().toISOString(),
+      source: "MoneyControl Earnings (Playwright)",
+      upcoming_results: [],
+      declared_results: [],
+      top_performers: [],
+      news_headlines: []
+    });
+  }
+});
+
+app.post("/api/moneycontrol-earnings/scrape", async (req, res) => {
+  try {
+    console.log("[Server] Starting MoneyControl Earnings Playwright scrape...");
+    const scrapedData = await scrapeMcEarningsPlaywright();
+    saveDB(PATH_MC_EARNINGS, scrapedData);
+    res.json({ success: true, data: scrapedData });
+  } catch (err: any) {
+    console.error("MoneyControl Earnings Playwright scraping failed:", err);
+    res.status(500).json({ error: err.message || "Failed to scrape MoneyControl Earnings" });
+  }
+});
+
+// ========== MONEYCONTROL WORLD NEWS API ==========
+
+app.get("/api/moneycontrol-world", (req, res) => {
+  const cached = loadCachedMoneycontrolWorld();
+  if (cached) {
+    res.json(cached);
+  } else {
+    res.json({
+      fetched_at: new Date().toISOString(),
+      source: "MoneyControl World",
+      url: "https://www.moneycontrol.com/world/",
+      featured_articles: [],
+      latest_news: [],
+      market_updates: []
+    });
+  }
+});
+
+app.post("/api/moneycontrol-world/scrape", async (req, res) => {
+  try {
+    console.log("[Server] Starting MoneyControl World Playwright scrape...");
+    const scrapedData = await scrapeMoneycontrolWorld();
+    saveDB(PATH_MC_WORLD, scrapedData);
+    res.json({ success: true, data: scrapedData });
+  } catch (err: any) {
+    console.error("MoneyControl World scraping failed:", err);
+    res.status(500).json({ error: err.message || "Failed to scrape MoneyControl World" });
   }
 });
 

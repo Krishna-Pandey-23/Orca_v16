@@ -59,7 +59,16 @@ export default function App() {
   const [earningsData, setEarningsData] = useState<any>(null);
   const [isScrapingEarnings, setIsScrapingEarnings] = useState<boolean>(false);
   const [earningsSearchQuery, setEarningsSearchQuery] = useState<string>("");
-  const [earningsSubTab, setEarningsSubTab] = useState<"updates" | "calendar" | "sectors" | "snapshots">("updates");
+  const [earningsSubTab, setEarningsSubTab] = useState<"updates" | "calendar" | "sectors" | "snapshots" | "mc-playwright">("updates");
+
+  // MoneyControl World News States
+  const [mcWorldData, setMcWorldData] = useState<any>(null);
+  const [isScrapingMcWorld, setIsScrapingMcWorld] = useState<boolean>(false);
+  const [mcWorldSearchQuery, setMcWorldSearchQuery] = useState<string>("");
+
+  // MoneyControl Earnings (Playwright) States
+  const [mcEarningsData, setMcEarningsData] = useState<any>(null);
+  const [isScrapingMcEarnings, setIsScrapingMcEarnings] = useState<boolean>(false);
 
   // Conflict Tracker & GNews States
   const [conflictApiKey, setConflictApiKey] = useState<string>(() => {
@@ -122,6 +131,8 @@ export default function App() {
     fetchFiiDii();
     fetchNse500();
     fetchEarnings();
+    fetchMcWorld();
+    fetchMcEarnings();
   }, []);
 
   // Timer tracking
@@ -442,6 +453,72 @@ export default function App() {
       showToast("Network failure during earnings scrape.", "error");
     } finally {
       setIsScrapingEarnings(false);
+    }
+  };
+
+  // MoneyControl World News API Functions
+  const fetchMcWorld = async () => {
+    try {
+      const res = await fetch("/api/moneycontrol-world");
+      if (res.ok) {
+        const data = await res.json();
+        setMcWorldData(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch MoneyControl World data:", err);
+    }
+  };
+
+  const handleScrapeMcWorld = async () => {
+    setIsScrapingMcWorld(true);
+    showToast("Scraping MoneyControl World news (Playwright)...", "info");
+    try {
+      const res = await fetch("/api/moneycontrol-world/scrape", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setMcWorldData(data.data);
+        showToast("MoneyControl World news scraped successfully!", "success");
+      } else {
+        showToast("Failed to scrape MoneyControl World news.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Network failure during MoneyControl World scrape.", "error");
+    } finally {
+      setIsScrapingMcWorld(false);
+    }
+  };
+
+  // MoneyControl Earnings (Playwright) API Functions
+  const fetchMcEarnings = async () => {
+    try {
+      const res = await fetch("/api/moneycontrol-earnings");
+      if (res.ok) {
+        const data = await res.json();
+        setMcEarningsData(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch MoneyControl Earnings data:", err);
+    }
+  };
+
+  const handleScrapeMcEarnings = async () => {
+    setIsScrapingMcEarnings(true);
+    showToast("Scraping MoneyControl Earnings (Playwright)...", "info");
+    try {
+      const res = await fetch("/api/moneycontrol-earnings/scrape", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setMcEarningsData(data.data);
+        showToast("MoneyControl Earnings scraped successfully!", "success");
+      } else {
+        showToast("Failed to scrape MoneyControl Earnings.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("Network failure during MoneyControl Earnings scrape.", "error");
+    } finally {
+      setIsScrapingMcEarnings(false);
     }
   };
 
@@ -2320,6 +2397,227 @@ export default function App() {
                         ))}
                       </div>
                     )}
+
+                    {/* MONEYCONTROL WORLD SECTION */}
+                    <div className="border-t border-white/5 pt-8 mt-8">
+                      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+                        <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <Globe className="w-5 h-5 text-amber-400" />
+                            <h3 className="text-xl font-bold text-white uppercase tracking-tight">
+                              MoneyControl World
+                            </h3>
+                          </div>
+                          <p className="text-xs text-neutral-400 font-mono">
+                            International business and market news from MoneyControl World terminal
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                            <input
+                              type="text"
+                              placeholder="Search articles..."
+                              value={mcWorldSearchQuery}
+                              onChange={(e) => setMcWorldSearchQuery(e.target.value)}
+                              className="pl-10 pr-4 py-2 bg-black/40 border border-white/10 rounded-lg text-xs font-mono text-white placeholder:text-neutral-500 focus:outline-none focus:border-amber-400/50 w-64"
+                            />
+                          </div>
+                          <button
+                            onClick={handleScrapeMcWorld}
+                            disabled={isScrapingMcWorld}
+                            className="px-4 py-2 bg-amber-400/20 hover:bg-amber-400 hover:text-black border border-amber-400/30 text-amber-400 font-semibold text-xs flex items-center gap-2 transition-all disabled:opacity-50 font-mono tracking-wider"
+                          >
+                            {isScrapingMcWorld ? (
+                              <>
+                                <div className="w-3 h-3 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                                LOADING...
+                              </>
+                            ) : (
+                              <>
+                                <RotateCw className="w-3 h-3" />
+                                SCRAPE
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                      {mcWorldData?.fetched_at && (
+                        <div className="mb-4 text-right">
+                          <span className="text-[9px] font-mono text-neutral-500">
+                            Last scraped: {new Date(mcWorldData.fetched_at).toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Featured Articles */}
+                      {mcWorldData?.featured_articles?.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="font-mono text-xs uppercase font-bold text-amber-400 tracking-wider mb-3 flex items-center gap-2">
+                            <Tag className="w-3.5 h-3.5" />
+                            Featured Stories
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {(() => {
+                              const searchLower = mcWorldSearchQuery.toLowerCase();
+                              const filtered = mcWorldData.featured_articles.filter((art: any) =>
+                                searchLower ? art.title?.toLowerCase().includes(searchLower) : true
+                              );
+                              return filtered.slice(0, 6).map((art: any, idx: number) => (
+                                <div
+                                  key={`mcw-feat-${idx}`}
+                                  className="group relative bg-white/[0.02] hover:bg-amber-950/20 border border-white/5 hover:border-amber-400/20 rounded-xl p-4 transition-all duration-200"
+                                >
+                                  {art.image_url && (
+                                    <div className="mb-3 h-24 rounded-lg overflow-hidden bg-black/40">
+                                      <img
+                                        src={art.image_url}
+                                        alt={art.title}
+                                        className="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity"
+                                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                      />
+                                    </div>
+                                  )}
+                                  <span className="px-1.5 py-0.5 text-[8px] font-mono font-black uppercase tracking-wider rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-2 inline-block">
+                                    Featured
+                                  </span>
+                                  <h5 className="text-sm font-bold text-white leading-snug group-hover:text-amber-400 transition-colors mb-2 line-clamp-2">
+                                    {art.url ? (
+                                      <a href={art.url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-start gap-1">
+                                        {art.title}
+                                        <ExternalLink className="w-3 h-3 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                      </a>
+                                    ) : (
+                                      art.title
+                                    )}
+                                  </h5>
+                                  {art.summary && (
+                                    <p className="text-[10px] text-neutral-400 leading-relaxed font-mono line-clamp-2">
+                                      {art.summary}
+                                    </p>
+                                  )}
+                                  {art.timestamp && (
+                                    <div className="mt-2 text-[9px] font-mono text-neutral-500 flex items-center gap-1">
+                                      <Clock className="w-2.5 h-2.5" />
+                                      {art.timestamp}
+                                    </div>
+                                  )}
+                                </div>
+                              ));
+                            })()}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Latest News */}
+                      {mcWorldData?.latest_news?.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="font-mono text-xs uppercase font-bold text-emerald-400 tracking-wider mb-3 flex items-center gap-2">
+                            <Newspaper className="w-3.5 h-3.5" />
+                            Latest News
+                          </h4>
+                          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                            {(() => {
+                              const searchLower = mcWorldSearchQuery.toLowerCase();
+                              const filtered = mcWorldData.latest_news.filter((art: any) =>
+                                searchLower ? art.title?.toLowerCase().includes(searchLower) : true
+                              );
+                              return filtered.slice(0, 20).map((art: any, idx: number) => (
+                                <div
+                                  key={`mcw-latest-${idx}`}
+                                  className="group relative bg-white/[0.02] hover:bg-emerald-950/20 border border-white/5 hover:border-emerald-400/20 rounded-xl p-3 transition-all duration-200"
+                                >
+                                  <h5 className="text-xs font-bold text-white leading-snug group-hover:text-emerald-400 transition-colors">
+                                    {art.url ? (
+                                      <a href={art.url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-start gap-1">
+                                        {art.title}
+                                        <ExternalLink className="w-2.5 h-2.5 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                      </a>
+                                    ) : (
+                                      art.title
+                                    )}
+                                  </h5>
+                                  <div className="flex items-center gap-3 mt-2">
+                                    {art.summary && (
+                                      <p className="text-[10px] text-neutral-400 leading-relaxed font-mono flex-1 line-clamp-1">
+                                        {art.summary}
+                                      </p>
+                                    )}
+                                    {art.timestamp && (
+                                      <span className="text-[9px] font-mono text-neutral-500 flex items-center gap-1 flex-shrink-0">
+                                        <Clock className="w-2.5 h-2.5" />
+                                        {art.timestamp}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              ));
+                            })()}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Market Updates */}
+                      {mcWorldData?.market_updates?.length > 0 && (
+                        <div>
+                          <h4 className="font-mono text-xs uppercase font-bold text-cyan-400 tracking-wider mb-3 flex items-center gap-2">
+                            <TrendingUp className="w-3.5 h-3.5" />
+                            Market Updates
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {(() => {
+                              const searchLower = mcWorldSearchQuery.toLowerCase();
+                              const filtered = mcWorldData.market_updates.filter((art: any) =>
+                                searchLower ? art.title?.toLowerCase().includes(searchLower) : true
+                              );
+                              return filtered.slice(0, 10).map((art: any, idx: number) => (
+                                <div
+                                  key={`mcw-mkt-${idx}`}
+                                  className="group relative bg-white/[0.02] hover:bg-cyan-950/20 border border-white/5 hover:border-cyan-400/20 rounded-xl p-3 transition-all duration-200"
+                                >
+                                  {art.category && (
+                                    <span className="px-1.5 py-0.5 text-[8px] font-mono font-black uppercase tracking-wider rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-2 inline-block">
+                                      {art.category}
+                                    </span>
+                                  )}
+                                  <h5 className="text-xs font-bold text-white leading-snug group-hover:text-cyan-400 transition-colors">
+                                    {art.url ? (
+                                      <a href={art.url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-start gap-1">
+                                        {art.title}
+                                        <ExternalLink className="w-2.5 h-2.5 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                      </a>
+                                    ) : (
+                                      art.title
+                                    )}
+                                  </h5>
+                                </div>
+                              ));
+                            })()}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Empty state */}
+                      {!mcWorldData || (
+                        !mcWorldData.featured_articles?.length &&
+                        !mcWorldData.latest_news?.length &&
+                        !mcWorldData.market_updates?.length
+                      ) ? (
+                        <div className="py-16 text-center text-neutral-500 border border-dashed border-white/5 bg-white/[0.01] rounded-xl">
+                          <Globe className="w-10 h-10 mx-auto mb-3 text-neutral-600" />
+                          <p className="text-sm font-mono mb-4">No MoneyControl World data available.</p>
+                          <button
+                            onClick={handleScrapeMcWorld}
+                            disabled={isScrapingMcWorld}
+                            className="px-6 py-2.5 bg-amber-400/20 hover:bg-amber-400 hover:text-black border border-amber-400/30 text-amber-400 text-xs font-mono font-semibold rounded-lg transition-all disabled:opacity-50"
+                          >
+                            {isScrapingMcWorld ? "Loading..." : "Load MoneyControl World"}
+                          </button>
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3833,12 +4131,13 @@ export default function App() {
                   </div>
 
                   {/* SUB TABS */}
-                  <div className="flex gap-2 border-b border-white/5 pb-3">
+                  <div className="flex gap-2 border-b border-white/5 pb-3 overflow-x-auto">
                     {[
                       { id: "updates", label: "Earnings Updates", count: earningsData?.earnings_updates?.length || 0 },
                       { id: "calendar", label: "Result Calendar", count: earningsData?.result_calendar?.length || 0 },
                       { id: "sectors", label: "Sector Performance", count: earningsData?.sector_performers?.length || 0 },
-                      { id: "snapshots", label: "Market Snapshots", count: earningsData?.market_snapshots?.length || 0 }
+                      { id: "snapshots", label: "Market Snapshots", count: earningsData?.market_snapshots?.length || 0 },
+                      { id: "mc-playwright", label: "MC Playwright", count: (mcEarningsData?.upcoming_results?.length || 0) + (mcEarningsData?.news_headlines?.length || 0) }
                     ].map(tab => (
                       <button
                         key={tab.id}
@@ -4088,6 +4387,193 @@ export default function App() {
                           ))}
                         </div>
                       )}
+                    </div>
+                  )}
+
+                  {/* MONEYCONTROL PLAYWRIGHT EARNINGS TAB */}
+                  {earningsSubTab === "mc-playwright" && (
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-mono text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                            <Zap className="w-4 h-4" />
+                            MoneyControl Earnings (Playwright)
+                          </h3>
+                          <p className="text-[9px] text-neutral-500 font-mono mt-1">
+                            Full JavaScript-rendered data from MoneyControl Markets/Earnings page
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={handleScrapeMcEarnings}
+                            disabled={isScrapingMcEarnings}
+                            className="flex items-center gap-2 px-4 py-2 bg-amber-400/20 hover:bg-amber-400 hover:text-black border border-amber-400/30 text-amber-400 font-semibold text-[10px] font-mono tracking-widest rounded-lg transition-all disabled:opacity-50"
+                          >
+                            {isScrapingMcEarnings ? (
+                              <>
+                                <div className="w-3 h-3 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+                                LOADING...
+                              </>
+                            ) : (
+                              <>
+                                <RotateCw className="w-3.5 h-3.5" />
+                                SCRAPE LIVE
+                              </>
+                            )}
+                          </button>
+                          {mcEarningsData?.fetched_at && (
+                            <span className="text-[9px] font-mono text-neutral-500">
+                              Last: {new Date(mcEarningsData.fetched_at).toLocaleTimeString()}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Upcoming Results */}
+                      {mcEarningsData?.upcoming_results?.length > 0 && (
+                        <div>
+                          <h4 className="font-mono text-xs uppercase font-bold text-emerald-400 tracking-wider mb-3 flex items-center gap-2">
+                            <Calendar className="w-3.5 h-3.5" />
+                            Upcoming Results ({mcEarningsData.upcoming_results.length})
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto pr-1">
+                            {mcEarningsData.upcoming_results.map((item: any, idx: number) => (
+                              <div key={`mc-earn-up-${idx}`} className="bg-black/40 border border-emerald-400/20 hover:border-emerald-400/40 rounded-xl p-3 transition-all">
+                                <div className="flex justify-between items-start mb-2">
+                                  <h5 className="text-xs font-bold text-white line-clamp-1">{item.name}</h5>
+                                  {item.sector && (
+                                    <span className="text-[8px] px-1.5 py-0.5 bg-black/40 rounded text-neutral-400 font-mono uppercase">
+                                      {item.sector}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="flex justify-between text-[10px] font-mono">
+                                    <span className="text-neutral-400">Result Date</span>
+                                    <span className="text-emerald-400 font-bold">{item.result_date}</span>
+                                  </div>
+                                  {item.ltp && (
+                                    <div className="flex justify-between text-[10px] font-mono">
+                                      <span className="text-neutral-400">LTP</span>
+                                      <span className="text-white">₹{item.ltp}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Declared Results */}
+                      {mcEarningsData?.declared_results?.length > 0 && (
+                        <div>
+                          <h4 className="font-mono text-xs uppercase font-bold text-cyan-400 tracking-wider mb-3 flex items-center gap-2">
+                            <CheckSquare className="w-3.5 h-3.5" />
+                            Declared Results ({mcEarningsData.declared_results.length})
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-1">
+                            {mcEarningsData.declared_results.map((item: any, idx: number) => (
+                              <div key={`mc-earn-dec-${idx}`} className="bg-black/40 border border-cyan-400/20 hover:border-cyan-400/40 rounded-xl p-3 transition-all">
+                                <h5 className="text-xs font-bold text-white mb-2 line-clamp-1">{item.name}</h5>
+                                <div className="space-y-1">
+                                  {item.result_date && (
+                                    <div className="flex justify-between text-[10px] font-mono">
+                                      <span className="text-neutral-400">Period</span>
+                                      <span className="text-cyan-400 font-bold">{item.result_date}</span>
+                                    </div>
+                                  )}
+                                  {item.revenue && (
+                                    <div className="flex justify-between text-[10px] font-mono">
+                                      <span className="text-neutral-400">Revenue</span>
+                                      <span className="text-white">{item.revenue}</span>
+                                    </div>
+                                  )}
+                                  {item.net_profit && (
+                                    <div className="flex justify-between text-[10px] font-mono">
+                                      <span className="text-neutral-400">Net Profit</span>
+                                      <span className="text-white">{item.net_profit}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Top Performers */}
+                      {mcEarningsData?.top_performers?.length > 0 && (
+                        <div>
+                          <h4 className="font-mono text-xs uppercase font-bold text-amber-400 tracking-wider mb-3 flex items-center gap-2">
+                            <TrendingUp className="w-3.5 h-3.5" />
+                            Top Performers ({mcEarningsData.top_performers.length})
+                          </h4>
+                          <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                            {mcEarningsData.top_performers.map((item: any, idx: number) => (
+                              <div key={`mc-earn-perf-${idx}`} className="bg-black/40 border border-amber-400/20 hover:border-amber-400/40 rounded-xl p-3 transition-all flex justify-between items-center">
+                                <span className="text-xs font-bold text-white">{item.name}</span>
+                                <div className="flex items-center gap-3">
+                                  {item.ltp && (
+                                    <span className="text-xs font-mono text-white">₹{item.ltp}</span>
+                                  )}
+                                  {item.change_pct !== undefined && (
+                                    <span className={`text-xs font-bold font-mono px-2 py-1 rounded ${item.change_pct >= 0 ? "bg-emerald-950/50 text-emerald-400" : "bg-rose-950/50 text-rose-400"}`}>
+                                      {item.change_pct >= 0 ? "+" : ""}{item.change_pct.toFixed(2)}%
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* News Headlines */}
+                      {mcEarningsData?.news_headlines?.length > 0 && (
+                        <div>
+                          <h4 className="font-mono text-xs uppercase font-bold text-purple-400 tracking-wider mb-3 flex items-center gap-2">
+                            <Newspaper className="w-3.5 h-3.5" />
+                            Earnings News Headlines ({mcEarningsData.news_headlines.length})
+                          </h4>
+                          <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
+                            {mcEarningsData.news_headlines.map((item: any, idx: number) => (
+                              <div key={`mc-earn-news-${idx}`} className="group bg-black/40 border border-purple-400/10 hover:border-purple-400/30 rounded-xl p-3 transition-all">
+                                <h5 className="text-xs font-bold text-white leading-snug group-hover:text-purple-400 transition-colors">
+                                  {item.url ? (
+                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline inline-flex items-start gap-1">
+                                      {item.title}
+                                      <ExternalLink className="w-2.5 h-2.5 mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                                    </a>
+                                  ) : (
+                                    item.title
+                                  )}
+                                </h5>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Empty State */}
+                      {!mcEarningsData || (
+                        !mcEarningsData.upcoming_results?.length &&
+                        !mcEarningsData.declared_results?.length &&
+                        !mcEarningsData.top_performers?.length &&
+                        !mcEarningsData.news_headlines?.length
+                      ) ? (
+                        <div className="py-12 text-center text-neutral-500 border border-dashed border-white/5 bg-white/[0.01] rounded-xl">
+                          <Calendar className="w-8 h-8 mx-auto mb-3 text-neutral-600" />
+                          <p className="text-sm font-mono mb-4">No MoneyControl Playwright earnings data available.</p>
+                          <button
+                            onClick={handleScrapeMcEarnings}
+                            disabled={isScrapingMcEarnings}
+                            className="px-6 py-2.5 bg-amber-400/20 hover:bg-amber-400 hover:text-black border border-amber-400/30 text-amber-400 text-xs font-mono font-semibold rounded-lg transition-all disabled:opacity-50"
+                          >
+                            {isScrapingMcEarnings ? "Loading..." : "Scrape MoneyControl Earnings"}
+                          </button>
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </div>
