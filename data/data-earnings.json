@@ -1,27 +1,9 @@
 {
-  "fetched_at": "2026-05-30T04:07:40.609Z",
+  "fetched_at": "2026-05-30T05:13:58.785Z",
   "result_calendar": [
     {
-      "name": "Inox Wind",
-      "symbol": "INOXWIND",
-      "result_date": "30 May",
-      "sector": ""
-    },
-    {
-      "name": "Fert Chem Travancore",
-      "symbol": "FACT",
-      "result_date": "30 May",
-      "sector": ""
-    },
-    {
-      "name": "Jyoti CNC Automation",
-      "symbol": "JYOTICNC",
-      "result_date": "30 May",
-      "sector": ""
-    },
-    {
-      "name": "Triveni Engg. & Inds",
-      "symbol": "TRIVENI",
+      "name": "Ingersoll Rand",
+      "symbol": "INGERRAND",
       "result_date": "30 May",
       "sector": ""
     },
@@ -32,14 +14,20 @@
       "sector": ""
     },
     {
-      "name": "Mishra Dhatu Nigam",
-      "symbol": "MIDHANI",
+      "name": "BEML",
+      "symbol": "BEML",
       "result_date": "30 May",
       "sector": ""
     },
     {
-      "name": "Ipca Laboratories",
-      "symbol": "IPCALAB",
+      "name": "Inox Wind",
+      "symbol": "INOXWIND",
+      "result_date": "30 May",
+      "sector": ""
+    },
+    {
+      "name": "Asian Paints",
+      "symbol": "ASIANPAINT",
       "result_date": "30 May",
       "sector": ""
     },
@@ -56,8 +44,20 @@
       "sector": ""
     },
     {
-      "name": "Natco Pharma",
-      "symbol": "NATCOPHARM",
+      "name": "Ipca Laboratories",
+      "symbol": "IPCALAB",
+      "result_date": "30 May",
+      "sector": ""
+    },
+    {
+      "name": "Aegis Logistics",
+      "symbol": "AEGISLOG",
+      "result_date": "30 May",
+      "sector": ""
+    },
+    {
+      "name": "Jyoti CNC Automation",
+      "symbol": "JYOTICNC",
       "result_date": "30 May",
       "sector": ""
     }

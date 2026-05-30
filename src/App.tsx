@@ -2,22 +2,24 @@ import React, { useState, useEffect, useRef } from "react";
 import { Activity, Terminal, Newspaper, Workflow, Cpu, TrendingUp, TriangleAlert as AlertTriangle, ShieldAlert, Search, Bell, Play, History, SlidersHorizontal, Zap, RotateCw, Settings, Check, Bookmark, Share2, Info, Layers, Square, SquareCheck as CheckSquare, Sparkles, ExternalLink, FileSliders as Sliders, Database, Globe, Clock, Compass, Tag, TrendingDown, Calendar, Phone } from "lucide-react";
 import Nse500Tracker from "./components/Nse500Tracker";
 import LiveEarningsFeed, { LiveEarningsData, LiveEarningsCall } from "./components/LiveEarningsFeed";
-import { 
-  Ticker, 
-  RecalibrationFilter, 
-  IndexExposure, 
-  NewsFeatured, 
-  NewsFeedItem, 
-  NewsSuggested, 
-  PhaseConfig, 
-  PipelinePhase, 
+import {
+  Ticker,
+  RecalibrationFilter,
+  IndexExposure,
+  NewsFeatured,
+  NewsFeedItem,
+  NewsSuggested,
+  PhaseConfig,
+  PipelinePhase,
   PipelineLog,
   PipelineData,
   SignalsData,
   NewsData,
   ModelsData,
   EtfsData,
-  EtfItem
+  EtfItem,
+  TickertapeNewsItem,
+  TickertapeApiResponse
 } from "./types";
 
 export default function App() {
@@ -60,6 +62,11 @@ export default function App() {
   const [earningsData, setEarningsData] = useState<any>(null);
   const [isScrapingEarnings, setIsScrapingEarnings] = useState<boolean>(false);
   const [earningsSearchQuery, setEarningsSearchQuery] = useState<string>("");
+
+  // Tickertape Events States
+  const [tickertapeEvents, setTickertapeEvents] = useState<TickertapeNewsItem[]>([]);
+  const [isFetchingTickertapeEvents, setIsFetchingTickertapeEvents] = useState<boolean>(false);
+  const [tickertapeEventsError, setTickertapeEventsError] = useState<string | null>(null);
 
   // Live Earnings Calls States
   const [liveEarningsData, setLiveEarningsData] = useState<LiveEarningsData | null>(null);
@@ -147,6 +154,7 @@ export default function App() {
     fetchMcWorld();
     fetchNSEData();
     fetchBSEData();
+    fetchTickertapeEvents();
   }, []);
 
   // Timer tracking
@@ -467,6 +475,29 @@ export default function App() {
       showToast("Network failure during earnings scrape.", "error");
     } finally {
       setIsScrapingEarnings(false);
+    }
+  };
+
+  // Tickertape Events API Function
+  const fetchTickertapeEvents = async () => {
+    setIsFetchingTickertapeEvents(true);
+    setTickertapeEventsError(null);
+    try {
+      const params = new URLSearchParams({ count: "20", offset: "0", sids: "", type: "news" });
+      const res = await fetch(`/api/tickertape/events?${params}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      const json: TickertapeApiResponse = await res.json();
+      if (!json.success) throw new Error("Tickertape API returned success: false");
+      const items = json.data.news.map((item) => ({
+        ...item,
+        summary: item.summary.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(),
+      }));
+      setTickertapeEvents(items);
+    } catch (err: any) {
+      console.error("Failed to fetch Tickertape events:", err);
+      setTickertapeEventsError(err.message || "Failed to fetch events");
+    } finally {
+      setIsFetchingTickertapeEvents(false);
     }
   };
 
@@ -1238,12 +1269,10 @@ export default function App() {
 
                   {/* Featured Central Card (AAPL) */}
                   {signals?.tickers.slice(0,1).map((aapl) => (
-                    <div 
+                    <div
                       key={aapl.symbol}
-                      className="orbital-border" 
-                      onMouseMove={handleOrbitalMouseMove}
+                      className="orca-card rounded-2xl p-8 overflow-hidden relative"
                     >
-                      <div className="orca-card rounded-[inherit] p-8 overflow-hidden relative">
                         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-[120px] -mr-40 -mt-40"></div>
                         
                         <div className="flex justify-between items-start relative z-10 mb-10">
@@ -1277,7 +1306,7 @@ export default function App() {
 
                         {/* Four metrics grids */}
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10 relative z-10">
-                          <div className="p-4 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 hover:border-white/30 transition-colors">
+                          <div className="p-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                             <p className="font-mono text-[9px] text-on-surface-variant/80 mb-2 uppercase tracking-wider font-bold">RSI (14-Day)</p>
                             <p className="font-mono text-xl text-white font-bold">{aapl.rsi}</p>
                             <div className="w-full h-1 bg-white/10 mt-3 rounded-full overflow-hidden">
@@ -1285,19 +1314,19 @@ export default function App() {
                             </div>
                           </div>
 
-                          <div className="p-4 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 hover:border-white/30 transition-colors">
+                          <div className="p-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                             <p className="font-mono text-[9px] text-on-surface-variant/80 mb-2 uppercase tracking-wider font-bold">EMA_200 Cross</p>
                             <p className="font-mono text-xl text-cyan-400 uppercase font-bold">{aapl.ema200}</p>
                             <p className="text-[10px] text-on-surface-variant/80 mt-2 font-mono font-semibold">{aapl.ema200Details}</p>
                           </div>
 
-                          <div className="p-4 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 hover:border-white/30 transition-colors">
+                          <div className="p-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                             <p className="font-mono text-[9px] text-on-surface-variant/80 mb-2 uppercase tracking-wider font-bold">Volume Flow</p>
                             <p className="font-mono text-xl text-white font-bold">{aapl.volFlow}</p>
                             <p className="text-[10px] text-cyan-300 mt-2 font-semibold font-mono">{aapl.volFlowDetails}</p>
                           </div>
 
-                          <div className="p-4 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 hover:border-white/30 transition-colors">
+                          <div className="p-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                             <p className="font-mono text-[9px] text-on-surface-variant/80 mb-2 uppercase tracking-wider font-bold">Alpha Score</p>
                             <p className="font-mono text-xl text-white font-bold">{aapl.alphaScore}/100</p>
                             <p className="text-[10px] text-on-surface-variant/80 mt-2 font-semibold font-mono">Institutional Grade</p>
@@ -1326,19 +1355,16 @@ export default function App() {
                             ></path>
                           </svg>
                         </div>
-                      </div>
                     </div>
                   ))}
 
                   {/* Dynamic Signals grid bottom tickers (NVDA, TSLA, MSFT) */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {filteredTickers.slice(1).map((t) => (
-                      <div 
+                      <div
                         key={t.symbol}
-                        className="orbital-border"
-                        onMouseMove={handleOrbitalMouseMove}
+                        className="orca-card rounded-2xl p-6 h-full flex flex-col relative justify-between"
                       >
-                        <div className="orca-card rounded-[inherit] p-6 h-full flex flex-col relative justify-between">
                           <div className="flex justify-between items-center mb-4 relative z-10">
                             <h3 className="font-bold text-xl text-white">{t.symbol}</h3>
                             <div className={`w-10 h-10 rounded-lg backdrop-blur-md flex items-center justify-center border border-white/10 ${
@@ -1441,15 +1467,13 @@ export default function App() {
                           )}
 
                         </div>
-                      </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Right Recalibration Sidebar Panel */}
                 <aside className="w-full lg:w-96 shrink-0 space-y-8 z-20 flex flex-col justify-between">
-                  <div className="orbital-border h-fit" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-8 flex flex-col relative overflow-hidden">
+                  <div className="orca-card rounded-2xl h-fit p-8 flex flex-col relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
                       
                       <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10 relative z-10">
@@ -1492,7 +1516,7 @@ export default function App() {
                           </h3>
 
                           {signals && (
-                            <div className="p-6 bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 relative">
+                            <div className="p-6 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 relative hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                               <div className="flex justify-between items-end mb-4">
                                 <div className="font-mono text-4xl text-white font-bold">
                                   {signals.recalibration.confidence}
@@ -1523,11 +1547,9 @@ export default function App() {
                       >
                         REGENERATE_ENVIRONMENT
                       </button>
-                    </div>
                   </div>
 
-                  <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-6">
+                  <div className="orca-card rounded-2xl p-6">
                       <div className="flex justify-between items-center mb-4 relative z-10">
                         <h3 className="font-mono text-[10px] text-white/80 flex items-center gap-2 font-bold uppercase tracking-wider">
                           INDEX_EXPOSURE
@@ -1547,12 +1569,10 @@ export default function App() {
                           </div>
                         ))}
                       </div>
-                    </div>
                   </div>
 
                   {/* Real Global Indices Card powered by Alpha Vantage */}
-                  <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-6 relative overflow-hidden">
+                  <div className="orca-card rounded-2xl p-6 relative overflow-hidden">
                       <div className="flex justify-between items-center mb-4 relative z-10">
                         <h3 className="font-mono text-[10px] text-white/80 flex items-center gap-2 font-bold uppercase tracking-wider">
                           GLOBAL_MARKETS_LIVE
@@ -1623,7 +1643,6 @@ export default function App() {
                           </div>
                         )}
                       </div>
-                    </div>
                   </div>
                 </aside>
               </div>
@@ -1704,20 +1723,20 @@ export default function App() {
                   </header>
 
                   {/* QUICK STATS BOARD */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-neutral-900/60 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
-                    <div className="bg-black/40 border border-white/5 rounded-xl p-4 flex flex-col justify-between animate-fade-in">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-6 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                    <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 flex flex-col justify-between hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] animate-fade-in">
                       <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">TOTAL SECTORS / INDEXES</span>
                       <span className="text-white font-mono text-3xl font-bold mt-2">{totalIndices || "--"}</span>
                     </div>
-                    <div className="bg-black/40 border border-white/5 rounded-xl p-4 flex flex-col justify-between animate-fade-in">
+                    <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 flex flex-col justify-between hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] animate-fade-in">
                       <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-widest font-bold">ADVANCING SESSIONS</span>
                       <span className="text-emerald-400 font-mono text-3xl font-bold mt-2">{positiveIndices || "0"}</span>
                     </div>
-                    <div className="bg-black/40 border border-white/5 rounded-xl p-4 flex flex-col justify-between animate-fade-in">
+                    <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 flex flex-col justify-between hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] animate-fade-in">
                       <span className="font-mono text-[10px] text-rose-400 uppercase tracking-widest font-bold">DECLINING SESSIONS</span>
                       <span className="text-rose-400 font-mono text-3xl font-bold mt-2">{negativeIndices || "0"}</span>
                     </div>
-                    <div className="bg-black/40 border border-white/5 rounded-xl p-4 flex flex-col justify-between animate-fade-in">
+                    <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 flex flex-col justify-between hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] animate-fade-in">
                       <span className="font-mono text-[10px] text-neutral-500 uppercase tracking-widest font-bold">LAST HANDSHAKE TIME (IST)</span>
                       <span className="text-white font-mono text-sm mt-3 font-semibold text-center py-1 bg-neutral-950/60 border border-white/5 rounded">
                         {indianIndicesData?.fetched_at ? new Date(indianIndicesData.fetched_at).toLocaleTimeString() : "--:--:--"}
@@ -1726,7 +1745,7 @@ export default function App() {
                   </div>
 
                   {/* FILTER BAR segment */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/[0.02] border border-white/5 rounded-2xl p-5 backdrop-blur-md">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="flex items-center gap-2.5 font-mono text-[11px] text-neutral-400">
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
                       <span>ACTIVE TARGET:</span>
@@ -1754,7 +1773,7 @@ export default function App() {
                   </div>
 
                   {/* BENCHMARK GRID & DETAILED CARD EXPOSURE */}
-                  <div className="bg-neutral-900/40 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-6 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     {filteredIndices.length === 0 ? (
                       <div className="py-24 text-center text-neutral-500 space-y-3">
                         <Compass className="w-12 h-12 mx-auto text-neutral-600 animate-spin" />
@@ -1767,7 +1786,7 @@ export default function App() {
                           return (
                             <div 
                               key={`ind-${pos}`}
-                              className="group relative bg-[#131316] hover:bg-[#1a1a20] border border-white/5 hover:border-white/10 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300"
+                              className="group relative bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 rounded-2xl p-5 flex flex-col justify-between transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
                             >
                               <div>
                                 <div className="flex items-start justify-between gap-3 mb-3 border-b border-white/5 pb-2">
@@ -1801,7 +1820,7 @@ export default function App() {
                                 </div>
                               </div>
 
-                              <div className="space-y-1.5 bg-black/30 rounded-xl p-3 border border-white/5 font-mono text-[10px]">
+                              <div className="space-y-1.5 bg-black/40 backdrop-blur-3xl rounded-2xl p-3 border border-white/5 font-mono text-[10px] shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                                 <div className="flex justify-between text-neutral-400">
                                   <span>Open:</span>
                                   <span className="text-white font-medium">₹{idxItem.open.toLocaleString("en-IN")}</span>
@@ -1826,7 +1845,7 @@ export default function App() {
                     )}
                   </div>
 
-                  <div className="bg-neutral-900/40 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-6 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono">
                       <div className="text-neutral-400 font-medium">
                         &gt; SYSTEM MONITOR STATUS: <span className="text-emerald-400 font-bold">ONLINE</span> (NSE CRAWLER TERMINAL ACTIVE)
@@ -1926,7 +1945,7 @@ export default function App() {
                   </div>
 
                   {/* QUICK INFO BAR */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/[0.02] border border-white/5 rounded-2xl p-5 backdrop-blur-md">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
                         <span className="material-symbols-outlined text-emerald-400">database</span>
@@ -1960,7 +1979,7 @@ export default function App() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                     
                     {/* CARD 1: CUMULATIVE FII */}
-                    <div className="relative bg-black/40 border border-white/10 hover:border-white/20 rounded-2xl p-6 transition-all duration-300">
+                    <div className="relative bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 rounded-2xl p-6 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                       <div className="flex items-center justify-between mb-4">
                         <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase tracking-wider">Cumulative FII Cash flow</span>
                         <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
@@ -1976,7 +1995,7 @@ export default function App() {
                     </div>
 
                     {/* CARD 2: CUMULATIVE DII */}
-                    <div className="relative bg-black/40 border border-white/10 hover:border-white/20 rounded-2xl p-6 transition-all duration-300">
+                    <div className="relative bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 rounded-2xl p-6 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                       <div className="flex items-center justify-between mb-4">
                         <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase tracking-wider">Cumulative DII Cash Flow</span>
                         <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
@@ -1992,7 +2011,7 @@ export default function App() {
                     </div>
 
                     {/* CARD 3: NET COMBINED SUPPORT CAPITAL */}
-                    <div className="relative bg-black/40 border border-white/10 hover:border-white/20 rounded-2xl p-6 transition-all duration-300">
+                    <div className="relative bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 rounded-2xl p-6 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                       <div className="flex items-center justify-between mb-4">
                         <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase tracking-wider">Combined Net Liquidity</span>
                         <div className="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center">
@@ -2008,7 +2027,7 @@ export default function App() {
                     </div>
 
                     {/* CARD 4: SENTIMENT AND DIRECTION GAUGE */}
-                    <div className="relative bg-black/40 border border-white/10 hover:border-white/20 rounded-2xl p-6 transition-all duration-300">
+                    <div className="relative bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 rounded-2xl p-6 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                       <div className="flex items-center justify-between mb-4">
                         <span className="font-mono text-[10px] text-neutral-400 font-bold uppercase tracking-wider">Derivatives Sentiment</span>
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
@@ -2029,7 +2048,7 @@ export default function App() {
                   </div>
 
                   {/* PREMIUM HIGH-FIDELITY SVG TRACKER CHART */}
-                  <div className="bg-neutral-900/60 border border-white/15 rounded-2xl p-6 relative overflow-hidden backdrop-blur-md">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-6 relative overflow-hidden hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-emerald-400">stacked_line_chart</span>
@@ -2119,7 +2138,7 @@ export default function App() {
                   </div>
 
                   {/* HIGH PERFORMANCE DATA LEDGER */}
-                  <div className="bg-neutral-950/30 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-md">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 overflow-hidden hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="p-6 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div>
                         <h3 className="font-mono text-xs uppercase tracking-widest text-white font-bold mb-1">
@@ -2218,7 +2237,7 @@ export default function App() {
                   </div>
 
                   {/* SYSTEM STATUS FOOTER */}
-                  <div className="bg-neutral-900/40 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-6 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono">
                       <div className="text-neutral-400 font-medium">
                         &gt; SYSTEM INSTITUTIONAL FLOW: <span className="text-emerald-400 font-bold">ACTIVE</span> (PARSING DATA VIA STOCKEDGE HANDSHAKE)
@@ -2315,8 +2334,7 @@ export default function App() {
                       <div className="space-y-6">
                         {/* Featured core story */}
                         {news && (
-                          <section className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                            <div className="orca-card grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded-[inherit]">
+                          <section className="orca-card grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded-2xl">
                               <div className="lg:col-span-7 relative min-h-[350px]">
                                 <img 
                                   className="w-full h-full object-cover grayscale opacity-60 hover:grayscale-0 hover:opacity-90 transition-all duration-700" 
@@ -2346,7 +2364,6 @@ export default function App() {
                                   {news.featured.content}
                                 </p>
                               </div>
-                            </div>
                           </section>
                         )}
 
@@ -2359,12 +2376,10 @@ export default function App() {
                         {/* Feed grids */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                           {news?.feed.map((item) => (
-                            <div 
+                            <div
                               key={item.id}
-                              className="orbital-border group"
-                              onMouseMove={handleOrbitalMouseMove}
+                              className="orca-card group p-6 flex flex-col h-full rounded-2xl transition-all hover:bg-white/[0.08]"
                             >
-                              <div className="orca-card p-6 flex flex-col h-full rounded-[inherit] transition-all hover:bg-white/[0.08]">
                                 <div className="flex justify-between items-start mb-4">
                                   <span className={`px-2 py-0.5 rounded font-mono text-[9px] font-bold border ${
                                     item.tagColor === "secondary" 
@@ -2406,7 +2421,6 @@ export default function App() {
                                   </div>
                                   <span className="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-white">more_horiz</span>
                                 </div>
-                              </div>
                             </div>
                           ))}
                         </div>
@@ -2421,8 +2435,7 @@ export default function App() {
                           <span className="font-mono text-[10px] text-on-surface-variant">Real-Time Compact Micro-Bulletins</span>
                         </div>
                         {news?.scraped?.sources.find(s => s.source === "zerodha_pulse")?.articles.map((art, i) => (
-                          <div key={i} className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                            <div className="orca-card p-5 rounded-[inherit] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black/45">
+                          <div key={i} className="orca-card rounded-2xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                               <div className="space-y-2 flex-grow">
                                 <div className="flex items-center gap-2">
                                   <span className="text-[9px] bg-amber-950/20 text-amber-300 font-mono font-bold px-2 py-0.5 rounded border border-amber-500/20">
@@ -2455,7 +2468,6 @@ export default function App() {
                                   LINK OUT
                                 </a>
                               )}
-                            </div>
                           </div>
                         ))}
                       </div>
@@ -2469,8 +2481,7 @@ export default function App() {
                           <span className="font-mono text-xs text-on-surface-variant font-mono">Curated Financial News & Earnings</span>
                         </div>
                         {news?.scraped?.sources.find(s => s.source === "finology_ticker")?.articles.map((art, i) => (
-                          <div key={i} className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                            <div className="orca-card p-5 rounded-[inherit] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-black/45">
+                          <div key={i} className="orca-card rounded-2xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                               <div className="space-y-2 flex-grow">
                                 <div className="flex items-center gap-2">
                                   <span className="text-[9px] bg-emerald-950/20 text-emerald-300 font-mono font-bold px-2 py-0.5 rounded border border-emerald-500/20">
@@ -2498,7 +2509,6 @@ export default function App() {
                                   {art.publisher}
                                 </span>
                               )}
-                            </div>
                           </div>
                         ))}
                       </div>
@@ -2734,8 +2744,7 @@ export default function App() {
               <div className="space-y-8">
                 
                 {/* Pipeline Node header */}
-                <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                  <div className="orca-card p-8 rounded-[inherit] flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-visible">
+                <div className="orca-card rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-visible">
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <span className="px-2.5 py-1 bg-cyan-500/20 text-cyan-200 font-mono text-[9px] border border-cyan-400/40 rounded-sm font-bold uppercase">
@@ -2767,14 +2776,12 @@ export default function App() {
                         </p>
                       </div>
                     </div>
-                  </div>
                 </div>
 
                 {/* Pipeline active execution stages matrix */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
                   {pipeline?.phases.map((phase) => (
-                    <div key={phase.id} className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                      <div className="orca-card flex flex-col p-6 rounded-[inherit] h-full transition-all hover:bg-white/[0.05]">
+                    <div key={phase.id} className="orca-card rounded-2xl flex flex-col p-6 h-full transition-all hover:bg-white/[0.05]">
                         <div className="flex justify-between items-start mb-6">
                           <div>
                             <h3 className="font-mono text-[10px] text-white/75 mb-1 uppercase font-bold tracking-wider">{phase.number}</h3>
@@ -2791,7 +2798,7 @@ export default function App() {
                         {/* Metrics lists */}
                         <div className="space-y-4 flex-1">
                           {phase.metrics.map((metric, i) => (
-                            <div key={i} className="flex items-center justify-between p-3 bg-white/5 backdrop-blur-md rounded-lg border border-white/10 dark:bg-black/20">
+                            <div key={i} className="flex items-center justify-between p-3 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                               <span className="font-mono text-xs text-on-surface-variant/95 font-semibold">
                                 {metric.label}
                               </span>
@@ -2823,7 +2830,6 @@ export default function App() {
                             ></div>
                           </div>
                         </div>
-                      </div>
                     </div>
                   ))}
                 </div>
@@ -2832,8 +2838,7 @@ export default function App() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   
                   {/* Realtime Terminal display console */}
-                  <div className="lg:col-span-2 orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card flex flex-col h-[400px] rounded-[inherit] overflow-hidden">
+                  <div className="orca-card lg:col-span-2 rounded-2xl flex flex-col h-[400px] overflow-hidden">
                       <div className="flex items-center justify-between px-6 py-4 bg-white/10 backdrop-blur-2xl border-b border-white/10">
                         <span className="font-mono text-[11px] text-white flex items-center gap-3 font-bold tracking-widest">
                           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -2866,12 +2871,10 @@ export default function App() {
                         ))}
                         <div ref={terminalBottomRef} />
                       </div>
-                    </div>
                   </div>
 
                   {/* Heatmap Preview segment */}
-                  <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card p-6 flex flex-col rounded-[inherit] h-full overflow-hidden">
+                  <div className="orca-card rounded-2xl p-6 flex flex-col h-full overflow-hidden">
                       <h4 className="font-mono text-[10px] text-on-surface-variant mb-6 flex items-center justify-between uppercase tracking-widest font-bold">
                         Orca_Heatmap_Preview
                         <span className="material-symbols-outlined text-[16px]">grid_view</span>
@@ -2891,7 +2894,6 @@ export default function App() {
                           </button>
                         </div>
                       </div>
-                    </div>
                   </div>
 
                 </div>
@@ -2918,8 +2920,7 @@ export default function App() {
                 <div className="grid grid-cols-12 gap-8 relative z-10">
                   
                   {/* Left Latency stats panel sticky */}
-                  <div className="col-span-12 lg:col-span-3 orbital-border h-fit lg:sticky lg:top-10" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-6 flex flex-col gap-8">
+                  <div className="orca-card col-span-12 lg:col-span-3 rounded-2xl h-fit lg:sticky lg:top-10 p-6 flex flex-col gap-8">
                       <h3 className="font-mono text-xs text-cyan-300 border-b border-white/10 pb-4 tracking-[0.2em] flex items-center gap-2 font-bold uppercase">
                         <Sliders className="w-4 h-4 text-cyan-300" />
                         LATENCY_STATS
@@ -2943,7 +2944,7 @@ export default function App() {
                       </div>
 
                       <div className="pt-6 border-t border-white/10">
-                        <div className="p-4 bg-black/50 rounded-lg border border-white/20">
+                        <div className="p-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                           <span className="font-mono text-[8px] text-purple-300 tracking-widest block mb-3 uppercase font-bold">SYSTEM_NODE_INFO</span>
                           <div className="flex items-center gap-3">
                             <Database className="text-cyan-400 w-5 h-5 shrink-0" />
@@ -2956,14 +2957,12 @@ export default function App() {
                           </div>
                         </div>
                       </div>
-                    </div>
                   </div>
 
                   {/* Core Phase overrides */}
                   <div className="col-span-12 lg:col-span-9 space-y-8">
                     {models?.phases.map((phase) => (
-                      <div key={phase.id} className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                        <div className="orca-card rounded-[inherit] overflow-hidden relative">
+                      <div key={phase.id} className="orca-card rounded-2xl overflow-hidden relative">
                           
                           <div className="px-8 py-5 bg-white/[0.06] border-b border-white/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                             <div className="flex items-center gap-6">
@@ -3027,13 +3026,11 @@ export default function App() {
                             </div>
                           </div>
 
-                        </div>
                       </div>
                     ))}
 
                     {/* Bottom commit configurations bar */}
-                    <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                      <div className="orca-card rounded-[inherit] p-8 flex flex-col md:flex-row items-center justify-between gap-8 bg-gradient-to-br from-black/85 to-neutral-950/70 border border-white/10 shadow-lg">
+                    <div className="orca-card rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8">
                         <div className="flex flex-col sm:flex-row items-center gap-10">
                           
                           <div className="flex flex-col gap-2">
@@ -3086,7 +3083,6 @@ export default function App() {
                             Commit_Config
                           </button>
                         </div>
-                      </div>
                     </div>
 
                   </div>
@@ -3204,7 +3200,7 @@ export default function App() {
                   )}
 
                   {/* TOP SEARCH TAGS ROW */}
-                  <div className="bg-neutral-900/40 border border-white/5 rounded-2xl p-5 space-y-4">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 space-y-4 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <span className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-black">
                       Index Geopolitical Vector Target
                     </span>
@@ -3309,7 +3305,7 @@ export default function App() {
                       {currentArticles.map((article: any, index: number) => (
                         <div 
                           key={`conflict-art-${index}`}
-                          className="bg-black/40 border border-white/10 hover:border-white/20 transition-all duration-300 rounded-2xl overflow-hidden flex flex-col group relative"
+                          className="bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 transition-all rounded-2xl overflow-hidden flex flex-col group relative shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
                         >
                           {/* Image box */}
                           <div className="h-44 relative bg-neutral-950/60 overflow-hidden shrink-0 border-b border-white/5">
@@ -3417,7 +3413,7 @@ export default function App() {
                     </p>
                   </header>
 
-                  <div className="max-w-3xl bg-neutral-900/45 border border-white/10 rounded-2xl overflow-hidden p-6 relative z-10 backdrop-blur-md space-y-6">
+                  <div className="max-w-3xl bg-black/40 backdrop-blur-3xl border border-white/5 rounded-2xl overflow-hidden p-6 relative z-10 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] space-y-6">
                     <div className="border-b border-white/15 pb-4">
                       <h3 className="font-mono text-xs text-cyan-300 tracking-[0.2em] font-extrabold flex items-center gap-2 uppercase">
                         <Settings className="w-4 h-4 text-cyan-300 w-4 h-4" />
@@ -3588,8 +3584,7 @@ export default function App() {
 
                 {/* Macro flows indicator */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
-                  <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-5 flex items-center gap-4 bg-black/45 hover:bg-black/60 transition-colors">
+                  <div className="orca-card rounded-2xl p-5 flex items-center gap-4 hover:bg-white/[0.05] transition-colors">
                       <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-500/35">
                         <span className="material-symbols-outlined text-cyan-400 text-xl">payments</span>
                       </div>
@@ -3599,11 +3594,9 @@ export default function App() {
                           {etfsData?.globalFlowStatus || "INSTITUTIONAL ACCRUEL ACTIVE"}
                         </div>
                       </div>
-                    </div>
                   </div>
 
-                  <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-5 flex items-center gap-4 bg-black/45 hover:bg-black/60 transition-colors">
+                  <div className="orca-card rounded-2xl p-5 flex items-center gap-4 hover:bg-white/[0.05] transition-colors">
                       <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/35">
                         <span className="material-symbols-outlined text-emerald-400 text-xl">equalizer</span>
                       </div>
@@ -3613,11 +3606,9 @@ export default function App() {
                           $1.24 Trillion USD Cumulative
                         </div>
                       </div>
-                    </div>
                   </div>
 
-                  <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                    <div className="orca-card rounded-[inherit] p-5 flex items-center gap-4 bg-black/45 hover:bg-black/60 transition-colors">
+                  <div className="orca-card rounded-2xl p-5 flex items-center gap-4 hover:bg-white/[0.05] transition-colors">
                       <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
                         <span className="material-symbols-outlined text-white/80 text-xl">update</span>
                       </div>
@@ -3629,7 +3620,6 @@ export default function App() {
                           {etfsData?.lastScrapedAt ? new Date(etfsData.lastScrapedAt).toLocaleTimeString() + " UTC" : "Pending Session Capture"}
                         </div>
                       </div>
-                    </div>
                   </div>
                 </div>
 
@@ -3638,8 +3628,7 @@ export default function App() {
                   <div className="relative z-10 space-y-6">
                     {/* Checking active crawl state */}
                     {!etfsData?.scrapedCategories || etfsData.scrapedCategories.length === 0 ? (
-                      <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                        <div className="orca-card p-12 text-center rounded-[inherit] flex flex-col items-center justify-center space-y-6 bg-black/60 font-mono">
+                      <div className="orca-card rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-6 font-mono">
                           <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center animate-pulse">
                             <span className="material-symbols-outlined text-cyan-400 text-3xl animate-spin">cyclone</span>
                           </div>
@@ -3656,12 +3645,11 @@ export default function App() {
                           >
                             {isScrapingEtfs ? "CRAWLING ASSET VECTORS..." : "INITIALIZE CRAWL MECHANISM"}
                           </button>
-                        </div>
                       </div>
                     ) : (
                       <div className="space-y-8">
                         {/* Horizontal scrolling chips list of 14 categories */}
-                        <div className="bg-black/40 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                        <div className="bg-black/40 backdrop-blur-3xl p-4 rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                           <span className="block font-mono text-[9px] text-cyan-300/80 mb-3 tracking-widest uppercase font-bold">
                             Ingested Thematic Categories (14 Sources)
                           </span>
@@ -3691,8 +3679,7 @@ export default function App() {
                           if (!activeCategory) return null;
 
                           return (
-                            <div className="orbital-border" onMouseMove={handleOrbitalMouseMove}>
-                              <div className="orca-card rounded-[inherit] overflow-hidden bg-black/45">
+                            <div className="orca-card rounded-2xl overflow-hidden">
                                 {/* Category Banner Detail */}
                                 <div className="px-8 py-5 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/[0.02]">
                                   <div>
@@ -3820,7 +3807,6 @@ export default function App() {
                                     INGESTED VIA CHEERIO & __NEXT_DATA__ EXCLUSIVES
                                   </span>
                                 </div>
-                              </div>
                             </div>
                           );
                         })()}
@@ -3881,7 +3867,7 @@ export default function App() {
 
                     <div className="space-y-6">
                       {/* FILTER AND QUICK INFO */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/[0.02] border border-white/5 rounded-2xl p-5 backdrop-blur-md">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                         <div className="flex items-center gap-2.5 font-mono text-[11px] text-neutral-400">
                           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
                           <span>Directory Connection:</span>
@@ -3909,7 +3895,7 @@ export default function App() {
                       </div>
 
                       {/* REAL GLOBAL MARKET INDEX BANNER */}
-                      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 backdrop-blur-md">
+                      <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                         <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
                           <h3 className="font-mono text-xs uppercase font-extrabold tracking-wider text-cyan-400 flex items-center gap-2">
                             <Layers className="w-4 h-4 text-cyan-400" />
@@ -3950,7 +3936,7 @@ export default function App() {
                               return (
                                 <div 
                                   key={`gm-idx-${idxItem.symbol}`}
-                                  className="p-3 bg-black/40 border border-white/5 hover:border-cyan-400/30 rounded-xl flex flex-col justify-between transition-all duration-200 text-left"
+                                  className="p-3 bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-cyan-400/30 rounded-2xl flex flex-col justify-between transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] text-left"
                                 >
                                   <div className="flex justify-between items-center mb-1">
                                     <span className="font-mono text-xs font-black text-white">{idxItem.symbol}</span>
@@ -3979,7 +3965,7 @@ export default function App() {
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         
                         {/* COLUMN 1: MARKETS NEWS */}
-                        <div className="space-y-5 bg-neutral-900/10 border border-white/5 p-5 rounded-2xl backdrop-blur-md">
+                        <div className="space-y-5 bg-black/40 backdrop-blur-3xl border border-white/5 p-5 rounded-2xl hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                           <div className="flex items-center justify-between border-b border-white/5 pb-3">
                             <div className="flex items-center gap-2">
                               <TrendingUp className="w-4 h-4 text-emerald-400" />
@@ -4039,7 +4025,7 @@ export default function App() {
                         </div>
 
                         {/* COLUMN 2: FOREX & CURRENCIES */}
-                        <div className="space-y-5 bg-neutral-900/10 border border-white/5 p-5 rounded-2xl backdrop-blur-md">
+                        <div className="space-y-5 bg-black/40 backdrop-blur-3xl border border-white/5 p-5 rounded-2xl hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                           <div className="flex items-center justify-between border-b border-white/5 pb-3">
                             <div className="flex items-center gap-2">
                               <Globe className="w-4 h-4 text-cyan-400" />
@@ -4099,7 +4085,7 @@ export default function App() {
                         </div>
 
                         {/* COLUMN 3: COMMODITIES & FUTURES */}
-                        <div className="space-y-5 bg-neutral-900/10 border border-white/5 p-5 rounded-2xl backdrop-blur-md">
+                        <div className="space-y-5 bg-black/40 backdrop-blur-3xl border border-white/5 p-5 rounded-2xl hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                           <div className="flex items-center justify-between border-b border-white/5 pb-3">
                             <div className="flex items-center gap-2">
                               <Layers className="w-4 h-4 text-amber-400" />
@@ -4161,7 +4147,7 @@ export default function App() {
                       </div>
                     </div>
 
-                  <div className="bg-neutral-900/40 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+                  <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-6 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono">
                       <div className="text-neutral-400 font-medium">
                         &gt; SYSTEM MONITOR STATUS: <span className="text-emerald-400 font-bold">ONLINE</span> (PORT 3000 INGRESS ACTIVE)
@@ -4231,7 +4217,7 @@ export default function App() {
                 </div>
 
                 {/* RESULT CALENDAR TABLE */}
-                <div className="bg-black/20 border border-white/5 rounded-xl p-4">
+                <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
                   <h3 className="font-mono text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4">
                     Result Calendar
                   </h3>
@@ -4276,6 +4262,139 @@ export default function App() {
                             ))}
                         </tbody>
                       </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* EVENTS CARD — Tickertape */}
+                <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-mono text-sm font-bold text-emerald-400 uppercase tracking-wider">
+                      Events
+                    </h3>
+                    <div className="flex items-center gap-3">
+                      {tickertapeEventsError && (
+                        <span className="text-[9px] font-mono text-rose-400 truncate max-w-[200px]" title={tickertapeEventsError}>
+                          {tickertapeEventsError}
+                        </span>
+                      )}
+                      <button
+                        onClick={fetchTickertapeEvents}
+                        disabled={isFetchingTickertapeEvents}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-400/20 hover:bg-emerald-400 hover:text-black border border-emerald-400/30 text-emerald-400 font-semibold text-[9px] font-mono tracking-widest rounded-lg transition-all disabled:opacity-50"
+                      >
+                        {isFetchingTickertapeEvents ? (
+                          <>
+                            <div className="w-2.5 h-2.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                            LOADING...
+                          </>
+                        ) : (
+                          <>
+                            <RotateCw className="w-3 h-3" />
+                            REFRESH
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {isFetchingTickertapeEvents && tickertapeEvents.length === 0 ? (
+                    <div className="py-10 text-center text-neutral-500">
+                      <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                      <p className="text-xs font-mono">Fetching events from Tickertape...</p>
+                    </div>
+                  ) : tickertapeEvents.length === 0 ? (
+                    <div className="py-12 text-center text-neutral-500 border border-dashed border-white/5 bg-white/[0.01] rounded-xl">
+                      <Newspaper className="w-8 h-8 mx-auto mb-3 text-neutral-600" />
+                      <p className="text-sm font-mono">No events data available.</p>
+                      <button
+                        onClick={fetchTickertapeEvents}
+                        className="mt-4 px-4 py-2 bg-emerald-400/20 hover:bg-emerald-400 hover:text-black text-emerald-400 text-xs font-mono rounded-lg transition-all"
+                      >
+                        Fetch Events
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
+                      {tickertapeEvents.map((item, idx) => {
+                        const pubDate = new Date(item.date);
+                        const timeAgo = (() => {
+                          const diffMs = Date.now() - pubDate.getTime();
+                          const diffMins = Math.floor(diffMs / 60000);
+                          if (diffMins < 60) return `${diffMins}m ago`;
+                          const diffHrs = Math.floor(diffMins / 60);
+                          if (diffHrs < 24) return `${diffHrs}h ago`;
+                          return `${Math.floor(diffHrs / 24)}d ago`;
+                        })();
+                        return (
+                          <div
+                            key={`tt-event-${idx}`}
+                            className="flex gap-3 p-3 bg-black/40 backdrop-blur-3xl border border-white/5 rounded-2xl hover:border-emerald-400/20 hover:bg-white/[0.02] transition-all group shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
+                          >
+                            {item.imageUrl && (
+                              <img
+                                src={item.imageUrl}
+                                alt=""
+                                className="w-16 h-16 rounded-lg object-cover flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity"
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                {item.tag && (
+                                  <span className="text-[8px] font-mono font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                                    {item.tag}
+                                  </span>
+                                )}
+                                <span className="text-[9px] font-mono text-neutral-500">{item.publisher}</span>
+                                <span className="text-[9px] font-mono text-neutral-600 ml-auto">{timeAgo}</span>
+                              </div>
+                              {item.link ? (
+                                <a
+                                  href={item.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs font-mono text-white font-semibold leading-snug hover:text-emerald-400 transition-colors line-clamp-2 block"
+                                >
+                                  {item.headline}
+                                </a>
+                              ) : (
+                                <p className="text-xs font-mono text-white font-semibold leading-snug line-clamp-2">
+                                  {item.headline}
+                                </p>
+                              )}
+                              {item.summary && (
+                                <p className="text-[10px] font-mono text-neutral-400 mt-1 leading-relaxed line-clamp-2">
+                                  {item.summary}
+                                </p>
+                              )}
+                              {item.stocks && item.stocks.length > 0 && (
+                                <div className="flex gap-1.5 mt-2 flex-wrap">
+                                  {item.stocks.slice(0, 4).map((s, si) => {
+                                    const chg = s.price && s.close ? ((s.price - s.close) / s.close) * 100 : null;
+                                    return (
+                                      <span
+                                        key={`s-${si}`}
+                                        className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300 flex items-center gap-1"
+                                      >
+                                        {s.sid}
+                                        {chg !== null && (
+                                          <span className={chg >= 0 ? "text-emerald-400" : "text-rose-400"}>
+                                            {chg >= 0 ? "+" : ""}{chg.toFixed(1)}%
+                                          </span>
+                                        )}
+                                      </span>
+                                    );
+                                  })}
+                                  {item.stocks.length > 4 && (
+                                    <span className="text-[8px] font-mono text-neutral-600">+{item.stocks.length - 4}</span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

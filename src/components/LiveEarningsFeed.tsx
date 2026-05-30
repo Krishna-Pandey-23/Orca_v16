@@ -319,7 +319,7 @@ export default function LiveEarningsFeed({
       </div>
 
       {/* 2. FILTERS & SEARCH */}
-      <div className="bg-black/30 backdrop-blur-2xl rounded-2xl border border-white/5 shadow-2xl p-6">
+      <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] p-6">
 
         <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 gap-4 border-b border-white/5">
           <div>
@@ -412,7 +412,7 @@ export default function LiveEarningsFeed({
             filteredCalls.map((call) => (
               <div
                 key={call.id}
-                className="p-4 bg-black/30 border border-white/5 hover:border-white/15 rounded-xl transition-all group cursor-pointer"
+                className="p-4 bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-white/10 rounded-2xl transition-all group cursor-pointer shadow-[0_4px_30px_rgba(0,0,0,0.4)]"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">

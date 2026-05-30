@@ -329,6 +329,40 @@ export interface MoneycontrolWorldData {
   market_updates: MoneycontrolWorldArticle[];
 }
 
+// Tickertape Events / News
+export interface TickertapeStockRef {
+  sid: string;
+  initialPrice: number;
+  price: number;
+  close: number;
+}
+
+export interface TickertapeNewsItem {
+  date: string;
+  headline: string;
+  imageUrl: string;
+  link: string;
+  publisher: string;
+  stocks: TickertapeStockRef[];
+  summary: string;
+  tag: string;
+  version: string;
+}
+
+export interface TickertapeEventsData {
+  all: TickertapeNewsItem[];
+  news: TickertapeNewsItem[];
+  dividends: { upcoming: unknown[]; past: unknown[] };
+  corpActions: { upcoming: unknown[]; past: unknown[] };
+  earnings: { upcoming: unknown[]; past: unknown[] };
+  economicEvents: { upcoming: unknown[]; past: unknown[] };
+}
+
+export interface TickertapeApiResponse {
+  success: boolean;
+  data: TickertapeEventsData;
+}
+
 // MoneyControl Earnings Company (Playwright)
 export interface MoneycontrolEarningsCompany {
   name: string;

@@ -742,6 +742,44 @@ app.post("/api/earnings/scrape", async (req, res) => {
   }
 });
 
+// ========== TICKERTAPE EVENTS PROXY ==========
+
+app.get("/api/tickertape/events", async (req, res) => {
+  const count = req.query.count || "20";
+  const offset = req.query.offset || "0";
+  const sids = req.query.sids || "";
+  const type = req.query.type || "news";
+  const params = new URLSearchParams({
+    count: String(count),
+    offset: String(offset),
+    sids: String(sids),
+    type: String(type),
+  });
+  try {
+    const response = await fetch(
+      `https://analyze.api.tickertape.in/v2/homepage/events?${params}`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Referer: "https://www.tickertape.in/",
+          Origin: "https://www.tickertape.in",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        },
+      }
+    );
+    if (!response.ok) {
+      res.status(response.status).json({ error: `Tickertape API error: ${response.status} ${response.statusText}` });
+      return;
+    }
+    const data = await response.json();
+    res.json(data);
+  } catch (err: any) {
+    console.error("Tickertape proxy error:", err);
+    res.status(500).json({ error: err.message || "Failed to proxy Tickertape events" });
+  }
+});
+
 // ========== LIVE EARNINGS CALLS API ==========
 
 app.get("/api/live-earnings", (req, res) => {
