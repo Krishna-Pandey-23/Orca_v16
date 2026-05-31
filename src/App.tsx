@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Activity, Newspaper, TrendingUp, TriangleAlert as AlertTriangle, ShieldAlert, Search, Bell, Zap, RotateCw, Settings, Check, Info, Sparkles, ExternalLink, Database, Globe, Clock, Compass, TrendingDown, Calendar, Layers, Tag } from "lucide-react";
 import Nse500Tracker from "./components/Nse500Tracker";
 import LiveEarningsFeed, { LiveEarningsData, LiveEarningsCall } from "./components/LiveEarningsFeed";
-import OrcaLogo from "./assets/Orca_Logo-removebg.png";
+import OrcaLogo from "./assets/Orca_Logo-removebg_zoomed.PNG";
 import {
   Ticker,
   NewsFeatured,
