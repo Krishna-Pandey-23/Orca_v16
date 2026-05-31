@@ -1,21 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Activity, Terminal, Newspaper, Workflow, Cpu, TrendingUp, TriangleAlert as AlertTriangle, ShieldAlert, Search, Bell, Play, History, SlidersHorizontal, Zap, RotateCw, Settings, Check, Bookmark, Share2, Info, Layers, Square, SquareCheck as CheckSquare, Sparkles, ExternalLink, FileSliders as Sliders, Database, Globe, Clock, Compass, Tag, TrendingDown, Calendar, Phone } from "lucide-react";
+import { Activity, Newspaper, TrendingUp, TriangleAlert as AlertTriangle, ShieldAlert, Search, Bell, Zap, RotateCw, Settings, Check, Info, Sparkles, ExternalLink, Database, Globe, Clock, Compass, TrendingDown, Calendar, Layers, Tag } from "lucide-react";
 import Nse500Tracker from "./components/Nse500Tracker";
 import LiveEarningsFeed, { LiveEarningsData, LiveEarningsCall } from "./components/LiveEarningsFeed";
 import {
   Ticker,
-  RecalibrationFilter,
-  IndexExposure,
   NewsFeatured,
   NewsFeedItem,
   NewsSuggested,
-  PhaseConfig,
-  PipelinePhase,
-  PipelineLog,
-  PipelineData,
   SignalsData,
   NewsData,
-  ModelsData,
   EtfsData,
   EtfItem,
   TickertapeNewsItem,
@@ -29,8 +22,6 @@ export default function App() {
   // Backend Data States
   const [signals, setSignals] = useState<SignalsData | null>(null);
   const [news, setNews] = useState<NewsData | null>(null);
-  const [pipeline, setPipeline] = useState<PipelineData | null>(null);
-  const [models, setModels] = useState<ModelsData | null>(null);
   const [etfsData, setEtfsData] = useState<EtfsData | null>(null);
   const [etfViewMode, setEtfViewMode] = useState<"monitored" | "scraped">("scraped");
   const [selectedScrapedCategory, setSelectedScrapedCategory] = useState<string>("");
@@ -89,10 +80,7 @@ export default function App() {
   const [bseQuoteCode, setBseQuoteCode] = useState<string>("500325");
   const [bseQuote, setBseQuote] = useState<any>(null);
 
-  // Conflict Tracker & GNews States
-  const [conflictApiKey, setConflictApiKey] = useState<string>(() => {
-    return localStorage.getItem("gnews_api_key") || "";
-  });
+  // Conflict Tracker States (Google News RSS - no API key required)
   const [alphaVantageApiKey, setAlphaVantageApiKey] = useState<string>(() => {
     return localStorage.getItem("alpha_vantage_api_key") || "";
   });
@@ -100,10 +88,6 @@ export default function App() {
   const [conflictArticles, setConflictArticles] = useState<any[]>([]);
   const [isFetchingConflict, setIsFetchingConflict] = useState<boolean>(false);
   const [conflictError, setConflictError] = useState<string | null>(null);
-  const [conflictSearchLang, setConflictSearchLang] = useState<string>("en");
-  const [conflictSearchCountry, setConflictSearchCountry] = useState<string>("any");
-  const [conflictSortBy, setConflictSortBy] = useState<string>("publishedAt");
-  const [conflictMaxResults, setConflictMaxResults] = useState<number>(10);
 
   // Interaction / Loading UX states for ETFs
   const [isRebalancingEtfs, setIsRebalancingEtfs] = useState<boolean>(false);
@@ -115,19 +99,14 @@ export default function App() {
 
   // Interaction / Loading UX states
   const [searchContext, setSearchContext] = useState<string>("");
-  const [isCalibrating, setIsCalibrating] = useState<boolean>(false);
   const [isAiLoading, setIsAiLoading] = useState<boolean>(false);
   const [isPromptsLoading, setIsPromptsLoading] = useState<Record<string, boolean>>({});
-  const [isPipelineRebooting, setIsPipelineRebooting] = useState<boolean>(false);
   const [showResolveModal, setShowResolveModal] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error" | "info">("success");
 
   // Timer simulation state
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(892.39);
-
-  // References
-  const terminalBottomRef = useRef<HTMLDivElement>(null);
 
   // Trigger Toast helper
   const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
@@ -142,8 +121,6 @@ export default function App() {
   useEffect(() => {
     fetchSignals();
     fetchNews();
-    fetchPipeline();
-    fetchModels();
     fetchEtfs();
     fetchGlobalMonitor();
     fetchIndianIndices();
@@ -165,48 +142,24 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Conflict news dynamic sync
+  // Conflict news dynamic sync with debounce (avoids rapid re-fetches)
+  const conflictFetchTimerRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
-    if (activeTab === "conflict-tracker" && conflictApiKey) {
-      fetchConflictNews(conflictSearchTerm);
+    if (conflictFetchTimerRef.current) {
+      clearTimeout(conflictFetchTimerRef.current);
     }
-  }, [activeTab, conflictSearchTerm, conflictApiKey]);
-
-  // Periodic random micro-flicker log updates
-  useEffect(() => {
-    const logInterval = setInterval(() => {
-      if (activeTab === "pipeline" && pipeline) {
-        // Occasionally append a live simulated log to show real-time stream execution
-        if (Math.random() > 0.6) {
-          const hours = new Date().toISOString().substring(11, 19);
-          const levels = ["INFO", "EXEC", "WARN"];
-          const level = levels[Math.floor(Math.random() * levels.length)];
-          let message = "Evaluating node metrics...";
-          if (level === "INFO") message = `L2 feed tick complete. Weights updated on CPU segment ${Math.floor(Math.random() * 8)}.`;
-          if (level === "EXEC") message = `Executing attention sweep over standard model allocation.`;
-          if (level === "WARN") message = `High latency detected on auxiliary route AWS-USE-1A. Retrying channel...`;
-
-          setPipeline(prev => {
-            if (!prev) return prev;
-            const updatedLogs = [...prev.logs, { time: hours, level, message }];
-            if (updatedLogs.length > 50) updatedLogs.shift(); // Keep logs clean
-            return {
-              ...prev,
-              logs: updatedLogs
-            };
-          });
-        }
+    if (activeTab === "conflict-tracker" && conflictSearchTerm.trim()) {
+      // Debounce: wait 500ms after last change before firing the API call
+      conflictFetchTimerRef.current = setTimeout(() => {
+        fetchConflictNews(conflictSearchTerm);
+      }, 500);
+    }
+    return () => {
+      if (conflictFetchTimerRef.current) {
+        clearTimeout(conflictFetchTimerRef.current);
       }
-    }, 4000);
-    return () => clearInterval(logInterval);
-  }, [activeTab, pipeline]);
-
-  // Log auto-scroll
-  useEffect(() => {
-    if (activeTab === "pipeline" && terminalBottomRef.current) {
-      terminalBottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [pipeline?.logs, activeTab]);
+    };
+  }, [activeTab, conflictSearchTerm]);
 
   const fetchSignals = async () => {
     try {
@@ -249,30 +202,6 @@ export default function App() {
       showToast("Network fault during active crawler trigger.", "error");
     } finally {
       setIsScrapingNews(false);
-    }
-  };
-
-  const fetchPipeline = async () => {
-    try {
-      const res = await fetch("/api/pipeline");
-      if (res.ok) {
-        const data = await res.json();
-        setPipeline(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch pipeline:", err);
-    }
-  };
-
-  const fetchModels = async () => {
-    try {
-      const res = await fetch("/api/models");
-      if (res.ok) {
-        const data = await res.json();
-        setModels(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch models:", err);
     }
   };
 
@@ -660,37 +589,42 @@ export default function App() {
   };
 
   const fetchConflictNews = async (term: string) => {
-    if (!conflictApiKey) {
-      showToast("GNews API Key is missing. Please configure it in the Settings tab.", "error");
-      setConflictError("GNews API Key is missing. Head to the Settings tab to enter your key.");
-      return;
-    }
     setIsFetchingConflict(true);
     setConflictError(null);
-    showToast(`Accessing GNews feed for "${term}"...`, "info");
+    showToast(`Fetching Google News RSS for "${term}"...`, "info");
     try {
       const encodedQuery = encodeURIComponent(term);
-      const url = `/api/gnews/search?q=${encodedQuery}&lang=${conflictSearchLang}&country=${conflictSearchCountry}&sortby=${conflictSortBy}&max=${conflictMaxResults}&apikey=${encodeURIComponent(conflictApiKey)}`;
+      const response = await fetch(`/api/google-news/rss?q=${encodedQuery}`);
       
-      const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`GNews Server responded with HTTP code ${response.status}`);
+        throw new Error(`Server responded with HTTP code ${response.status}`);
       }
-      const data = await response.json();
-      if (data.errors) {
-        throw new Error(data.errors.join(", "));
+      
+      const contentType = response.headers.get("content-type") || "";
+      
+      // Check if response is actually JSON before parsing
+      if (!contentType.includes("application/json") && !contentType.includes("text/json")) {
+        const text = await response.text();
+        console.error(`[Conflict Tracker] Expected JSON but got ${contentType}. Response: ${text.substring(0, 200)}`);
+        setConflictError("Expected JSON response but received HTML or other content. The server may be returning an error page.");
+        setConflictArticles([]);
+        return;
       }
+      
+      const data = await response.json() as { articles?: any[] };
+      
       if (data.articles) {
-        setConflictArticles(data.articles || []);
+        setConflictArticles(data.articles);
         showToast(`Successfully retrieved ${data.articles.length} news articles!`, "success");
       } else {
         setConflictArticles([]);
-        showToast("No active articles matches this query keyword.", "info");
+        showToast("No articles match this query keyword.", "info");
       }
     } catch (err: any) {
       console.error(err);
-      setConflictError(err.message || "Failed to query high-precision GNews API.");
-      showToast(err.message || "GNews feed download anomaly.", "error");
+      const errorMessage = err.message || "Failed to fetch Google News RSS feed.";
+      setConflictError(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setIsFetchingConflict(false);
     }
@@ -762,60 +696,6 @@ export default function App() {
   };
 
   // 2. Core Interactions
-  const handleRecalibrateFilterToggle = async (filterId: string) => {
-    if (!signals) return;
-    const updatedFilters = signals.recalibration.filters.map(f => {
-      if (f.id === filterId) {
-        return { ...f, active: !f.active };
-      }
-      return f;
-    });
-
-    // Optimistically project new confidence
-    let delta = updatedFilters.filter(f => f.active).length * 8.5 + 68.2;
-    const confidence = +Math.min(99.6, Math.max(60.2, delta + (Math.random() - 0.5) * 4)).toFixed(1);
-
-    setIsCalibrating(true);
-    try {
-      const res = await fetch("/api/signals/recalibrate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filters: updatedFilters, confidence }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setSignals(data.db);
-        showToast(`Recalibration engine complete: confidence set to ${confidence}%`, "success");
-      }
-    } catch (err) {
-      showToast("Backend connection limit exceeded. Check console.", "error");
-    } finally {
-      setIsCalibrating(false);
-    }
-  };
-
-  const handleManualRecalibrate = async () => {
-    if (!signals) return;
-    setIsCalibrating(true);
-    const confidence = +(75 + Math.random() * 24).toFixed(1);
-    try {
-      const res = await fetch("/api/signals/recalibrate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ confidence }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setSignals(data.db);
-        showToast("Recalibrated model allocations. Ticker scoring randomized.", "success");
-      }
-    } catch (err) {
-      showToast("Calibration alignment faulted.", "error");
-    } finally {
-      setIsCalibrating(false);
-    }
-  };
-
   // Perform Gemini AI macro market intelligence summary
   const handleAiMarketAnalysis = async () => {
     if (!searchContext) {
@@ -851,118 +731,6 @@ export default function App() {
     } finally {
       setIsAiLoading(false);
     }
-  };
-
-  // Reset or Reboot Pipeline sequence
-  const handleRebootPipeline = async () => {
-    setIsPipelineRebooting(true);
-    showToast("Rebooting execution sequence Node ID: ORCA-16...", "info");
-    try {
-      const res = await fetch("/api/pipeline/reboot", {
-        method: "POST",
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setPipeline(data.db);
-        showToast("Pipeline returned online. Support node cooling complete.", "success");
-      }
-    } catch (err) {
-      showToast("Failure rebooting node gateway.", "error");
-    } finally {
-      setIsPipelineRebooting(false);
-    }
-  };
-
-  // Optimize individual model prompts using Gemini
-  const handleOptimizePrompt = async (phaseId: string, currentPrompt: string) => {
-    setIsPromptsLoading(prev => ({ ...prev, [phaseId]: true }));
-    showToast("Gemini 3.5 evaluating prompt. Performing principal structural refactoring...", "info");
-    try {
-      const res = await fetch("/api/models/optimize-prompt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phaseId, currentPrompt }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setModels(data.db);
-        showToast("Prompt optimization complete with neural embedding compression!", "success");
-      } else {
-        const errData = await res.json();
-        showToast(errData.error || "Gemini key is missing or invalid.", "error");
-      }
-    } catch (err) {
-      showToast("Optimize API call timed out.", "error");
-    } finally {
-      setIsPromptsLoading(prev => ({ ...prev, [phaseId]: false }));
-    }
-  };
-
-  // Commit dynamic configurations to disk
-  const handleCommitModels = async () => {
-    if (!models) return;
-    try {
-      const res = await fetch("/api/models/commit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(models),
-      });
-      if (res.ok) {
-        showToast("Configurations committed successfully to data-models.json persistence!", "success");
-      }
-    } catch (err) {
-      showToast("Commit rejected.", "error");
-    }
-  };
-
-  // Set the prompt override text state locally before commit
-  const handlePromptChange = (phaseId: string, value: string) => {
-    if (!models) return;
-    const updatedPhases = models.phases.map(p => {
-      if (p.id === phaseId) {
-        return {
-          ...p,
-          prompt: value,
-          tokensUsed: Math.floor(value.length / 4)
-        };
-      }
-      return p;
-    });
-    setModels({
-      ...models,
-      phases: updatedPhases
-    });
-  };
-
-  // Set the allocation models select state locally
-  const handleAllocationChange = (phaseId: string, value: string) => {
-    if (!models) return;
-    const updatedPhases = models.phases.map(p => {
-      if (p.id === phaseId) {
-        return { ...p, allocation: value };
-      }
-      return p;
-    });
-    setModels({
-      ...models,
-      phases: updatedPhases
-    });
-  };
-
-  const handleRetryCountChange = (value: number) => {
-    if (!models) return;
-    setModels({
-      ...models,
-      retryCount: value
-    });
-  };
-
-  const handleEmbeddingsToggle = () => {
-    if (!models) return;
-    setModels({
-      ...models,
-      autoEmbeddings: !models.autoEmbeddings
-    });
   };
 
   // Orbital silver tracking calculations for hovering states
@@ -1088,19 +856,6 @@ export default function App() {
           </button>
 
           <button 
-            id="nav-pipeline"
-            onClick={() => setActiveTab("pipeline")}
-            className={`w-full flex items-center gap-4 px-4 py-3 font-mono text-xs rounded-xl transition-all duration-200 text-left ${
-              activeTab === "pipeline" 
-                ? "bg-white/10 text-white border border-white/20 shadow-md" 
-                : "text-on-surface-variant hover:text-white hover:bg-white/5"
-            }`}
-          >
-            <span className="material-symbols-outlined text-xl">hub</span>
-            Pipeline
-          </button>
-
-          <button 
             id="nav-etfs"
             onClick={() => setActiveTab("etfs")}
             className={`w-full flex items-center gap-4 px-4 py-3 font-mono text-xs rounded-xl transition-all duration-200 text-left ${
@@ -1139,22 +894,6 @@ export default function App() {
             Earnings Calendar
           </button>
 
-          <div className="h-4"></div>
-          <p className="font-mono text-[9px] text-on-surface-variant/40 px-4 mb-3 uppercase tracking-[0.2em]">Modules</p>
-
-          <button 
-            id="nav-models"
-            onClick={() => setActiveTab("models")}
-            className={`w-full flex items-center gap-4 px-4 py-3 font-mono text-xs rounded-xl transition-all duration-200 text-left ${
-              activeTab === "models" 
-                ? "bg-white/10 text-white border border-white/20 shadow-md" 
-                : "text-on-surface-variant hover:text-white hover:bg-white/5"
-            }`}
-          >
-            <span className="material-symbols-outlined text-xl">settings_suggest</span>
-            Models
-          </button>
-
           <button 
             id="nav-conflict-tracker"
             onClick={() => setActiveTab("conflict-tracker")}
@@ -1179,14 +918,6 @@ export default function App() {
           >
             <span className="material-symbols-outlined text-xl">settings</span>
             Settings
-          </button>
-
-          <button 
-            onClick={() => showToast("Oracle Core operational. Mode set to system specifications.", "info")}
-            className="w-full flex items-center gap-4 px-4 py-3 font-mono text-xs text-on-surface-variant hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 text-left"
-          >
-            <span className="material-symbols-outlined text-xl">terminal</span>
-            Terminal
           </button>
         </nav>
 
@@ -1226,16 +957,6 @@ export default function App() {
                 type="text"
               />
             </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={handleManualRecalibrate}
-              disabled={isCalibrating}
-              className="px-6 h-12 rounded-xl bg-white text-black font-semibold text-xs flex items-center gap-3 hover:brightness-110 active:scale-95 transition-all shadow-[0_0_25px_rgba(255,255,255,0.2)] tracking-widest font-mono disabled:opacity-55"
-            >
-              <RotateCw className={`w-4 h-4 ${isCalibrating ? 'animate-spin' : ''}`} />
-              RECALIBRATE
-            </button>
           </div>
         </div>
 
@@ -1471,106 +1192,8 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Right Recalibration Sidebar Panel */}
+                {/* Right Sidebar Panel */}
                 <aside className="w-full lg:w-96 shrink-0 space-y-8 z-20 flex flex-col justify-between">
-                  <div className="orca-card rounded-2xl h-fit p-8 flex flex-col relative overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
-                      
-                      <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/10 relative z-10">
-                        <SlidersHorizontal className="text-white w-5 h-5" />
-                        <h2 className="text-lg font-bold text-white">Recalibration Engine</h2>
-                      </div>
-
-                      <div className="space-y-6 relative z-10">
-                        <div>
-                          <h3 className="font-mono text-[10px] text-on-surface-variant/80 opacity-80 mb-4 uppercase tracking-[0.2em] font-bold">
-                            FILTER_ARCHITECTURE
-                          </h3>
-                          
-                          <div className="space-y-3">
-                            {signals?.recalibration.filters.map((f) => (
-                              <label 
-                                key={f.id}
-                                className="flex items-center justify-between p-3 bg-black/40 backdrop-blur-2xl rounded-xl border border-white/5 cursor-pointer hover:bg-white/5 transition-all group"
-                              >
-                                <div className="flex items-center gap-4">
-                                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/30 transition-all">
-                                    <input 
-                                      type="checkbox"
-                                      checked={f.active}
-                                      onChange={() => handleRecalibrateFilterToggle(f.id)}
-                                      className="w-4 h-4 rounded text-black bg-white focus:ring-0 focus:ring-offset-0 cursor-pointer border-none"
-                                    />
-                                  </div>
-                                  <span className="text-sm font-medium text-white/90 group-hover:text-white transition-colors">{f.label}</span>
-                                </div>
-                                <span className="font-mono text-[10px] text-white/80 font-semibold">{f.value}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <h3 className="font-mono text-[10px] text-on-surface-variant/80 opacity-80 mb-4 uppercase tracking-[0.2em] font-bold">
-                            MODEL_CONFIDENCE
-                          </h3>
-
-                          {signals && (
-                            <div className="p-6 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 relative hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
-                              <div className="flex justify-between items-end mb-4">
-                                <div className="font-mono text-4xl text-white font-bold">
-                                  {signals.recalibration.confidence}
-                                  <span className="text-xl opacity-40">%</span>
-                                </div>
-                                <span className="font-mono text-[9px] text-white/70 uppercase pb-1 font-bold">
-                                  Very High Conf
-                                </span>
-                              </div>
-                              
-                              <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden shadow-inner">
-                                <div 
-                                  className="h-full bg-gradient-to-r from-gray-400 via-white to-gray-400 shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-all duration-700"
-                                  style={{ width: `${signals.recalibration.confidence}%` }}
-                                ></div>
-                              </div>
-                              <p className="text-[10px] text-on-surface-variant/80 mt-4 leading-relaxed italic">
-                                "Signal accuracy based on backtesting 4.2k scenarios in current market regime."
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <button 
-                        onClick={handleManualRecalibrate}
-                        className="w-full mt-8 py-4 bg-white/5 backdrop-blur-2xl border border-white/20 hover:border-white/60 text-white font-mono text-xs font-bold transition-all active:scale-[0.98] rounded-xl relative z-10 uppercase tracking-widest"
-                      >
-                        REGENERATE_ENVIRONMENT
-                      </button>
-                  </div>
-
-                  <div className="orca-card rounded-2xl p-6">
-                      <div className="flex justify-between items-center mb-4 relative z-10">
-                        <h3 className="font-mono text-[10px] text-white/80 flex items-center gap-2 font-bold uppercase tracking-wider">
-                          INDEX_EXPOSURE
-                        </h3>
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full animate-ping shadow-[0_0_8px_rgba(0,255,0,0.8)]"></span>
-                      </div>
-                      <div className="space-y-3 relative z-10">
-                        {signals?.exposures.map((item) => (
-                          <div 
-                            key={item.name}
-                            className="flex justify-between items-center p-3 bg-black/40 backdrop-blur-2xl rounded-lg border border-white/5"
-                          >
-                            <span className="font-mono text-xs text-white/90 font-bold">{item.name}</span>
-                            <span className={`font-mono text-xs font-bold ${item.change >= 0 ? "text-cyan-400" : "text-rose-400"}`}>
-                              {item.change >= 0 ? "+" : ""}{item.change}% {item.displayValue && `(${item.displayValue})`}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                  </div>
-
                   {/* Real Global Indices Card powered by Alpha Vantage */}
                   <div className="orca-card rounded-2xl p-6 relative overflow-hidden">
                       <div className="flex justify-between items-center mb-4 relative z-10">
@@ -2739,357 +2362,6 @@ export default function App() {
               </div>
             )}
 
-            {/* TAB THREE: PIPELINE EXECUTION SCREEN AND SCROLL LOGS */}
-            {activeTab === "pipeline" && (
-              <div className="space-y-8">
-                
-                {/* Pipeline Node header */}
-                <div className="orca-card rounded-2xl p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-visible">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="px-2.5 py-1 bg-cyan-500/20 text-cyan-200 font-mono text-[9px] border border-cyan-400/40 rounded-sm font-bold uppercase">
-                          Seq_Execution
-                        </span>
-                        <span className="font-mono text-xs text-on-surface-variant opacity-80 uppercase tracking-widest font-bold">
-                          NODE_ID: {pipeline?.mainMeta.nodeId}
-                        </span>
-                      </div>
-                      <h2 className="text-3xl font-extrabold text-white uppercase italic tracking-tight">
-                        Execution Pipeline: Orca_v16
-                      </h2>
-                    </div>
-                    
-                    <div className="flex gap-12">
-                      <div className="text-right">
-                        <p className="font-mono text-[10.5px] text-on-surface-variant mb-1 uppercase tracking-widest font-bold">Elapsed_Time</p>
-                        <p className="font-mono text-3xl text-cyan-300 font-black tracking-wider shadow-sm select-auto">
-                          {Math.floor(elapsedSeconds / 3600).toString().padStart(2, "0")}:
-                          {Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, "0")}:
-                          {Math.floor(elapsedSeconds % 60).toString().padStart(2, "0")}.
-                          {Math.floor((elapsedSeconds % 1) * 100).toString().padStart(2, "0")}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-mono text-[10.5px] text-on-surface-variant mb-1 uppercase tracking-widest font-bold">Mem_Allocation</p>
-                        <p className="font-mono text-3xl text-purple-300 font-black tracking-wider">
-                          {pipeline?.mainMeta.memoryAllocated} / {pipeline?.mainMeta.memoryMax}
-                        </p>
-                      </div>
-                    </div>
-                </div>
-
-                {/* Pipeline active execution stages matrix */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-                  {pipeline?.phases.map((phase) => (
-                    <div key={phase.id} className="orca-card rounded-2xl flex flex-col p-6 h-full transition-all hover:bg-white/[0.05]">
-                        <div className="flex justify-between items-start mb-6">
-                          <div>
-                            <h3 className="font-mono text-[10px] text-white/75 mb-1 uppercase font-bold tracking-wider">{phase.number}</h3>
-                            <p className="text-xl font-extrabold uppercase italic tracking-tight">{phase.title}</p>
-                          </div>
-                          
-                          <div className="phase-indicator-orbital" style={{ "--indicator-color": phase.indicatorColor, "--progress": `${phase.progress}%` } as React.CSSProperties}>
-                            {phase.status === "completed" && <Check className="w-4 h-4 text-cyan-400" />}
-                            {phase.status === "running" && <RotateCw className="w-4 h-4 text-cyan-300 animate-spin" />}
-                            {phase.status === "critical" && <span className="material-symbols-outlined text-rose-400 text-sm animate-ping">report_problem</span>}
-                          </div>
-                        </div>
-
-                        {/* Metrics lists */}
-                        <div className="space-y-4 flex-1">
-                          {phase.metrics.map((metric, i) => (
-                            <div key={i} className="flex items-center justify-between p-3 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
-                              <span className="font-mono text-xs text-on-surface-variant/95 font-semibold">
-                                {metric.label}
-                              </span>
-                              {metric.completed === true ? (
-                                <span className="material-symbols-outlined text-cyan-400 text-sm font-black">done_all</span>
-                              ) : metric.completed === "spinning" ? (
-                                <RotateCw className="w-3.5 h-3.5 text-cyan-400 animate-spin" />
-                              ) : metric.completed === "fail" ? (
-                                <span className="material-symbols-outlined text-rose-400 text-sm font-extrabold">close</span>
-                              ) : (
-                                <span className="material-symbols-outlined text-on-surface-variant text-sm font-semibold">pause</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Progress slider bar */}
-                        <div className="mt-6 pt-4 border-t border-white/10">
-                          <p className="font-mono text-[9px] text-on-surface-variant/80 mb-2 uppercase tracking-widest font-bold">
-                            {phase.liftLabel}
-                          </p>
-                          <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full rounded-full transition-all duration-700 shadow-lg" 
-                              style={{ 
-                                width: `${phase.liftPercent}%`, 
-                                backgroundColor: phase.status === "critical" ? "#ffb4ab" : phase.status === "running" ? "#00f0ff" : phase.indicatorColor 
-                              }}
-                            ></div>
-                          </div>
-                        </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bottom Live System Logs Stream & Heatmap resolve */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  
-                  {/* Realtime Terminal display console */}
-                  <div className="orca-card lg:col-span-2 rounded-2xl flex flex-col h-[400px] overflow-hidden">
-                      <div className="flex items-center justify-between px-6 py-4 bg-white/10 backdrop-blur-2xl border-b border-white/10">
-                        <span className="font-mono text-[11px] text-white flex items-center gap-3 font-bold tracking-widest">
-                          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                          SYSTEM_LOG_STREAM_V16
-                        </span>
-                        
-                        <div className="flex gap-2">
-                          <button 
-                            onClick={handleRebootPipeline}
-                            disabled={isPipelineRebooting}
-                            className="bg-white/5 hover:bg-white/15 px-3 py-1 rounded text-[10px] font-mono font-bold text-white border border-white/10 tracking-widest flex items-center gap-1.5 transition-colors disabled:opacity-45"
-                          >
-                            <span className="material-symbols-outlined text-xs">refresh</span>
-                            REBOOT_NODE
-                          </button>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-1 p-6 font-mono text-[13px] overflow-y-auto terminal-scroll space-y-3 bg-black/40 backdrop-blur-xl custom-scrollbar rounded-b-xl select-text">
-                        {pipeline?.logs.map((log, i) => (
-                          <div key={i} className="text-on-surface-variant flex gap-4 font-semibold">
-                            <span className="text-neutral-500 opacity-60">[{log.time}]</span>
-                            <span className={`font-bold ${
-                              log.level === "FAIL" ? "text-rose-400 animate-pulse" : log.level === "WARN" ? "text-purple-300" : "text-cyan-400"
-                            }`}>
-                              {log.level}:
-                            </span>
-                            <span className="text-neutral-300 font-medium">{log.message}</span>
-                          </div>
-                        ))}
-                        <div ref={terminalBottomRef} />
-                      </div>
-                  </div>
-
-                  {/* Heatmap Preview segment */}
-                  <div className="orca-card rounded-2xl p-6 flex flex-col h-full overflow-hidden">
-                      <h4 className="font-mono text-[10px] text-on-surface-variant mb-6 flex items-center justify-between uppercase tracking-widest font-bold">
-                        Orca_Heatmap_Preview
-                        <span className="material-symbols-outlined text-[16px]">grid_view</span>
-                      </h4>
-                      <div className="flex-1 relative group overflow-hidden rounded-lg border border-white/20 backdrop-blur-md">
-                        <img 
-                          alt="Heatmap visualization preview" 
-                          className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-1000 grayscale" 
-                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa_ZuEEyryU-z8UrLFBuG8UrfdiCzuuk6yddQbdxCPBqoo93b5EufdWJryvoFNxP29LUp9u1csC_MBe5-xcNlS8bsMFcw6NwZmzBpr54A2nm17uHjAE9qJ5vuSLsGsTLo2hXRVeu5aQPGUlOMPmlmV6HC-88lKb0SSt3_HJhihSTPhlvk7HLIKrNHGkYrQexFfaO2_PkgIssx0LN9IpDNZuKfL-BKV7x6Y5JLl4lFsw9wylvIit31NNQ_d5JlEAqdXWeZ8yjTqqAe8"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-6">
-                          <button 
-                            onClick={() => setShowResolveModal(true)}
-                            className="w-full py-3 bg-cyan-400/20 hover:bg-cyan-400/35 text-cyan-300 border border-cyan-400/30 font-mono text-[10.5px] rounded-lg transition-all backdrop-blur-2xl shadow-lg shadow-cyan-500/10 font-bold uppercase tracking-widest"
-                          >
-                            View_Full_Resolve
-                          </button>
-                        </div>
-                      </div>
-                  </div>
-
-                </div>
-              </div>
-            )}
-
-            {/* TAB FOUR: MODELS CONFIGURATION & SYSTEM PROMPTS OVERRIDE SCREEN */}
-            {activeTab === "models" && (
-              <div className="space-y-10">
-                <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-                  <div className="max-w-4xl">
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="w-3 h-3 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_15px_rgba(0,219,233,1)]"></span>
-                      <h1 className="text-3xl font-extrabold text-white tracking-tight uppercase italic drop-shadow-lg">
-                        Models Configuration
-                      </h1>
-                    </div>
-                    <p className="font-medium text-xs text-on-surface border-l-2 border-cyan-400/50 pl-6 leading-relaxed max-w-2xl bg-black/40 backdrop-blur-sm rounded-r-lg py-2 font-mono">
-                      Define model allocation and orchestrate the multi-phase execution pipeline for real-time market analysis.
-                    </p>
-                  </div>
-                </header>
-
-                <div className="grid grid-cols-12 gap-8 relative z-10">
-                  
-                  {/* Left Latency stats panel sticky */}
-                  <div className="orca-card col-span-12 lg:col-span-3 rounded-2xl h-fit lg:sticky lg:top-10 p-6 flex flex-col gap-8">
-                      <h3 className="font-mono text-xs text-cyan-300 border-b border-white/10 pb-4 tracking-[0.2em] flex items-center gap-2 font-bold uppercase">
-                        <Sliders className="w-4 h-4 text-cyan-300" />
-                        LATENCY_STATS
-                      </h3>
-                      
-                      <div className="space-y-8 font-semibold">
-                        {models?.latency.map((lat, i) => (
-                          <div key={i} className="space-y-3">
-                            <div className="flex justify-between items-center">
-                              <span className="font-mono text-[9px] text-white uppercase tracking-wider">{lat.name}</span>
-                              <span className="font-mono text-xs text-cyan-400 font-bold">{lat.avgSec}s avg</span>
-                            </div>
-                            <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-cyan-400 shadow-[0_0_12px_rgba(0,219,233,0.6)]"
-                                style={{ width: `${lat.percent}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="pt-6 border-t border-white/10">
-                        <div className="p-4 bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
-                          <span className="font-mono text-[8px] text-purple-300 tracking-widest block mb-3 uppercase font-bold">SYSTEM_NODE_INFO</span>
-                          <div className="flex items-center gap-3">
-                            <Database className="text-cyan-400 w-5 h-5 shrink-0" />
-                            <div className="flex flex-col font-mono text-xs font-bold leading-none gap-1">
-                              <span className="text-white">{models?.systemNodeInfo.node}</span>
-                              <span className="text-on-surface-variant font-medium text-[10px] uppercase">
-                                {models?.systemNodeInfo.ip}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
-
-                  {/* Core Phase overrides */}
-                  <div className="col-span-12 lg:col-span-9 space-y-8">
-                    {models?.phases.map((phase) => (
-                      <div key={phase.id} className="orca-card rounded-2xl overflow-hidden relative">
-                          
-                          <div className="px-8 py-5 bg-white/[0.06] border-b border-white/20 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                            <div className="flex items-center gap-6">
-                              <div className="w-14 h-14 bg-cyan-500/20 flex items-center justify-center rounded-xl border border-white/30 shadow-[inset_0_0_10px_rgba(255,255,255,0.1)]">
-                                <span className="font-mono text-cyan-400 font-bold text-xl">
-                                  {phase.id === "phase_1" ? "01" : "02"}
-                                </span>
-                              </div>
-                              <div>
-                                <h4 className="text-lg font-bold text-white uppercase italic font-sans">{phase.name}</h4>
-                                <span className="font-mono text-[9.5px] text-cyan-300 tracking-widest uppercase font-bold">
-                                  {phase.meta}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-4">
-                              <label className="font-mono text-[10.5px] text-white uppercase font-bold tracking-wider">Allocation:</label>
-                              <div className="relative">
-                                <select 
-                                  value={phase.allocation}
-                                  onChange={(e) => handleAllocationChange(phase.id, e.target.value)}
-                                  className="control-contrast rounded-lg pl-4 pr-10 py-2 font-mono text-[11px] outline-none cursor-pointer min-w-[200px]"
-                                >
-                                  <option value="gpt-4">GPT-4 Omni</option>
-                                  <option value="claude-3">Claude 3.5 Sonnet</option>
-                                  <option value="llama-3">Llama 3 70B</option>
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="p-8">
-                            <label className="block font-mono text-[10px] text-white/90 mb-4 uppercase tracking-[0.25em] font-bold">
-                              System Prompt Override
-                            </label>
-                            
-                            <textarea 
-                              value={phase.prompt}
-                              onChange={(e) => handlePromptChange(phase.id, e.target.value)}
-                              className="w-full h-36 control-contrast rounded-xl p-5 font-mono text-xs input-glow resize-none leading-relaxed placeholder:text-white/20 uppercase"
-                              placeholder="Enter customized agent prompts..."
-                            />
-
-                            <div className="flex flex-wrap justify-end gap-3 mt-6 items-center">
-                              <div className="flex items-center gap-3 mr-auto bg-black/60 px-4 py-2 rounded-lg border border-white/30 text-xs font-semibold">
-                                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(0,219,233,1)]"></div>
-                                <span className="font-mono text-[10px] text-white tracking-tight uppercase">
-                                  Tokens: {phase.tokensUsed} / {phase.tokensMax}
-                                </span>
-                              </div>
-                              
-                              <button 
-                                onClick={() => handleOptimizePrompt(phase.id, phase.prompt)}
-                                disabled={isPromptsLoading[phase.id]}
-                                className="px-5 py-2 border border-cyan-500/40 hover:bg-cyan-500/10 rounded-lg font-mono text-[10.5px] text-cyan-300 transition-all uppercase tracking-wider font-bold flex items-center gap-1.5 disabled:opacity-45"
-                              >
-                                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                                {isPromptsLoading[phase.id] ? "Optimizing..." : "Gemini Optimize"}
-                              </button>
-                            </div>
-                          </div>
-
-                      </div>
-                    ))}
-
-                    {/* Bottom commit configurations bar */}
-                    <div className="orca-card rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                        <div className="flex flex-col sm:flex-row items-center gap-10">
-                          
-                          <div className="flex flex-col gap-2">
-                            <span className="font-mono text-[9px] text-cyan-300 uppercase tracking-[0.2em] font-bold">Retry_Policy</span>
-                            <div className="flex items-center gap-3">
-                              <input 
-                                type="number"
-                                value={models?.retryCount || 3}
-                                onChange={(e) => handleRetryCountChange(parseInt(e.target.value) || 3)}
-                                className="w-16 control-contrast rounded-lg px-2 py-1.5 font-mono text-xs text-center input-glow" 
-                              />
-                              <span className="font-mono text-[9px] text-white/70 uppercase font-bold">Attempts</span>
-                            </div>
-                          </div>
-                          
-                          <div className="hidden sm:block h-10 w-[1px] bg-white/20 animate-pulse"></div>
-                          
-                          <div className="flex items-center gap-4">
-                            <button 
-                              onClick={handleEmbeddingsToggle}
-                              className="relative inline-flex items-center cursor-pointer border-none outline-none bg-transparent"
-                            >
-                              <div className={`w-12 h-6 rounded-full transition-colors relative border border-white/10 ${
-                                models?.autoEmbeddings ? 'bg-cyan-400' : 'bg-white/10'
-                              }`}>
-                                <div className={`absolute top-[2px] w-4.5 h-4.5 rounded-full bg-white shadow transition-all duration-300 ${
-                                  models?.autoEmbeddings ? 'left-[26px]' : 'left-[4px]'
-                                }`} />
-                              </div>
-                            </button>
-                            <div className="flex flex-col">
-                              <span className="font-mono text-[10px] text-white uppercase tracking-widest font-bold">Auto_Embeddings</span>
-                              <span className="font-mono text-[8px] text-cyan-400 uppercase tracking-wider font-bold">Neural Context Layer</span>
-                            </div>
-                          </div>
-
-                        </div>
-
-                        <div className="flex gap-4 w-full md:w-auto font-mono text-xs font-bold">
-                          <button 
-                            onClick={fetchModels}
-                            className="flex-1 md:flex-none px-6 py-3 border border-white/30 rounded-lg text-white hover:border-white/50 transition-all uppercase tracking-widest bg-black/40"
-                          >
-                            Discard
-                          </button>
-                          <button 
-                            onClick={handleCommitModels}
-                            className="flex-1 md:flex-none px-8 py-3 bg-cyan-400 text-black rounded-lg shadow-[0_10px_40px_rgba(0,219,233,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest font-black"
-                          >
-                            Commit_Config
-                          </button>
-                        </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* TAB: CONFLICT TRACKER */}
             {activeTab === "conflict-tracker" && (() => {
               const terms = [
@@ -3097,39 +2369,7 @@ export default function App() {
                 "America", "Crude Oil", "conflict", "sanctions", "Pakistan", "India"
               ];
 
-              // Mock geopolitical fallback reports when GNews API key is missing
-              const mockGeopoliticalReports = [
-                {
-                  title: "Middle East Logistics Corridor Framework Escalates in Geneva Assemblies",
-                  description: "High-intensity deliberations surrounding shipping corridor safety grids took priority as Suez transit volatility indicators reached weekly peaks.",
-                  publishedAt: "2026-05-27T10:15:00Z",
-                  source: { name: "Suez Transit Bureau (Simulated)", url: "https://gnews.io" },
-                  image: "https://images.unsplash.com/photo-1547483238-f400e65ccd56?auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                  title: "Indo-Pacific Naval Joint Exercises Trigger Supply Chain Customs Sanctions",
-                  description: "Global maritime compliance commissions established strict review standards for automated high-technology hardware crossing critical ocean pathways.",
-                  publishedAt: "2026-05-27T08:42:00Z",
-                  source: { name: "Naval Compliance Press (Simulated)", url: "https://gnews.io" },
-                  image: "https://images.unsplash.com/photo-1507682531662-421b17ac4f83?auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                  title: "South Asia Strategic Border Accords De-escalate Frontline Patrol Volatility",
-                  description: "Defense commanders successfully activated dedicated secondary communications paths to manage physical buffer segments with no incident anomalies reported.",
-                  publishedAt: "2026-05-26T18:22:00Z",
-                  source: { name: "Himalayan Sentinel (Simulated)", url: "https://gnews.io" },
-                  image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=500&q=80"
-                },
-                {
-                  title: "Global Crude Oil Futures Spike Following New Bilateral Trade Sanction Directives",
-                  description: "Energy analytics platforms recorded a 2.45% baseline increase in regional heavy crude delivery indexes as trade compliance audits intensify across safe harbors.",
-                  publishedAt: "2026-05-26T14:10:00Z",
-                  source: { name: "Bourse Crude Intelligence (Simulated)", url: "https://gnews.io" },
-                  image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80"
-                }
-              ];
-
-              const currentArticles = conflictApiKey ? conflictArticles : mockGeopoliticalReports;
+              const currentArticles = conflictArticles;
 
               return (
                 <div className="space-y-8 animate-fadeIn">
@@ -3148,13 +2388,7 @@ export default function App() {
 
                     <div className="flex gap-3">
                       <button
-                        onClick={() => {
-                          if (conflictApiKey) {
-                            fetchConflictNews(conflictSearchTerm);
-                          } else {
-                            showToast("API Key is missing! Click Settings to configure it.", "error");
-                          }
-                        }}
+                        onClick={() => fetchConflictNews(conflictSearchTerm)}
                         disabled={isFetchingConflict}
                         className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-mono text-xs font-bold uppercase transition-all duration-300 outline-none cursor-pointer ${
                           isFetchingConflict
@@ -3168,36 +2402,7 @@ export default function App() {
                     </div>
                   </header>
 
-                  {/* API KEY ALERTS IF ABSENT */}
-                  {!conflictApiKey && (
-                    <div className="bg-gradient-to-r from-rose-950/40 to-neutral-900 border border-rose-500/30 rounded-2xl p-6 relative overflow-hidden">
-                      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-rose-500/10 to-transparent pointer-events-none"></div>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-6 relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/35 flex items-center justify-center shrink-0">
-                          <AlertTriangle className="w-6 h-6 text-rose-400" />
-                        </div>
-                        <div className="space-y-1">
-                          <h4 className="font-mono text-sm uppercase text-white font-black tracking-wider">
-                            GNews Api Node Standby Mode
-                          </h4>
-                          <p className="text-xs font-mono text-neutral-300">
-                            No credentials discovered inside local session vaults. A free personal API key is required to perform high-precision real-time satellite updates. 
-                          </p>
-                          <p className="text-[10px] text-neutral-400 pt-1">
-                            Below we display high-fidelity simulated dispute alerts referencing current parameters. To stream authentic updates, configure a key inside Settings.
-                          </p>
-                        </div>
-                        <div className="sm:ml-auto shrink-0">
-                          <button
-                            onClick={() => setActiveTab("settings")}
-                            className="px-5 py-2.5 bg-rose-500 hover:bg-rose-400 text-white rounded-xl font-mono text-[10px] font-black uppercase tracking-widest transition-all shadow-[0_4px_15px_rgba(239,68,68,0.2)] cursor-pointer"
-                          >
-                            Go To Settings
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {/* Google News RSS service active (no API key required) */}
 
                   {/* TOP SEARCH TAGS ROW */}
                   <div className="bg-black/40 backdrop-blur-3xl rounded-2xl border border-white/5 p-5 space-y-4 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
@@ -3212,11 +2417,7 @@ export default function App() {
                             key={term}
                             onClick={() => {
                               setConflictSearchTerm(term);
-                              if (conflictApiKey) {
-                                fetchConflictNews(term);
-                              } else {
-                                showToast(`Simulation Filter changed to "${term}". Add GNews API key for live fetch.`, "info");
-                              }
+                              fetchConflictNews(term);
                             }}
                             className={`px-3.5 py-1.5 rounded-lg border font-mono text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${
                               isActive
@@ -3244,28 +2445,18 @@ export default function App() {
                           type="text"
                           placeholder="Type custom query word..."
                           value={conflictSearchTerm}
-                          onChange={(e) => setSearchQuery(e.target.value)} // Safe fall-through or standalone local
+                          onChange={(e) => setConflictSearchTerm(e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               const targetVal = (e.target as HTMLInputElement).value;
                               setConflictSearchTerm(targetVal);
-                              if (conflictApiKey) {
-                                fetchConflictNews(targetVal);
-                              } else {
-                                showToast("Add a GNews API Key inside Settings to query any terms.", "info");
-                              }
+                              fetchConflictNews(targetVal);
                             }
                           }}
                           className="pl-4 pr-12 py-1.5 w-full sm:w-64 bg-black/40 border border-white/10 rounded-xl font-mono text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-rose-500/40 transition-all text-left"
                         />
                         <button
-                          onClick={() => {
-                            if (conflictApiKey) {
-                              fetchConflictNews(conflictSearchTerm);
-                            } else {
-                              showToast("Add a GNews API Key inside Settings to query any terms.", "info");
-                            }
-                          }}
+                          onClick={() => fetchConflictNews(conflictSearchTerm)}
                           className="absolute right-2 top-1 bottom-1 text-xs text-rose-400 font-mono font-bold hover:text-rose-300"
                         >
                           Query
@@ -3330,7 +2521,7 @@ export default function App() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
                             
                             <div className="absolute top-3 left-3 bg-rose-500/90 text-black font-semibold text-[9px] font-mono tracking-widest px-2 py-0.5 rounded uppercase">
-                              {index === 0 && !conflictApiKey ? "CURRENT REPORT" : "LIVE SIGNAL"}
+                              {index === 0 ? "CURRENT REPORT" : "LIVE SIGNAL"}
                             </div>
                             
                             <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-[10px] font-mono text-neutral-300 font-bold">
@@ -3383,7 +2574,7 @@ export default function App() {
                         &gt; GEOLOCATION COVERAGE: <span className="text-emerald-400 font-bold">STABLE</span>
                       </div>
                       <div className="font-bold flex items-center gap-1 uppercase tracking-wider text-[10px]">
-                        Last Update Sync: {conflictApiKey ? "Real-Time Hook" : "Simulated Local Pipeline"}
+                        Data Source: Google News RSS (Live)
                       </div>
                     </div>
                   </footer>
@@ -3394,7 +2585,6 @@ export default function App() {
             {/* TAB: SETTINGS */}
             {activeTab === "settings" && (() => {
               const handleSaveSettings = () => {
-                localStorage.setItem("gnews_api_key", conflictApiKey.trim());
                 localStorage.setItem("alpha_vantage_api_key", alphaVantageApiKey.trim());
                 showToast("Configuration saved successfully. Credentials persisted in secure vaults.", "success");
               };
@@ -3409,7 +2599,7 @@ export default function App() {
                       </h2>
                     </div>
                     <p className="text-xs text-on-surface-variant font-mono">
-                      Define node credentials and routing defaults for deep geopolitical news index networks.
+                      Configure API keys for premium data sources.
                     </p>
                   </header>
 
@@ -3417,136 +2607,35 @@ export default function App() {
                     <div className="border-b border-white/15 pb-4">
                       <h3 className="font-mono text-xs text-cyan-300 tracking-[0.2em] font-extrabold flex items-center gap-2 uppercase">
                         <Settings className="w-4 h-4 text-cyan-300 w-4 h-4" />
-                        GNews API credentials
+                        API Credentials
                       </h3>
                     </div>
 
-                    {/* API Key Form block */}
-                    <div className="space-y-5">
-                      <div className="space-y-2">
-                        <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                          GNews.io Authentication Key
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="password"
-                            placeholder="Enter your GNews personal API key..."
-                            value={conflictApiKey}
-                            onChange={(e) => setConflictApiKey(e.target.value)}
-                            className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400"
-                          />
-                        </div>
-                        <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1 pt-1">
-                          Unrestricted search operations require an API key from GNews. Get a free credential by registering on <a href="https://gnews.io" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">gnews.io</a>. Key persists inside your browser local storage securely.
-                        </p>
+                    <div className="space-y-2 pt-4 border-t border-white/10">
+                      <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
+                        Alpha Vantage API Authentication Key
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="password"
+                          placeholder="Enter your Alpha Vantage personal API key..."
+                          value={alphaVantageApiKey}
+                          onChange={(e) => setAlphaVantageApiKey(e.target.value)}
+                          className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400"
+                        />
                       </div>
+                      <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1 pt-1">
+                        Required for high-precision live updates of major global market indexes impacting the Indian Stock Market. Register on <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">alphavantage.co</a> to acquire your free query key.
+                      </p>
+                    </div>
 
-                      <div className="space-y-2 pt-4 border-t border-white/10">
-                        <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                          Alpha Vantage API Authentication Key
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="password"
-                            placeholder="Enter your Alpha Vantage personal API key..."
-                            value={alphaVantageApiKey}
-                            onChange={(e) => setAlphaVantageApiKey(e.target.value)}
-                            className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400"
-                          />
-                        </div>
-                        <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1 pt-1">
-                          Required for high-precision live updates of major global market indexes impacting the Indian Stock Market. Register on <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">alphavantage.co</a> to acquire your free query key.
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Lang parameter choice */}
-                        <div className="space-y-2">
-                          <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                            Default Language
-                          </label>
-                          <select
-                            value={conflictSearchLang}
-                            onChange={(e) => setConflictSearchLang(e.target.value)}
-                            className="bg-black/50 border border-white/10 w-full px-4 py-2.5 rounded-xl font-mono text-xs text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
-                          >
-                            <option value="en">English (en)</option>
-                            <option value="ar">Arabic (ar)</option>
-                            <option value="zh">Chinese (zh)</option>
-                            <option value="fr">French (fr)</option>
-                            <option value="de">German (de)</option>
-                            <option value="hi">Hindi (hi)</option>
-                            <option value="ru">Russian (ru)</option>
-                            <option value="es">Spanish (es)</option>
-                          </select>
-                        </div>
-
-                        {/* Country parameter choice */}
-                        <div className="space-y-2">
-                          <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                            Target Country
-                          </label>
-                          <select
-                            value={conflictSearchCountry}
-                            onChange={(e) => setConflictSearchCountry(e.target.value)}
-                            className="bg-black/50 border border-white/10 w-full px-4 py-2.5 rounded-xl font-mono text-xs text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
-                          >
-                            <option value="any">Any (Global)</option>
-                            <option value="us">United States (us)</option>
-                            <option value="in">India (in)</option>
-                            <option value="pk">Pakistan (pk)</option>
-                            <option value="il">Israel (il)</option>
-                            <option value="ru">Russia (ru)</option>
-                            <option value="cn">China (cn)</option>
-                            <option value="gb">United Kingdom (gb)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Sort choice */}
-                        <div className="space-y-2">
-                          <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                            Sort Priority direction
-                          </label>
-                          <select
-                            value={conflictSortBy}
-                            onChange={(e) => setConflictSortBy(e.target.value)}
-                            className="bg-black/50 border border-white/10 w-full px-4 py-2.5 rounded-xl font-mono text-xs text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
-                          >
-                            <option value="publishedAt">Most Recent (publishedAt)</option>
-                            <option value="relevance">Best Match Relevance</option>
-                          </select>
-                        </div>
-
-                        {/* Feed count choice */}
-                        <div className="space-y-2">
-                          <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                            Maximum Stories Count
-                          </label>
-                          <select
-                            value={conflictMaxResults}
-                            onChange={(e) => setConflictMaxResults(Number(e.target.value))}
-                            className="bg-black/50 border border-white/10 w-full px-4 py-2.5 rounded-xl font-mono text-xs text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
-                          >
-                            <option value="5">5 Articles</option>
-                            <option value="10">10 Articles</option>
-                            <option value="15">15 Articles</option>
-                            <option value="20">20 Articles</option>
-                            <option value="50">50 Articles</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="pt-4 flex justify-end">
-                        <button
-                          onClick={handleSaveSettings}
-                          className="px-6 py-2.5 bg-cyan-400 text-black hover:bg-cyan-300 rounded-xl font-mono text-xs font-extrabold uppercase tracking-widest shadow-[0_5px_15px_rgba(34,211,238,0.2)] transition-all cursor-pointer active:scale-95"
-                        >
-                          Persist Settings Key
-                        </button>
-                      </div>
-
+                    <div className="pt-4 flex justify-end">
+                      <button
+                        onClick={handleSaveSettings}
+                        className="px-6 py-2.5 bg-cyan-400 text-black hover:bg-cyan-300 rounded-xl font-mono text-xs font-extrabold uppercase tracking-widest shadow-[0_5px_15px_rgba(34,211,238,0.2)] transition-all cursor-pointer active:scale-95"
+                      >
+                        Save Settings
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -3899,27 +2988,15 @@ export default function App() {
                         <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
                           <h3 className="font-mono text-xs uppercase font-extrabold tracking-wider text-cyan-400 flex items-center gap-2">
                             <Layers className="w-4 h-4 text-cyan-400" />
-                            Live Global Market Benchmarks (Alpha Vantage Feed)
+                            Live Global Market Benchmarks (Web Scraped)
                           </h3>
-                          <span className={`w-2 h-2 rounded-full ${alphaVantageApiKey ? "bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" : "bg-neutral-500 animate-pulse"}`}></span>
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span>
                         </div>
 
-                        {!alphaVantageApiKey ? (
+                        {!globalMonitorData?.global_indices || globalMonitorData.global_indices.length === 0 ? (
                           <div className="py-6 text-center space-y-3 bg-black/30 rounded-xl border border-dashed border-white/5">
                             <p className="text-xs text-neutral-400 font-mono leading-relaxed max-w-xl mx-auto">
-                              Alpha Vantage API Key is not assigned. Live USA and premium global indices cannot be fetched. Configure your API key in the Setup panel to enable real-time tracking of DJI, SPX, Nasdaq, and Russell.
-                            </p>
-                            <button
-                              onClick={() => setActiveTab("settings")}
-                              className="px-4 py-2 bg-cyan-400/10 hover:bg-cyan-400 hover:text-black border border-cyan-400/30 text-cyan-400 font-semibold text-[10px] font-mono tracking-widest rounded-lg transition-all"
-                            >
-                              CONFIGURE_ALPHA_VANTAGE_KEY
-                            </button>
-                          </div>
-                        ) : !globalMonitorData?.global_indices || globalMonitorData.global_indices.length === 0 ? (
-                          <div className="py-6 text-center space-y-3 bg-black/30 rounded-xl border border-dashed border-white/5">
-                            <p className="text-xs text-neutral-400 font-mono leading-relaxed max-w-xl mx-auto">
-                              API Key detected, but live monitor data has not been ingested yet.
+                              Live global indices data has not been ingested yet. Run active scrapers to populate real-time market benchmarks.
                             </p>
                             <button
                               onClick={handleScrapeGlobalMonitor}
@@ -3939,19 +3016,19 @@ export default function App() {
                                   className="p-3 bg-black/40 backdrop-blur-3xl border border-white/5 hover:border-cyan-400/30 rounded-2xl flex flex-col justify-between transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] text-left"
                                 >
                                   <div className="flex justify-between items-center mb-1">
-                                    <span className="font-mono text-xs font-black text-white">{idxItem.symbol}</span>
+                                    <span className="font-mono text-xs font-black text-white">{idxItem.name}</span>
                                     <span className={`font-mono text-[9px] font-bold px-1.5 py-0.5 rounded ${
                                       isUp ? "text-cyan-400 bg-cyan-950/20 border border-cyan-500/20" : "text-rose-400 bg-rose-950/20 border border-rose-500/20"
                                     }`}>
-                                      {isUp ? "+" : ""}{idxItem.percent_change.toFixed(2)}%
+                                      {isUp ? "+" : ""}{idxItem.changePercent?.toFixed(2) || "0.00"}%
                                     </span>
                                   </div>
                                   <div className="mt-2">
                                     <div className="font-mono text-sm font-black text-white">
-                                      {idxItem.last_price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                      {idxItem.price?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || "N/A"}
                                     </div>
-                                    <div className="text-[8px] font-mono text-neutral-500 truncate mt-0.5" title={idxItem.name}>
-                                      {idxItem.name}
+                                    <div className="text-[8px] font-mono text-neutral-500 truncate mt-0.5" title={idxItem.symbol}>
+                                      {idxItem.symbol}
                                     </div>
                                   </div>
                                 </div>

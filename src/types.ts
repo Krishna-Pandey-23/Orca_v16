@@ -118,67 +118,6 @@ export interface NewsData {
   scraped?: NewsScrapedInfo;
 }
 
-export interface LatencyStat {
-  name: string;
-  avgSec: number;
-  percent: number;
-}
-
-export interface PhaseConfig {
-  id: string;
-  name: string;
-  meta: string;
-  allocation: string;
-  prompt: string;
-  tokensUsed: number;
-  tokensMax: number;
-}
-
-export interface ModelsData {
-  latency: LatencyStat[];
-  phases: PhaseConfig[];
-  retryCount: number;
-  autoEmbeddings: boolean;
-  systemNodeInfo: {
-    node: string;
-    ip: string;
-  };
-}
-
-export interface PipelinePhaseMetric {
-  label: string;
-  completed: boolean | "spinning" | "fail" | "pause" | "done_all";
-}
-
-export interface PipelinePhase {
-  id: string;
-  number: string;
-  title: string;
-  indicatorColor: string;
-  progress: number;
-  status: "completed" | "running" | "critical";
-  metrics: PipelinePhaseMetric[];
-  liftLabel: string;
-  liftPercent: number;
-}
-
-export interface PipelineLog {
-  time: string;
-  level: string;
-  message: string;
-}
-
-export interface PipelineData {
-  mainMeta: {
-    nodeId: string;
-    elapsedTime: string;
-    memoryAllocated: string;
-    memoryMax: string;
-  };
-  phases: PipelinePhase[];
-  logs: PipelineLog[];
-}
-
 export interface EtfHoldingsItem {
   name: string;
   weight: number;

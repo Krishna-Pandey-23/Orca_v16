@@ -18,6 +18,8 @@ import { scrapeMoneycontrolWorld, loadCachedMoneycontrolWorld } from "./server-m
 import { scrapeAllNSEData, loadCachedNSEData, fetchNSEQuote, fetchNSEIPOs, fetchNSEOptionChain, fetchNSECorporateActions } from "./server-nse";
 import { scrapeAllBSEData, loadCachedBSEData, fetchBSEQuote, fetchBSEResultCalendar, fetchBSEGainers, fetchBSELosers, fetchBSEAnnouncements } from "./server-bse";
 import { scrapeIndStocks, loadCachedIndStocks } from "./server-indstocks-scraper";
+import { scrapeWorldIndices } from "./server-world-indices-scraper";
+import * as cheerio from "cheerio";
 
 const app = express();
 const PORT = 3000;
@@ -33,14 +35,33 @@ if (!fs.existsSync(DATA_DIR)) {
 // File paths for persistence
 const PATH_SIGNALS = path.join(DATA_DIR, "data-signals.json");
 const PATH_NEWS = path.join(DATA_DIR, "data-news.json");
-const PATH_MODELS = path.join(DATA_DIR, "data-models.json");
-const PATH_PIPELINE = path.join(DATA_DIR, "data-pipeline.json");
 const PATH_ETFS = path.join(DATA_DIR, "data-etfs.json");
 const PATH_GLOBAL_MONITOR = path.join(DATA_DIR, "data-global-monitor.json");
 const PATH_INDIAN_INDICES = path.join(DATA_DIR, "data-indian-indices.json");
 const PATH_FII_DII = path.join(DATA_DIR, "data-fii-dii.json");
 const PATH_NSE500 = path.join(DATA_DIR, "data-nse500.json");
 const PATH_EARNINGS = path.join(DATA_DIR, "data-earnings.json");
+
+// ========== GOOGLE NEWS RSS SCRAPE (no API key required) ==========
+// Cache for RSS results to avoid repeated fetches
+const googleNewsRssCache = new Map<string, { data: any; timestamp: number }>();
+const GOOGLE_NEWS_RSS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+function getCachedGoogleNewsRss(key: string): any | null {
+  const entry = googleNewsRssCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > GOOGLE_NEWS_RSS_CACHE_TTL_MS) {
+    googleNewsRssCache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+
+function setGoogleNewsRssCache(key: string, data: any): void {
+  googleNewsRssCache.set(key, { data, timestamp: Date.now() });
+  console.log(`[Google News RSS Cache] Cached response for key="${key.substring(0, 40)}..." (TTL: ${GOOGLE_NEWS_RSS_CACHE_TTL_MS / 1000}s)`);
+}
+// ========================================================================
 
 // Helper to write JSON safely
 function saveDB(filePath: string, data: any) {
@@ -213,115 +234,6 @@ const defaultNews = {
     }
   ],
   sentimentBars: [60, 45, 30, 55, 85, 100],
-};
-
-const defaultModels = {
-  latency: [
-    { name: "GPT-4 Omni", avgSec: 1.2, percent: 70 },
-    { name: "Claude 3.5 Sonnet", avgSec: 0.8, percent: 40 },
-    { name: "Llama 3 70B", avgSec: 0.4, percent: 20 },
-  ],
-  phases: [
-    {
-      id: "phase_1",
-      name: "Signals Generation",
-      meta: "Ingestion & Anomaly Detection",
-      allocation: "llama-3",
-      prompt: "You are an expert financial quant analyst. Scan incoming JSON streams for RSI divergence > 15% and MACD crossovers on 5m intervals. Flag high-volatility events for downstream analysis...",
-      tokensUsed: 142,
-      tokensMax: 4096,
-    },
-    {
-      id: "phase_2",
-      name: "Sentiment Analysis",
-      meta: "Macro & Social Context",
-      allocation: "claude-3",
-      prompt: "Process headline data from Reuters and Bloomberg. Cross-reference with X (Twitter) sentiment flow for $BTC and $ETH. Output a normalized score between -1.0 and 1.0.",
-      tokensUsed: 212,
-      tokensMax: 8192,
-    },
-  ],
-  retryCount: 3,
-  autoEmbeddings: true,
-  systemNodeInfo: {
-    node: "AWS-USE-1A",
-    ip: "172.24.9.102",
-  },
-};
-
-const defaultPipeline = {
-  mainMeta: {
-    nodeId: "ORCA-16-MAIN-INF",
-    elapsedTime: "00:14:52.39",
-    memoryAllocated: "4.2 GB",
-    memoryMax: "12 GB",
-  },
-  phases: [
-    {
-      id: "p1",
-      number: "Phase_01",
-      title: "Ingestion_Core",
-      indicatorColor: "#00f0ff",
-      progress: 100,
-      status: "completed",
-      metrics: [
-        { label: "L2_OrderBook_Fetch", completed: true },
-        { label: "WS_Stream_Sync", completed: true },
-      ],
-      liftLabel: "Data_Lift",
-      liftPercent: 100,
-    },
-    {
-      id: "p2",
-      number: "Phase_02",
-      title: "Feature_Set",
-      indicatorColor: "#d1bcff",
-      progress: 100,
-      status: "completed",
-      metrics: [
-        { label: "VWAP_Compute", completed: true },
-        { label: "Rolling_Vol_Calc", completed: true },
-      ],
-      liftLabel: "Engine_Eff",
-      liftPercent: 94,
-    },
-    {
-      id: "p3",
-      number: "Phase_03",
-      title: "Inference_Loop",
-      indicatorColor: "#00f0ff",
-      progress: 75,
-      status: "running",
-      metrics: [
-        { label: "Orca_Transformer_V2", completed: true },
-        { label: "Attention_Head_09", completed: "spinning" },
-      ],
-      liftLabel: "GPU_Sync",
-      liftPercent: 78,
-    },
-    {
-      id: "p4",
-      number: "Phase_04",
-      title: "Signal_Relay",
-      indicatorColor: "#ffb4ab",
-      progress: 40,
-      status: "critical",
-      metrics: [
-        { label: "Gateway_Auth_Fail", completed: "fail" },
-        { label: "Order_Dispatch", completed: "pause" },
-      ],
-      liftLabel: "Retry_Backoff",
-      liftPercent: 40,
-    },
-  ],
-  logs: [
-    { time: "14:52:01", level: "INFO", message: "Initializing Orca_v16 weight tensors..." },
-    { time: "14:52:04", level: "INFO", message: "Distributed compute handshake complete." },
-    { time: "14:52:25", level: "EXEC", message: "Forward pass through Attention Head #09..." },
-    { time: "14:52:45", level: "WARN", message: "Memory spill on node-7 (threshold 85%)." },
-    { time: "14:52:50", level: "FAIL", message: "Gateway Auth Error (0x442) - Retrying." },
-    { time: "14:52:52", level: "WAIT", message: "Cooling down node-7 for 5000ms..." }
-  ],
 };
 
 const defaultEtfs = {
@@ -533,33 +445,99 @@ const defaultGlobalMonitor = {
 };
 
 // REST API endpoints
-// REST API endpoints
-app.get("/api/gnews/search", async (req, res) => {
-  const { q, lang, country, sortby, max, apikey } = req.query;
-  if (!apikey) {
-    return res.status(400).json({ error: "GNews API Key is required." });
-  }
+// ========== GOOGLE NEWS RSS SEARCH (no API key required) ==========
+app.get("/api/google-news/rss", async (req, res) => {
+  const { q } = req.query;
   try {
-    const query = q || "example";
-    const language = lang || "en";
-    const cntry = country || "any";
-    const sort = sortby || "publishedAt";
-    const mx = max || 10;
-    
-    const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(String(query))}&lang=${language}&country=${cntry}&sortby=${sort}&max=${mx}&apikey=${apikey}`;
-    
-    const response = await fetch(url);
-    if (!response.ok) {
-      const errorText = await response.text();
-      return res.status(response.status).json({ error: `GNews API responded with status ${response.status}: ${errorText}` });
+    const query = String(q || "war").trim();
+    if (!query) {
+      return res.status(400).json({ error: "Search query is required." });
     }
-    const data = await response.json();
-    res.json(data);
+
+    // Check cache first
+    const cacheKey = query.toLowerCase();
+    const cachedResponse = getCachedGoogleNewsRss(cacheKey);
+    if (cachedResponse) {
+      console.log(`[Google News RSS Cache] HIT for query="${query}"`);
+      return res.json(cachedResponse);
+    }
+
+    console.log(`[Google News RSS] Fetching news for query="${query}"`);
+
+    // Build Google News RSS URL
+    const encodedQuery = encodeURIComponent(query);
+    const rssUrl = `https://news.google.com/rss/search?q=${encodedQuery}&hl=en-US&gl=US&ceid=US:en`;
+
+    const response = await fetch(rssUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/rss+xml, application/xml, text/xml, */*"
+      }
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: `Google News RSS responded with status ${response.status}` });
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    const body = await response.text();
+
+    // Check if we got HTML instead of XML (bot detection page)
+    const isHtml = 
+      contentType.includes("text/html") || 
+      body.trim().toLowerCase().startsWith("<!doctype") ||
+      body.trim().toLowerCase().startsWith("<html") ||
+      body.trim().toLowerCase().startsWith("<!doctype");
+    
+    if (isHtml) {
+      console.error(`[Google News RSS] Got HTML instead of XML for query="${query}". Content-Type: ${contentType}. Body preview: ${body.substring(0, 200)}`);
+      
+      return res.json({ articles: [] });
+    }
+
+    parseAndRespond(body, query, cacheKey, res);
+    
+    function parseAndRespond(xmlData: string, q: string, cacheKey: string, res: any) {
+      const $ = cheerio.load(xmlData, { xmlMode: true });
+      const articles: any[] = [];
+
+      $("item").each((i: number, item: any) => {
+        const title = $(item).find("title").text() || "No Title";
+        const link = $(item).find("link").text() || "No Link";
+        const pubDate = $(item).find("pubDate").text() || "";
+        const source = $(item).find("source").text() || "Google News";
+        const description = $(item).find("description").text() || "";
+
+        // Extract image from description if present (Google News embeds images in description)
+        let image = "";
+        const imgMatch = description.match(/<img[^>]+src=["']([^"']+)["']/);
+        if (imgMatch) {
+          image = imgMatch[1];
+        }
+
+        articles.push({
+          title,
+          url: link,
+          source: { name: source },
+          publishedAt: pubDate,
+          description: description.replace(/<[^>]+>/g, "").substring(0, 500),
+          image
+        });
+      });
+
+      const result = { articles };
+      
+      // Cache the result
+      setGoogleNewsRssCache(cacheKey, result);
+
+      res.json(result);
+    }
   } catch (error: any) {
-    console.error("GNews search proxy error:", error);
-    res.status(500).json({ error: error.message || "Failed to search GNews API via server proxy" });
+    console.error("Google News RSS proxy error:", error);
+    res.status(500).json({ error: error.message || "Failed to fetch Google News RSS feed" });
   }
 });
+// ========================================================================================
 
 app.get("/api/nse500", async (req, res) => {
   try {
@@ -624,27 +602,21 @@ app.post("/api/global-monitor/scrape", async (req, res) => {
       updated = true;
     }
 
-    let alphaMsg: string | undefined;
-    if (alphaKey) {
-      try {
-        console.log(`[Server] Initiating Alpha Vantage live index run...`);
-        const alphaResult = await fetchAlphaVantageIndices(alphaKey);
-        db.global_indices = alphaResult.indices;
-        if (alphaResult.message) {
-          alphaMsg = alphaResult.message;
-        }
-        updated = true;
-      } catch (err: any) {
-        console.warn("[Server] Alpha Vantage dynamic query failed:", err.message);
-        // We propagate the actual error directly so that user sees rate limitations or invalid credentials
-        return res.status(400).json({ error: err.message });
-      }
+    // Fetch world indices using web scraping (no API key required)
+    try {
+      console.log(`[Server] Initiating world indices web scrape...`);
+      const worldIndicesData = await scrapeWorldIndices();
+      db.global_indices = worldIndicesData.indices;
+      updated = true;
+    } catch (err: any) {
+      console.warn("[Server] World indices scrape failed:", err.message);
+      // Continue without world indices data
     }
 
     if (updated) {
       saveDB(PATH_GLOBAL_MONITOR, db);
     }
-    res.json({ success: true, db, alpha_message: alphaMsg });
+    res.json({ success: true, db });
   } catch (err: any) {
     console.error("Global scraping failed:", err);
     res.status(500).json({ error: err.message || "Failed to scrape global monitor" });
@@ -1138,6 +1110,29 @@ app.get("/api/bse/losers", async (req, res) => {
   }
 });
 
+// ========== WORLD INDICES SCRAPING (no API key required) ==========
+app.get("/api/world-indices", async (req, res) => {
+  try {
+    const scrapedData = await scrapeWorldIndices();
+    res.json({ success: true, data: scrapedData });
+  } catch (error: any) {
+    console.error("Failed to scrape world indices:", error);
+    res.status(500).json({ error: error.message || "Failed to scrape world indices" });
+  }
+});
+
+app.post("/api/world-indices/scrape", async (req, res) => {
+  try {
+    const scrapedData = await scrapeWorldIndices();
+    res.json({ success: true, data: scrapedData });
+  } catch (error: any) {
+    console.error("Failed to scrape world indices:", error);
+    res.status(500).json({ error: error.message || "Failed to scrape world indices" });
+  }
+});
+
+// ========== ETF API ENDPOINTS ==========
+
 app.get("/api/etfs", (req, res) => {
   const db = loadDB(PATH_ETFS, defaultEtfs);
   res.json(db);
@@ -1421,91 +1416,6 @@ Format the output as JSON matching:
   } catch (error: any) {
     console.error("Gemini context generation failure:", error);
     res.status(500).json({ error: error.message || "Failed to query Gemini model." });
-  }
-});
-
-app.get("/api/pipeline", (req, res) => {
-  const db = loadDB(PATH_PIPELINE, defaultPipeline);
-  res.json(db);
-});
-
-// Appending simulated pipeline logs
-app.post("/api/pipeline/reboot", (req, res) => {
-  const db = loadDB(PATH_PIPELINE, defaultPipeline);
-  db.logs.push({
-    time: new Date().toISOString().substring(11, 19),
-    level: "INFO",
-    message: "Manual pipeline reset triggered. Recalibrating state allocation...",
-  });
-  db.logs.push({
-    time: new Date().toISOString().substring(11, 19),
-    level: "EXEC",
-    message: "Handshake established. Loading weights onto node AWS-USE-1A.",
-  });
-  // Clear any critical state slightly
-  db.phases[3].status = "completed";
-  db.phases[3].progress = 100;
-  db.phases[3].metrics[0].completed = "done_all";
-  db.phases[3].metrics[1].completed = "done_all";
-
-  saveDB(PATH_PIPELINE, db);
-  res.json({ success: true, db });
-});
-
-app.get("/api/models", (req, res) => {
-  const db = loadDB(PATH_MODELS, defaultModels);
-  res.json(db);
-});
-
-app.post("/api/models/commit", (req, res) => {
-  const { phases, retryCount, autoEmbeddings } = req.body;
-  const db = loadDB(PATH_MODELS, defaultModels);
-
-  if (phases) db.phases = phases;
-  if (retryCount !== undefined) db.retryCount = retryCount;
-  if (autoEmbeddings !== undefined) db.autoEmbeddings = autoEmbeddings;
-
-  saveDB(PATH_MODELS, db);
-  res.json({ success: true, db });
-});
-
-// Refine system prompts with Gemini integration
-app.post("/api/models/optimize-prompt", async (req, res) => {
-  const { phaseId, currentPrompt } = req.body;
-  const client = getGeminiClient();
-
-  if (!client) {
-    return res.status(503).json({
-      error: "Gemini API Key is not configured. Please supply it under Secrets panel.",
-    });
-  }
-
-  try {
-    const response = await client.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents: `You are a Principal AI Architect at ORCA Terminal. 
-Given this financial analysis prompt: "${currentPrompt}".
-Optimize it to be exceptionally high-fidelity, explicit about parameters, with formatting directives for numerical formats (e.g. JSON), and lower token consumption.
-Output ONLY the optimized prompt itself, do not add conversational greetings, introduction tags, or formatting brackets.`,
-    });
-
-    const optimized = response.text?.trim() || currentPrompt;
-
-    // Update models db
-    const db = loadDB(PATH_MODELS, defaultModels);
-    db.phases = db.phases.map((p: any) => {
-      if (p.id === phaseId) {
-        p.prompt = optimized;
-        p.tokensUsed = Math.floor(optimized.length / 4); // basic calculation
-      }
-      return p;
-    });
-
-    saveDB(PATH_MODELS, db);
-    res.json({ success: true, optimized, db });
-  } catch (err: any) {
-    console.error("Optimize prompt mismatch:", err);
-    res.status(500).json({ error: err.message || "Failed to optimize prompt." });
   }
 });
 

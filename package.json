@@ -21,6 +21,7 @@
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
+    "axios": "^1.16.1",
     "cheerio": "^1.2.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
