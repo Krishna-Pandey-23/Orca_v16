@@ -80,10 +80,19 @@ export default function App() {
   const [bseQuoteCode, setBseQuoteCode] = useState<string>("500325");
   const [bseQuote, setBseQuote] = useState<any>(null);
 
+  // API Key States
+  const [alphaVantageApiKey, setAlphaVantageApiKey] = useState<string>(() => localStorage.getItem("alpha_vantage_api_key") || "");
+  const [geminiApiKey, setGeminiApiKey] = useState<string>(() => localStorage.getItem("gemini_api_key") || "");
+  const [openrouterApiKey, setOpenrouterApiKey] = useState<string>(() => localStorage.getItem("openrouter_api_key") || "");
+  const [nvidiaApiKey, setNvidiaApiKey] = useState<string>(() => localStorage.getItem("nvidia_nim_api_key") || "");
+  const [mistralApiKey, setMistralApiKey] = useState<string>(() => localStorage.getItem("mistral_api_key") || "");
+  const [huggingfaceToken, setHuggingfaceToken] = useState<string>(() => localStorage.getItem("huggingface_token") || "");
+  const [groqApiKey, setGroqApiKey] = useState<string>(() => localStorage.getItem("groq_api_key") || "");
+  const [cerebrasApiKey, setCerebrasApiKey] = useState<string>(() => localStorage.getItem("cerebras_api_key") || "");
+  const [cloudflareAccountId, setCloudflareAccountId] = useState<string>(() => localStorage.getItem("cloudflare_account_id") || "");
+  const [cloudflareApiToken, setCloudflareApiToken] = useState<string>(() => localStorage.getItem("cloudflare_api_token") || "");
+
   // Conflict Tracker States (Google News RSS - no API key required)
-  const [alphaVantageApiKey, setAlphaVantageApiKey] = useState<string>(() => {
-    return localStorage.getItem("alpha_vantage_api_key") || "";
-  });
   const [conflictSearchTerm, setConflictSearchTerm] = useState<string>("war");
   const [conflictArticles, setConflictArticles] = useState<any[]>([]);
   const [isFetchingConflict, setIsFetchingConflict] = useState<boolean>(false);
@@ -2586,8 +2595,93 @@ export default function App() {
             {activeTab === "settings" && (() => {
               const handleSaveSettings = () => {
                 localStorage.setItem("alpha_vantage_api_key", alphaVantageApiKey.trim());
+                localStorage.setItem("gemini_api_key", geminiApiKey.trim());
+                localStorage.setItem("openrouter_api_key", openrouterApiKey.trim());
+                localStorage.setItem("nvidia_nim_api_key", nvidiaApiKey.trim());
+                localStorage.setItem("mistral_api_key", mistralApiKey.trim());
+                localStorage.setItem("huggingface_token", huggingfaceToken.trim());
+                localStorage.setItem("groq_api_key", groqApiKey.trim());
+                localStorage.setItem("cerebras_api_key", cerebrasApiKey.trim());
+                localStorage.setItem("cloudflare_account_id", cloudflareAccountId.trim());
+                localStorage.setItem("cloudflare_api_token", cloudflareApiToken.trim());
                 showToast("Configuration saved successfully. Credentials persisted in secure vaults.", "success");
               };
+
+              type ApiFieldConfig = {
+                label: string;
+                value: string;
+                setter: (v: string) => void;
+                placeholder: string;
+                description: string;
+                link?: { href: string; text: string };
+              };
+
+              const apiFields: ApiFieldConfig[] = [
+                {
+                  label: "Gemini API Key",
+                  value: geminiApiKey,
+                  setter: setGeminiApiKey,
+                  placeholder: "Enter your Google Gemini API key...",
+                  description: "Powers AI-driven market analysis, ETF risk evaluation, and prompt optimization throughout the terminal.",
+                  link: { href: "https://aistudio.google.com/apikey", text: "aistudio.google.com" }
+                },
+                {
+                  label: "OpenRouter API Key",
+                  value: openrouterApiKey,
+                  setter: setOpenrouterApiKey,
+                  placeholder: "Enter your OpenRouter API key...",
+                  description: "Unified gateway to hundreds of LLMs including GPT-4o, Claude, Llama, and more via a single API.",
+                  link: { href: "https://openrouter.ai/keys", text: "openrouter.ai" }
+                },
+                {
+                  label: "NVIDIA NIM API Key",
+                  value: nvidiaApiKey,
+                  setter: setNvidiaApiKey,
+                  placeholder: "Enter your NVIDIA NIM API key...",
+                  description: "Access NVIDIA's accelerated inference microservices for high-throughput AI workloads and specialized financial models.",
+                  link: { href: "https://build.nvidia.com/", text: "build.nvidia.com" }
+                },
+                {
+                  label: "Mistral API Key",
+                  value: mistralApiKey,
+                  setter: setMistralApiKey,
+                  placeholder: "Enter your Mistral API key...",
+                  description: "Access Mistral's frontier open-source models including Mistral Large and Mixtral for advanced reasoning tasks.",
+                  link: { href: "https://console.mistral.ai/api-keys", text: "console.mistral.ai" }
+                },
+                {
+                  label: "Hugging Face Token",
+                  value: huggingfaceToken,
+                  setter: setHuggingfaceToken,
+                  placeholder: "Enter your Hugging Face access token...",
+                  description: "Authenticate with Hugging Face Hub to access gated models, datasets, and the Inference API for research-grade tasks.",
+                  link: { href: "https://huggingface.co/settings/tokens", text: "huggingface.co" }
+                },
+                {
+                  label: "Groq API Key",
+                  value: groqApiKey,
+                  setter: setGroqApiKey,
+                  placeholder: "Enter your Groq API key...",
+                  description: "Ultra-low-latency inference on LPU hardware. Ideal for real-time market commentary and sub-second AI responses.",
+                  link: { href: "https://console.groq.com/keys", text: "console.groq.com" }
+                },
+                {
+                  label: "Cerebras API Key",
+                  value: cerebrasApiKey,
+                  setter: setCerebrasApiKey,
+                  placeholder: "Enter your Cerebras API key...",
+                  description: "Cerebras Wafer-Scale Engine delivers the fastest inference available for large language models at scale.",
+                  link: { href: "https://cloud.cerebras.ai/", text: "cloud.cerebras.ai" }
+                },
+                {
+                  label: "Alpha Vantage API Key",
+                  value: alphaVantageApiKey,
+                  setter: setAlphaVantageApiKey,
+                  placeholder: "Enter your Alpha Vantage API key...",
+                  description: "Required for high-precision live updates of major global market indexes. Register on alphavantage.co to acquire your free key.",
+                  link: { href: "https://www.alphavantage.co/support/#api-key", text: "alphavantage.co" }
+                },
+              ];
 
               return (
                 <div className="space-y-10 animate-fadeIn">
@@ -2599,44 +2693,89 @@ export default function App() {
                       </h2>
                     </div>
                     <p className="text-xs text-on-surface-variant font-mono">
-                      Configure API keys for premium data sources.
+                      Configure API keys for premium data sources and AI inference providers. All credentials are stored locally in your browser.
                     </p>
                   </header>
 
+                  {/* AI Inference Providers */}
                   <div className="max-w-3xl bg-black/40 backdrop-blur-3xl border border-white/5 rounded-2xl overflow-hidden p-6 relative z-10 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] space-y-6">
-                    <div className="border-b border-white/15 pb-4">
+                    <div className="border-b border-white/10 pb-4">
                       <h3 className="font-mono text-xs text-cyan-300 tracking-[0.2em] font-extrabold flex items-center gap-2 uppercase">
-                        <Settings className="w-4 h-4 text-cyan-300 w-4 h-4" />
-                        API Credentials
+                        <Settings className="w-4 h-4 text-cyan-300" />
+                        AI Inference Providers
                       </h3>
+                      <p className="font-mono text-[10px] text-neutral-500 mt-1">Connect to frontier AI models for market analysis and intelligence generation.</p>
                     </div>
 
-                    <div className="space-y-2 pt-4 border-t border-white/10">
-                      <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
-                        Alpha Vantage API Authentication Key
-                      </label>
-                      <div className="relative">
+                    {apiFields.map((field) => (
+                      <div key={field.label} className="space-y-2">
+                        <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
+                          {field.label}
+                        </label>
                         <input
                           type="password"
-                          placeholder="Enter your Alpha Vantage personal API key..."
-                          value={alphaVantageApiKey}
-                          onChange={(e) => setAlphaVantageApiKey(e.target.value)}
-                          className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400"
+                          placeholder={field.placeholder}
+                          value={field.value}
+                          onChange={(e) => field.setter(e.target.value)}
+                          className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400 transition-colors"
                         />
+                        <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1">
+                          {field.description}{field.link && <> Get your key at <a href={field.link.href} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">{field.link.text}</a>.</>}
+                        </p>
                       </div>
-                      <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1 pt-1">
-                        Required for high-precision live updates of major global market indexes impacting the Indian Stock Market. Register on <a href="https://www.alphavantage.co/support/#api-key" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">alphavantage.co</a> to acquire your free query key.
+                    ))}
+                  </div>
+
+                  {/* Cloudflare Credentials */}
+                  <div className="max-w-3xl bg-black/40 backdrop-blur-3xl border border-white/5 rounded-2xl overflow-hidden p-6 relative z-10 hover:border-white/10 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.4)] space-y-6">
+                    <div className="border-b border-white/10 pb-4">
+                      <h3 className="font-mono text-xs text-cyan-300 tracking-[0.2em] font-extrabold flex items-center gap-2 uppercase">
+                        <Settings className="w-4 h-4 text-cyan-300" />
+                        Cloudflare Workers AI
+                      </h3>
+                      <p className="font-mono text-[10px] text-neutral-500 mt-1">Run AI models at the edge via Cloudflare Workers AI and R2 storage.</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
+                        Cloudflare Account ID
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter your Cloudflare Account ID..."
+                        value={cloudflareAccountId}
+                        onChange={(e) => setCloudflareAccountId(e.target.value)}
+                        className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                      />
+                      <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1">
+                        Found in your Cloudflare dashboard under <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">dash.cloudflare.com</a> — right sidebar on any zone overview.
                       </p>
                     </div>
 
-                    <div className="pt-4 flex justify-end">
-                      <button
-                        onClick={handleSaveSettings}
-                        className="px-6 py-2.5 bg-cyan-400 text-black hover:bg-cyan-300 rounded-xl font-mono text-xs font-extrabold uppercase tracking-widest shadow-[0_5px_15px_rgba(34,211,238,0.2)] transition-all cursor-pointer active:scale-95"
-                      >
-                        Save Settings
-                      </button>
+                    <div className="space-y-2">
+                      <label className="block font-mono text-[10px] text-neutral-400 uppercase tracking-widest font-bold">
+                        Cloudflare API Token
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="Enter your Cloudflare API token..."
+                        value={cloudflareApiToken}
+                        onChange={(e) => setCloudflareApiToken(e.target.value)}
+                        className="bg-black/50 border border-white/10 w-full px-4 py-3 rounded-xl font-mono text-xs font-semibold text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                      />
+                      <p className="text-[10px] text-neutral-500 font-mono leading-relaxed pl-1">
+                        Create a scoped API token with Workers AI permissions at <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline cursor-pointer">dash.cloudflare.com/profile/api-tokens</a>.
+                      </p>
                     </div>
+                  </div>
+
+                  <div className="max-w-3xl flex justify-end">
+                    <button
+                      onClick={handleSaveSettings}
+                      className="px-8 py-3 bg-cyan-400 text-black hover:bg-cyan-300 rounded-xl font-mono text-xs font-extrabold uppercase tracking-widest shadow-[0_5px_15px_rgba(34,211,238,0.2)] transition-all cursor-pointer active:scale-95"
+                    >
+                      Save All Settings
+                    </button>
                   </div>
                 </div>
               );
