@@ -786,7 +786,7 @@ export default function App() {
       )}
 
       {/* LEFT SIDE NAVIGATION PANEL BAR */}
-      <aside className="hidden md:flex flex-col h-full py-6 px-6 glass-panel glass-panel-silver-border w-72 shrink-0 z-30">
+      <aside className="hidden md:flex flex-col py-6 px-6 glass-panel glass-panel-silver-border w-72 shrink-0 z-30">
         <div className="mb-2 px-2 flex justify-center">
           <img src={OrcaLogo} alt="Orca Logo" className="w-10 h-10 object-contain" />
         </div>
